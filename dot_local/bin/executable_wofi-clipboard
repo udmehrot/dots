@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Wofi Clipboard History Manager using cliphist & wl-clipboard
+
+if ! command -v cliphist &>/dev/null; then
+    notify-send "Clipboard" "cliphist is not installed"
+    exit 1
+fi
+
+selection=$(cliphist list | wofi \
+    --dmenu \
+    --prompt "Clipboard History" \
+    --width 700 \
+    --height 450 \
+    --insensitive \
+    --location center)
+
+if [ -n "$selection" ]; then
+    echo "$selection" | cliphist decode | wl-copy
+    # Optional: trigger notification or feedback
+fi

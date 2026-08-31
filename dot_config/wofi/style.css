@@ -1,0 +1,66 @@
+/* Rosé Pine theme for Wofi */
+
+window {
+    margin: 0px;
+    background-color: #191724;
+    border: 2px solid #ebbcba;
+    border-radius: 12px;
+    font-family: "IoskeleyMono Nerd Font Mono", "Ioskeley Mono", monospace;
+    font-size: 13px;
+    color: #e0def4;
+}
+
+#input {
+    margin: 12px;
+    padding: 10px 14px;
+    border: 1px solid #26233a;
+    border-radius: 8px;
+    color: #e0def4;
+    background-color: #1f1d2e;
+}
+
+#input:focus {
+    border: 1px solid #ebbcba;
+    outline: none;
+}
+
+#inner-box {
+    margin: 4px 12px 12px 12px;
+    background-color: transparent;
+}
+
+#outer-box {
+    margin: 0px;
+    background-color: transparent;
+}
+
+#scroll {
+    margin: 0px;
+    border: none;
+}
+
+#text {
+    margin: 4px;
+    color: #e0def4;
+}
+
+#entry {
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: transparent;
+}
+
+#entry:selected {
+    background-color: #26233a;
+    border-left: 3px solid #ebbcba;
+}
+
+#entry:selected #text {
+    color: #ebbcba;
+    font-weight: bold;
+}
+
+#img {
+    margin-right: 10px;
+    background-color: transparent;
+}

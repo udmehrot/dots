@@ -1,0 +1,210 @@
+/*
+ * High-Contrast Studio Theme for Swappy
+ * Designed to contrast sharply against Rosé Pine desktop backgrounds
+ */
+
+/* =========================================================================
+ * Swappy Window & Container Architecture
+ * ========================================================================= */
+
+#paint-window {
+    background-color: #0b0910; /* Deep Obsidian */
+    color: #e0def4;
+    font-family: "IoskeleyMono Nerd Font Mono", "Ioskeley Mono", monospace, sans-serif;
+}
+
+#paint-window paned,
+#paint-window overlay,
+#paint-window fixed {
+    background-color: #0b0910;
+}
+
+/* HeaderBar (Top Action Shelf) */
+#paint-window headerbar {
+    background-color: #12101a;
+    border-bottom: 2px solid #393552;
+    padding: 8px 12px;
+}
+
+#paint-window headerbar button {
+    background-color: #1c1926;
+    border: 1px solid #393552;
+    border-radius: 8px;
+    color: #e0def4;
+    padding: 6px 14px;
+    margin: 0 4px;
+    font-weight: 500;
+    transition: all 120ms ease;
+}
+
+#paint-window headerbar button:hover {
+    background-color: #2b2738;
+    color: #ebbcba;
+    border-color: #ebbcba;
+}
+
+#paint-window headerbar button:checked {
+    background-color: #ebbcba;
+    color: #12101a;
+}
+
+/* Side Tool Panel */
+#painting-box {
+    background-color: #12101a;
+    border-right: 2px solid #393552;
+    padding: 10px 8px;
+}
+
+#painting-box label {
+    color: #908caa;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
+/* Tool Buttons (Brush, Text, Rectangle, Ellipse, Arrow, Blur) */
+#painting-box radiobutton,
+#brush, #text, #rectangle, #ellipse, #arrow, #blur {
+    background-color: #1c1926;
+    border: 1px solid #393552;
+    border-radius: 8px;
+    color: #e0def4;
+    padding: 8px;
+    margin: 3px 2px;
+    transition: all 120ms ease-in-out;
+}
+
+#painting-box radiobutton:hover,
+#brush:hover, #text:hover, #rectangle:hover, #ellipse:hover, #arrow:hover, #blur:hover {
+    background-color: #2b2738;
+    color: #ebbcba;
+    border-color: #ebbcba;
+}
+
+#painting-box radiobutton:checked,
+#brush:checked, #text:checked, #rectangle:checked, #ellipse:checked, #arrow:checked, #blur:checked {
+    background-color: #ebbcba;
+    color: #12101a;
+    border-color: #ebbcba;
+    box-shadow: 0 2px 8px rgba(235, 188, 186, 0.45);
+}
+
+#painting-box radiobutton indicator,
+#brush indicator, #text indicator, #rectangle indicator, #ellipse indicator, #arrow indicator, #blur indicator {
+    opacity: 0;
+    min-width: 0;
+    min-height: 0;
+}
+
+/* Stepper Buttons (Minus, Plus) */
+#minus-button, #plus-button,
+#text-minus-button, #text-plus-button,
+#transparency-minus-button, #transparency-plus-button {
+    background-color: #1c1926;
+    border: 1px solid #393552;
+    border-radius: 6px;
+    color: #e0def4;
+    padding: 4px 8px;
+    margin: 2px;
+}
+
+#minus-button:hover, #plus-button:hover,
+#text-minus-button:hover, #text-plus-button:hover,
+#transparency-minus-button:hover, #transparency-plus-button:hover {
+    background-color: #ebbcba;
+    color: #12101a;
+}
+
+/* Number Values */
+#stroke-size-button, #text-size-button, #transparency-button {
+    background-color: #12101a;
+    border: 1px solid #393552;
+    border-radius: 6px;
+    color: #c4a7e7;
+    font-weight: bold;
+    padding: 4px 8px;
+    margin: 2px;
+}
+
+/* Toggle Buttons */
+#fill-shape-toggle-button, #transparent-toggle-button {
+    background-color: #1c1926;
+    border: 1px solid #393552;
+    border-radius: 6px;
+    color: #e0def4;
+    padding: 6px 10px;
+    margin: 4px 2px;
+}
+
+#fill-shape-toggle-button:checked, #transparent-toggle-button:checked {
+    background-color: #31748f;
+    color: #12101a;
+    border-color: #31748f;
+}
+
+/* Color Palette Buttons with High-Contrast Rings */
+#color-red-button {
+    background-color: #eb6f92;
+    border-radius: 50%;
+    min-width: 22px;
+    min-height: 22px;
+    margin: 3px;
+    border: 2px solid #12101a;
+}
+
+#color-red-button:checked {
+    border-color: #e0def4;
+    box-shadow: 0 0 0 2px #eb6f92;
+}
+
+#color-green-button {
+    background-color: #31748f;
+    border-radius: 50%;
+    min-width: 22px;
+    min-height: 22px;
+    margin: 3px;
+    border: 2px solid #12101a;
+}
+
+#color-green-button:checked {
+    border-color: #e0def4;
+    box-shadow: 0 0 0 2px #31748f;
+}
+
+#color-blue-button {
+    background-color: #9ccfd8;
+    border-radius: 50%;
+    min-width: 22px;
+    min-height: 22px;
+    margin: 3px;
+    border: 2px solid #12101a;
+}
+
+#color-blue-button:checked {
+    border-color: #e0def4;
+    box-shadow: 0 0 0 2px #9ccfd8;
+}
+
+#color-custom-button {
+    background-color: #ebbcba;
+    border-radius: 50%;
+    min-width: 22px;
+    min-height: 22px;
+    margin: 3px;
+    border: 2px solid #12101a;
+}
+
+#color-custom-button:checked {
+    border-color: #e0def4;
+    box-shadow: 0 0 0 2px #ebbcba;
+}
+
+/* Canvas Area: Elevated dark studio stage with distinct bounding border */
+#painting-area {
+    background-color: #060509;
+    border: 2px solid #393552;
+    margin: 8px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.7);
+}

@@ -1,0 +1,274 @@
+/*
+ * Rosé Pine Theme for SwayNotificationCenter
+ */
+
+@define-color base #191724;
+@define-color surface #1f1d2e;
+@define-color overlay #26233a;
+@define-color muted #6e6a86;
+@define-color subtle #908caa;
+@define-color text #e0def4;
+@define-color love #eb6f92;
+@define-color gold #f6c177;
+@define-color rose #ebbcba;
+@define-color pine #31748f;
+@define-color foam #9ccfd8;
+@define-color iris #c4a7e7;
+
+* {
+  font-family: "IoskeleyMono Nerd Font Mono", "Ioskeley Mono", monospace, sans-serif;
+  font-size: 13px;
+  all: unset;
+  transition: 200ms ease;
+}
+
+.floating-notifications.background .notification-row .notification-background {
+  padding: 6px 12px;
+  background: transparent;
+}
+
+.floating-notifications.background .notification-row .notification-background .notification {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+  border: 1px solid @overlay;
+  padding: 12px;
+  background: @surface;
+  color: @text;
+}
+
+.floating-notifications.background .notification-row .notification-background .notification.critical {
+  border: 1px solid @love;
+}
+
+.floating-notifications.background .notification-row .notification-background .notification.normal {
+  border: 1px solid @overlay;
+}
+
+.floating-notifications.background .notification-row .notification-background .notification.low {
+  border: 1px solid @overlay;
+}
+
+/* Control Center Window */
+.control-center {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  border: 1px solid @overlay;
+  background: @base;
+  color: @text;
+  padding: 14px;
+}
+
+/* Title Widget */
+.widget-title {
+  color: @text;
+  margin: 4px 0 10px 0;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.widget-title > button {
+  font-size: 12px;
+  color: @subtle;
+  background: @surface;
+  border: 1px solid @overlay;
+  border-radius: 6px;
+  padding: 4px 10px;
+}
+
+.widget-title > button:hover {
+  background: @overlay;
+  color: @love;
+}
+
+/* DND Widget */
+.widget-dnd {
+  color: @text;
+  margin: 4px 0 10px 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.widget-dnd > switch {
+  font-size: initial;
+  border-radius: 12px;
+  background: @surface;
+  border: 1px solid @overlay;
+}
+
+.widget-dnd > switch:checked {
+  background: @rose;
+}
+
+.widget-dnd > switch slider {
+  background: @text;
+  border-radius: 12px;
+  min-width: 18px;
+  min-height: 18px;
+}
+
+.widget-dnd > switch:checked slider {
+  background: @base;
+}
+
+/* Buttons Grid */
+.widget-buttons-grid {
+  font-size: 12px;
+  padding: 4px 0 10px 0;
+  margin: 0;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+  background: @surface;
+  border-radius: 8px;
+  border: 1px solid @overlay;
+  color: @text;
+  padding: 8px 12px;
+  margin: 4px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+  background: @overlay;
+  color: @rose;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button.active {
+  background: @overlay;
+  color: @foam;
+  border-color: @foam;
+}
+
+/* MPRIS Media Player Widget */
+.widget-mpris {
+  background: @surface;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 10px;
+  border: 1px solid @overlay;
+}
+
+.widget-mpris-player {
+  padding: 4px;
+  margin: 4px;
+}
+
+.widget-mpris-title {
+  font-weight: bold;
+  font-size: 13px;
+  color: @text;
+}
+
+.widget-mpris-subtitle {
+  font-size: 11px;
+  color: @subtle;
+}
+
+.widget-mpris-album-art {
+  border-radius: 8px;
+}
+
+/* Volume & Backlight Sliders */
+.widget-volume, .widget-backlight {
+  background: @surface;
+  border-radius: 8px;
+  border: 1px solid @overlay;
+  padding: 6px 12px;
+  margin: 4px 0;
+  color: @subtle;
+}
+
+.widget-volume > label, .widget-backlight > label {
+  font-size: 15px;
+  color: @iris;
+  margin-right: 8px;
+}
+
+.widget-backlight > label {
+  color: @gold;
+}
+
+scale trough {
+  background: @overlay;
+  border-radius: 4px;
+  min-height: 6px;
+  min-width: 100px;
+}
+
+scale highlight {
+  background: @rose;
+  border-radius: 4px;
+}
+
+scale slider {
+  background: @text;
+  border-radius: 50%;
+  min-height: 12px;
+  min-width: 12px;
+  margin: -3px;
+}
+
+/* Notification List in Control Center */
+.control-center .notification-row .notification-background {
+  padding: 4px 0;
+  background: transparent;
+}
+
+.control-center .notification-row .notification-background .notification {
+  border-radius: 8px;
+  border: 1px solid @overlay;
+  padding: 10px;
+  background: @surface;
+  color: @text;
+  margin: 2px 0;
+}
+
+.notification-content {
+  margin: 4px;
+}
+
+.summary {
+  font-weight: bold;
+  font-size: 13px;
+  color: @text;
+}
+
+.time {
+  font-size: 11px;
+  color: @muted;
+  margin-right: 18px;
+}
+
+.body {
+  font-size: 12px;
+  color: @subtle;
+  margin-top: 4px;
+}
+
+/* Notification Close Button */
+.close-button {
+  background: transparent;
+  color: @muted;
+  border-radius: 4px;
+  padding: 2px;
+  margin: 4px;
+}
+
+.close-button:hover {
+  background: @overlay;
+  color: @love;
+}
+
+/* Notification Action Buttons */
+.notification-action {
+  border-radius: 6px;
+  color: @text;
+  background: @overlay;
+  border: 1px solid @overlay;
+  margin: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+.notification-action:hover {
+  background: @surface;
+  color: @rose;
+}

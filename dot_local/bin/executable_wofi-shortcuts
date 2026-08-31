@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# Wofi System Shortcuts Cheat Sheet - Rosé Pine Themed
+
+declare -A actions
+
+add_entry() {
+    local key="$1"
+    local desc="$2"
+    local cmd="$3"
+    local line=$(printf "%-28s  │  %s" "$key" "$desc")
+    entries+="$line\n"
+    if [ -n "$cmd" ]; then
+        actions["$line"]="$cmd"
+    fi
+}
+
+entries=""
+
+# --- Launchers & Tools ---
+add_entry "Super + Return" "Launch Terminal (foot)" 'foot'
+add_entry "Super + D" "Application Launcher (wofi)" '/home/ud/.local/bin/wofi --show drun'
+add_entry "Super + K" "Keyboard Shortcuts List (this menu)" '/home/ud/.local/bin/wofi-shortcuts'
+add_entry "Super + Shift + V" "Clipboard History Manager (cliphist)" '/home/ud/.local/bin/wofi-clipboard'
+add_entry "Super + Shift + W" "Wi-Fi Network Selector (nmtui)" '/home/ud/.local/bin/wofi-wifi'
+add_entry "Super + Shift + B" "Wallpaper Switcher (awww)" '/home/ud/.local/bin/wofi-wallpaper'
+add_entry "Super + Ctrl + B" "Set Random Wallpaper (awww)" '/home/ud/.local/bin/wofi-wallpaper random'
+add_entry "Super + Shift + E" "Power / Session Menu" '/home/ud/.local/bin/wofi-power'
+add_entry "Super + N / Super + Shift + N" "Toggle Notification Center (SwayNC)" 'swaync-client -t -sw'
+
+# --- Window Management ---
+add_entry "Super + Shift + Q" "Close / Kill Focused Window" 'swaymsg kill'
+add_entry "Super + F" "Toggle Fullscreen" 'swaymsg fullscreen'
+add_entry "Super + Shift + Space" "Toggle Floating / Tiling Mode" 'swaymsg floating toggle'
+add_entry "Super + Space" "Switch Focus: Tiling <-> Floating" 'swaymsg focus mode_toggle'
+add_entry "Super + A" "Focus Parent Container" 'swaymsg focus parent'
+add_entry "Super + R" "Resize Mode (Arrow keys or HJKL, Esc to exit)" 'swaymsg mode resize'
+add_entry "Super + B" "Split Container Horizontally" 'swaymsg splith'
+add_entry "Super + V" "Split Container Vertically" 'swaymsg splitv'
+add_entry "Super + S" "Stacking Layout" 'swaymsg layout stacking'
+add_entry "Super + W" "Tabbed Layout" 'swaymsg layout tabbed'
+add_entry "Super + E" "Toggle Split Layout" 'swaymsg layout toggle split'
+add_entry "Super + Shift + C" "Reload Sway Configuration" 'swaymsg reload'
+
+# --- Navigation ---
+add_entry "Super + [←/↓/↑/→] (or HJKL)" "Move Window Focus Directionally" ''
+add_entry "Super + Shift + [←/↓/↑/→]" "Move Focused Window Directionally" ''
+
+# --- Workspaces & Scratchpad ---
+add_entry "Super + [1..9, 0]" "Switch to Workspace 1..10" ''
+add_entry "Super + Shift + [1..9, 0]" "Move Window to Workspace 1..10" ''
+add_entry "Super + Shift + Minus" "Move Window to Scratchpad" 'swaymsg move scratchpad'
+add_entry "Super + Minus" "Show / Cycle Scratchpad Windows" 'swaymsg scratchpad show'
+
+# --- Screenshots ---
+add_entry "Super + Shift + S (or Super + Print)" "Screenshot & Annotate Editor (Swappy)" 'bash -c '\''grim -g "$(slurp)" - | swappy -f -'\'''
+add_entry "Super + Ctrl + S" "Quick Area Selection to Clipboard" 'bash -c '\''grim -g "$(slurp)" - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Selection copied to clipboard"'\'''
+add_entry "Print (or Ctrl + Print)" "Quick Full Screen to Clipboard" 'bash -c '\''grim - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Full screen copied to clipboard"'\'''
+add_entry "Super + Shift + Print" "Area Selection to ~/Pictures/Screenshots" 'bash -c '\''FILE=~/Pictures/Screenshots/$(date +%Y-%m-%d-%H%M%S.png); mkdir -p ~/Pictures/Screenshots && grim -g "$(slurp)" "$FILE" && notify-send -a "Screenshot" "Screenshot Saved" "Saved selection to $FILE"'\'''
+add_entry "Shift + Print" "Full Screen to ~/Pictures/Screenshots" 'bash -c '\''FILE=~/Pictures/Screenshots/$(date +%Y-%m-%d-%H%M%S.png); mkdir -p ~/Pictures/Screenshots && grim "$FILE" && notify-send -a "Screenshot" "Screenshot Saved" "Saved full screen to $FILE"'\'''
+
+
+
+# --- Hardware Keys ---
+add_entry "F1 / XF86AudioMute" "Mute / Unmute Audio" 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle'
+add_entry "F2 / F3 (Vol Down/Up)" "Adjust Audio Volume (-/+ 5%)" ''
+add_entry "F4 / XF86AudioMicMute" "Mute / Unmute Microphone" 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle'
+add_entry "F5 / F6 (Bright Down/Up)" "Adjust Screen Brightness (-/+ 5%)" ''
+add_entry "F7 / XF86Display" "Toggle Display Power" "swaymsg 'output * power toggle'"
+add_entry "F8 / XF86WLAN" "Toggle Wi-Fi Radio" 'rfkill toggle wifi'
+add_entry "F10 / XF86Bluetooth" "Toggle Bluetooth Radio" 'rfkill toggle bluetooth'
+add_entry "F11 / Fn + Space" "Cycle Keyboard Backlight" "brightnessctl --device='tpacpi::kbd_backlight' set +1"
+add_entry "Fn + 4 / XF86Sleep" "Suspend System" 'systemctl suspend'
+add_entry "Media Play/Pause/Prev/Next" "Control Media Playback" ''
+
+# --- Touch Gestures ---
+add_entry "3-Finger Swipe Left / Right" "Switch to Prev / Next Workspace" ''
+add_entry "4-Finger Swipe Left / Right" "Move Window to Prev / Next Workspace" ''
+add_entry "4-Finger Pinch Out / In" "Toggle Fullscreen / Floating" ''
+
+selected=$(echo -e "$entries" | wofi \
+    --dmenu \
+    --prompt "⌨  System Shortcuts & Keybinds" \
+    --width 720 \
+    --height 520 \
+    --lines 14 \
+    --insensitive \
+    --location center)
+
+if [ -n "$selected" ]; then
+    cmd="${actions["$selected"]}"
+    if [ -n "$cmd" ]; then
+        eval "$cmd"
+    fi
+fi

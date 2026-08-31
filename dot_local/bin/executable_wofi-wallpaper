@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# Wallpaper switcher for Wayland using awww & wofi
+
+WALL_DIR="${HOME}/Pictures/Walls"
+
+ensure_daemon() {
+    if ! pgrep -x awww-daemon >/dev/null; then
+        setsid -f awww-daemon --layer bottom >/dev/null 2>&1
+        for i in {1..20}; do
+            if awww query >/dev/null 2>&1; then
+                break
+            fi
+            sleep 0.1
+        done
+    fi
+}
+
+set_wallpaper() {
+    local img="$1"
+    if [[ ! -f "$img" ]]; then
+        echo "Error: File not found: $img" >&2
+        return 1
+    fi
+
+    ensure_daemon
+
+    # Randomize transition for visual flair
+    local transitions=("wipe" "wave" "grow" "fade" "simple")
+    local trans="${transitions[$RANDOM % ${#transitions[@]}]}"
+
+    awww img "$img" \
+        --transition-type "$trans" \
+        --transition-step 90 \
+        --transition-duration 2 \
+        --transition-fps 60
+
+    local name
+    name=$(realpath --relative-to="$WALL_DIR" "$img" 2>/dev/null || basename "$img")
+
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -i "$img" -a "Wallpaper" "Wallpaper Updated" "$name" 2>/dev/null || true
+    fi
+}
+
+set_random() {
+    ensure_daemon
+    local img
+    img=$(find "$WALL_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) | shuf -n 1)
+    if [[ -n "$img" ]]; then
+        set_wallpaper "$img"
+    fi
+}
+
+# Main logic
+case "$1" in
+    random)
+        set_random
+        ;;
+    "")
+        ensure_daemon
+        # Build menu list
+        menu_items="🎲 [Random Wallpaper]"$'\n'
+        while IFS= read -r file; do
+            rel="${file#$WALL_DIR/}"
+            menu_items+="$rel"$'\n'
+        done < <(find "$WALL_DIR" -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) | sort)
+
+        choice=$(echo -n "$menu_items" | wofi \
+            --dmenu \
+            --prompt "Select Wallpaper" \
+            --width 650 \
+            --height 450 \
+            --insensitive \
+            --location center)
+
+        if [[ -z "$choice" ]]; then
+            exit 0
+        fi
+
+        if [[ "$choice" == "🎲 [Random Wallpaper]" ]]; then
+            set_random
+        else
+            selected_path="$WALL_DIR/$choice"
+            if [[ -f "$selected_path" ]]; then
+                set_wallpaper "$selected_path"
+            fi
+        fi
+        ;;
+    *)
+        if [[ -f "$1" ]]; then
+            set_wallpaper "$1"
+        else
+            echo "Usage: $(basename "$0") [random | <image_path>]" >&2
+            exit 1
+        fi
+        ;;
+esac

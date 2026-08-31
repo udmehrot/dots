@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# Wofi WiFi Network Manager using nmcli
+
+# Get current wifi status
+wifi_status=$(nmcli -fields WIFI g)
+
+if [[ "$wifi_status" =~ "disabled" ]]; then
+    choice=$(echo -e "󰤨  Enable Wi-Fi\n❌  Cancel" | wofi --dmenu --prompt "Wi-Fi is Off" --width 300 --height 150 --location center)
+    if [[ "$choice" =~ "Enable" ]]; then
+        nmcli radio wifi on
+        notify-send "Wi-Fi" "Enabling Wi-Fi..."
+    fi
+    exit 0
+fi
+
+# Rescan wifi
+nmcli dev wifi rescan 2>/dev/null
+
+# Get active connection
+active_ssid=$(nmcli -t -f active,ssid dev wifi | grep '^yes' | cut -d: -f2)
+
+# Build list
+wifi_list=$(nmcli --fields IN-USE,SSID,BARS,SECURITY dev wifi list | sed 1d | sed -E "s/IN-USE\s+//" | sed -E "s/\*/󰄵/" | sed -E "s/^ /  /" | awk '!seen[$2]++')
+
+options="󰤮  Disable Wi-Fi\n󰑐  Rescan Networks"
+if [ -n "$active_ssid" ]; then
+    options="$options\n󰤯  Disconnect from $active_ssid"
+fi
+
+full_menu=$(echo -e "$options\n$wifi_list")
+
+chosen_network=$(echo -e "$full_menu" | wofi \
+    --dmenu \
+    --prompt "Wi-Fi Networks" \
+    --width 500 \
+    --height 420 \
+    --insensitive \
+    --location center)
+
+if [ -z "$chosen_network" ]; then
+    exit 0
+fi
+
+case "$chosen_network" in
+    *"Disable Wi-Fi"*)
+        nmcli radio wifi off
+        ;;
+    *"Rescan Networks"*)
+        exec "$0"
+        ;;
+    *"Disconnect from"*)
+        nmcli con down id "$active_ssid"
+        ;;
+    *)
+        # Parse selected SSID
+        # Extract SSID by stripping leading markers
+        clean_choice=$(echo "$chosen_network" | sed 's/^[ 󰄵]*//')
+        chosen_ssid=$(echo "$clean_choice" | awk '{print $1}')
+
+        if [ -n "$chosen_ssid" ]; then
+            # Check if network is known/saved
+            saved=$(nmcli -g NAME connection show | grep -Fx "$chosen_ssid")
+            if [ -n "$saved" ]; then
+                nmcli connection up id "$chosen_ssid"
+            else
+                # Check if secured
+                if echo "$chosen_network" | grep -qE "WPA|WEP|802.1X"; then
+                    wifi_password=$(wofi --dmenu --password --prompt "Password for $chosen_ssid" --width 400 --height 150 --location center)
+                    if [ -n "$wifi_password" ]; then
+                        nmcli dev wifi connect "$chosen_ssid" password "$wifi_password"
+                    fi
+                else
+                    nmcli dev wifi connect "$chosen_ssid"
+                fi
+            fi
+        fi
+        ;;
+esac

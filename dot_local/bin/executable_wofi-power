@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Wofi Power Menu - Rosé Pine Themed
+
+entries="🔒  Lock\n💤  Suspend\n🚪  Logout\n🔄  Reboot\n🛑  Shutdown"
+
+selected=$(echo -e "$entries" | wofi \
+    --dmenu \
+    --prompt "Power Menu" \
+    --width 280 \
+    --height 230 \
+    --lines 5 \
+    --hide-scroll \
+    --insensitive \
+    --location center)
+
+case "$selected" in
+    *"Lock")
+        swaylock -f -c 191724
+        ;;
+    *"Suspend")
+        systemctl suspend
+        ;;
+    *"Logout")
+        swaymsg exit
+        ;;
+    *"Reboot")
+        systemctl reboot
+        ;;
+    *"Shutdown")
+        systemctl poweroff
+        ;;
+esac

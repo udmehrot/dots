@@ -1,0 +1,377 @@
+# Default config for sway
+#
+# Copy this to ~/.config/sway/config and edit it to your liking.
+#
+# Read `man 5 sway` for a complete reference.
+
+### Variables
+#
+# Logo key. Use Mod1 for Alt.
+set $mod Mod4
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Your preferred terminal emulator
+set $term wezterm
+# Your preferred application launcher
+set $menu wofi --show drun
+
+# System Font
+font pango:IoskeleyMono Nerd Font Mono 10
+
+
+### Output configuration
+#
+# Wallpaper is managed dynamically by awww
+#
+# Monitor arrangement: External monitor (DP-2) directly above laptop screen (eDP-1)
+output DP-2 scale 1.25 position 0 0
+output eDP-1 scale 1.0 position 0 1728
+
+
+# Clamshell mode: disable laptop internal display when lid is closed
+bindswitch --reload --locked lid:on output eDP-1 disable
+bindswitch --reload --locked lid:off output eDP-1 enable
+
+# Screen sharing & desktop portal environment integration
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+
+# Clipboard history daemon (text & images)
+exec_always /home/ud/.local/bin/cliphist-daemon
+
+# Wallpaper daemon (awww)
+exec_always bash -c 'killall swaybg 2>/dev/null; pgrep -x awww-daemon >/dev/null || awww-daemon --layer bottom'
+
+### Idle configuration
+exec swayidle -w \
+         timeout 300 'swaylock -f -c 191724' \
+         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         before-sleep 'swaylock -f -c 191724'
+
+### Input configuration
+#
+# Synaptics Touchpad on ThinkPad
+input "type:touchpad" {
+    dwt enabled
+    tap enabled
+    tap_button_map lrm
+    click_method clickfinger
+    natural_scroll enabled
+    middle_emulation enabled
+    accel_profile adaptive
+}
+
+# ThinkPad TrackPoint
+input "2:10:TPPS/2_IBM_TrackPoint" {
+    pointer_accel 0.2
+    accel_profile adaptive
+}
+
+# Cisco Desk Pro Touchscreen (1:1 mapping to external DP-2 monitor)
+input "1446:2821:Cisco_Systems,_Inc._Desk_Pro_HID_Device" {
+    map_to_output DP-2
+}
+input "type:touch" {
+    map_to_output DP-2
+}
+
+# Touch & Window Dragging
+tiling_drag enabled
+tiling_drag_threshold 10
+
+### Touch & Gesture bindings
+#
+# 3-finger horizontal swipe to switch workspaces
+bindgesture swipe:3:right workspace next
+bindgesture swipe:3:left workspace prev
+
+# 4-finger horizontal swipe to move container to next/previous workspace
+bindgesture swipe:4:right move container to workspace next, workspace next
+bindgesture swipe:4:left move container to workspace prev, workspace prev
+
+# 4-finger pinch for fullscreen & floating
+bindgesture pinch:4:outward fullscreen toggle
+bindgesture pinch:4:inward floating toggle
+
+### Key bindings
+#
+# Basics:
+#
+    # Start a terminal
+    bindsym $mod+Return exec $term
+
+    # Kill focused window
+    bindsym $mod+Shift+q kill
+
+    # Start your launcher
+    bindsym $mod+d exec /home/ud/.local/bin/wofi --show drun
+
+    # System shortcuts cheat sheet (Cmd / Super + K)
+    bindsym $mod+k exec /home/ud/.local/bin/wofi-shortcuts
+
+    # Clipboard manager (Wofi + cliphist)
+    bindsym $mod+Shift+v exec /home/ud/.local/bin/wofi-clipboard
+
+
+    # WiFi manager (Wofi + nmcli)
+    bindsym $mod+Shift+w exec /home/ud/.local/bin/wofi-wifi
+
+    # Power menu (Wofi)
+    bindsym $mod+Shift+e exec /home/ud/.local/bin/wofi-power
+
+    # Wallpaper switcher (Wofi + awww)
+    bindsym $mod+Shift+b exec /home/ud/.local/bin/wofi-wallpaper
+    bindsym $mod+Ctrl+b exec /home/ud/.local/bin/wofi-wallpaper random
+
+    # Notification Center (SwayNC)
+    bindsym $mod+Shift+n exec swaync-client -t -sw
+    bindsym $mod+n exec swaync-client -t -sw
+
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Shift+c reload
+
+### Window styling & Rosé Pine colors
+default_border pixel 2
+default_floating_border pixel 2
+gaps inner 6
+gaps outer 2
+
+# Rosé Pine client colors
+# class                 border  bground text    indicator child_border
+client.focused          #ebbcba #1f1d2e #e0def4 #c4a7e7   #ebbcba
+client.focused_inactive #26233a #191724 #908caa #26233a   #26233a
+client.unfocused        #1f1d2e #191724 #6e6a86 #1f1d2e   #1f1d2e
+client.urgent           #eb6f92 #eb6f92 #191724 #eb6f92   #eb6f92
+client.placeholder      #191724 #191724 #e0def4 #191724   #191724
+
+#
+# Moving around:
+#
+    # Move your focus around
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    # bindsym $mod+$up focus up (Reserved for Super+K shortcuts menu)
+    bindsym $mod+$right focus right
+
+    # Or use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Workspaces:
+#
+    # Switch to workspace
+    bindsym $mod+1 workspace number 1
+    bindsym $mod+2 workspace number 2
+    bindsym $mod+3 workspace number 3
+    bindsym $mod+4 workspace number 4
+    bindsym $mod+5 workspace number 5
+    bindsym $mod+6 workspace number 6
+    bindsym $mod+7 workspace number 7
+    bindsym $mod+8 workspace number 8
+    bindsym $mod+9 workspace number 9
+    bindsym $mod+0 workspace number 10
+    # Move focused container to workspace
+    bindsym $mod+Shift+1 move container to workspace number 1
+    bindsym $mod+Shift+2 move container to workspace number 2
+    bindsym $mod+Shift+3 move container to workspace number 3
+    bindsym $mod+Shift+4 move container to workspace number 4
+    bindsym $mod+Shift+5 move container to workspace number 5
+    bindsym $mod+Shift+6 move container to workspace number 6
+    bindsym $mod+Shift+7 move container to workspace number 7
+    bindsym $mod+Shift+8 move container to workspace number 8
+    bindsym $mod+Shift+9 move container to workspace number 9
+    bindsym $mod+Shift+0 move container to workspace number 10
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+#
+# Layout stuff:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    bindsym $mod+s layout stacking
+    bindsym $mod+w layout tabbed
+    bindsym $mod+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+Shift+space floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    bindsym $mod+a focus parent
+#
+# Scratchpad:
+#
+    # Sway has a "scratchpad", which is a bag of holding for windows.
+    # You can send windows there and get them back later.
+
+    # Move the currently focused window to the scratchpad
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Show the next scratchpad window or hide the focused scratchpad window.
+    # If there are multiple scratchpad windows, this command cycles through them.
+    bindsym $mod+minus scratchpad show
+#
+# Resizing containers:
+#
+mode "resize" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+#
+# Function Keys & Hardware Controls (ThinkPad T480):
+#
+    # F1: Audio Mute
+    bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+    # F2: Volume Down
+    bindsym --locked XF86AudioLowerVolume exec wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%-
+
+    # F3: Volume Up
+    bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+
+
+    # F4: Microphone Mute
+    bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+    # F5: Screen Brightness Down
+    bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+
+    # F6: Screen Brightness Up
+    bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+
+    # F7: External Display
+    bindsym --locked XF86Display exec swaymsg "output * power toggle"
+
+    # F8: WiFi / Airplane Mode Toggle
+    bindsym --locked XF86WLAN exec rfkill toggle wifi
+
+    # F9: Settings / Tools
+    bindsym --locked XF86Tools exec $menu
+
+    # F10: Search / Bluetooth
+    bindsym --locked XF86Search exec $menu
+    bindsym --locked XF86Bluetooth exec rfkill toggle bluetooth
+
+    # F11: Keyboard Backlight / Launch
+    bindsym --locked XF86Keyboard exec brightnessctl --device='tpacpi::kbd_backlight' set +1
+    bindsym --locked XF86LaunchA exec $menu
+
+    # F12: Favorites / Star Key
+    bindsym --locked XF86Favorites exec $term
+    bindsym --locked XF86Launch1 exec $term
+
+    # Keyboard Backlight (Fn+Space)
+    bindsym --locked XF86KbdLightOnOff exec brightnessctl --device='tpacpi::kbd_backlight' set +1
+    bindsym --locked XF86KbdBrightnessUp exec brightnessctl --device='tpacpi::kbd_backlight' set +1
+    bindsym --locked XF86KbdBrightnessDown exec brightnessctl --device='tpacpi::kbd_backlight' set 1-
+
+    # Sleep / Suspend (Fn+4)
+    bindsym --locked XF86Sleep exec systemctl suspend
+
+    # Media Playback Controls
+    bindsym --locked XF86AudioPlay exec playerctl play-pause
+    bindsym --locked XF86AudioPause exec playerctl play-pause
+    bindsym --locked XF86AudioPrev exec playerctl previous
+    bindsym --locked XF86AudioNext exec playerctl next
+    bindsym --locked XF86AudioStop exec playerctl stop
+
+    # Calculator
+    bindsym --locked XF86Calculator exec $term -e python
+
+    # Screenshots:
+    # 1. Interactive Area Screenshot & Annotate (Swappy): Super+Print or Super+Shift+S
+    bindsym $mod+Print exec bash -c 'grim -g "$(slurp)" - | swappy -f -'
+    bindsym $mod+Shift+s exec bash -c 'grim -g "$(slurp)" - | swappy -f -'
+
+    # 2. Quick Full Screen -> Copy to Clipboard (Print or Ctrl+Print)
+    bindsym Print exec bash -c 'grim - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Full screen copied to clipboard"'
+    bindsym Ctrl+Print exec bash -c 'grim - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Full screen copied to clipboard"'
+
+    # 3. Direct Area -> Copy to Clipboard without editor (Super+Ctrl+S)
+    bindsym $mod+Ctrl+s exec bash -c 'grim -g "$(slurp)" - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Selection copied to clipboard"'
+
+    # 4. Area / Section Selection -> Save to ~/Pictures/Screenshots/ (Super+Shift+Print)
+    bindsym $mod+Shift+Print exec bash -c 'FILE=~/Pictures/Screenshots/$(date +%Y-%m-%d-%H%M%S.png); mkdir -p ~/Pictures/Screenshots && grim -g "$(slurp)" "$FILE" && notify-send -a "Screenshot" "Screenshot Saved" "Saved selection to $FILE"'
+
+    # 5. Full Screen -> Save to ~/Pictures/Screenshots/ (Shift+Print)
+    bindsym Shift+Print exec bash -c 'FILE=~/Pictures/Screenshots/$(date +%Y-%m-%d-%H%M%S.png); mkdir -p ~/Pictures/Screenshots && grim "$FILE" && notify-send -a "Screenshot" "Screenshot Saved" "Saved full screen to $FILE"'
+
+
+#
+# Window Rules:
+#
+for_window [app_id="floating_control"] floating enable, resize set width 760 px height 520 px, move position center
+for_window [app_id="nm-connection-editor"] floating enable
+for_window [app_id="pavucontrol"] floating enable, resize set width 760 px height 520 px, move position center
+for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, resize set width 760 px height 520 px, move position center
+for_window [app_id="swappy"] floating enable, resize set width 1050 px height 720 px, move position center, border pixel 3
+
+
+
+#
+# System Theme / Dark Mode:
+#
+exec_always {
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+    gsettings set org.gnome.desktop.interface font-name 'Ioskeley Mono 11'
+    gsettings set org.gnome.desktop.interface monospace-font-name 'IoskeleyMono Nerd Font Mono 11'
+    gsettings set org.gnome.desktop.interface document-font-name 'Ioskeley Mono 11'
+}
+
+#
+# Status Bar & Notification Daemon:
+#
+exec quickshell
+exec swaync
+
+include /etc/sway/config.d/*
+
+
+

@@ -1,0 +1,17 @@
+#
+# ~/.bash_profile
+#
+
+export SHELL="$HOME/.local/bin/zsh"
+export TERMINAL="wezterm"
+export BROWSER="vivaldi"
+export PATH="$HOME/.local/bin:$PATH"
+export MOZ_ENABLE_WAYLAND=1
+export MOZ_USE_XINPUT2=1
+
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+if [ -t 1 ] && [ -x "$HOME/.local/bin/zsh" ] && [ -z "$ZSH_VERSION" ]; then
+    exec "$HOME/.local/bin/zsh" -l
+fi
