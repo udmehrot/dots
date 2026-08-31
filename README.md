@@ -152,6 +152,128 @@ sway
 
 ---
 
+## 🐧 Installation Guide for Ubuntu 26.04 (LTS Base)
+
+You can run this exact desktop setup on **Ubuntu 26.04 LTS**. Because LTS repositories can sometimes lag behind the fast-moving Wayland ecosystem, follow these steps to install the latest tools via official PPAs, modern package managers, and standalone binaries.
+
+### 1. Add PPAs & Repositories for Latest Sway & Quickshell
+
+```bash
+sudo apt update
+sudo apt install -y software-properties-common curl gpg wget
+
+# 1. PPA for Latest Sway & Wayland components
+# (Ubuntu Sway Remix project PPA or community backports)
+sudo add-apt-repository -y ppa:ubuntusway-dev/stable
+# Alternative: sudo add-apt-repository -y ppa:pgentili/sway
+
+# 2. PPA for Quickshell
+sudo add-apt-repository -y ppa:avengemedia/danklinux
+
+# 3. WezTerm Official APT Repository (Optional)
+curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+
+sudo apt update
+```
+
+---
+
+### 2. Install Core Packages & Dependencies
+
+```bash
+sudo apt install -y \
+    sway swaylock swayidle xwayland \
+    quickshell sway-notification-center wofi \
+    foot wezterm zsh bash curl git jq \
+    pipewire pipewire-pulse wireplumber pavucontrol playerctl brightnessctl \
+    network-manager bluez bluez-tools upower \
+    grim slurp swappy wl-clipboard \
+    xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
+    libgtk-3-bin libgtk-4-bin gsettings-desktop-schemas
+```
+
+---
+
+### 3. Install Latest Modern Tools on LTS
+
+Some newer Wayland tools are best installed directly via their official installers or release binaries:
+
+#### A. Chezmoi (Dotfile Manager)
+```bash
+sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
+```
+
+#### B. Cliphist (Wayland Clipboard Manager)
+```bash
+mkdir -p ~/.local/bin
+# Download latest Linux x86_64 binary
+curl -s https://api.github.com/repos/sentriz/cliphist/releases/latest \
+  | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url' \
+  | wget -qi - -O ~/.local/bin/cliphist
+chmod +x ~/.local/bin/cliphist
+```
+
+#### C. Awww (Smooth Animated Wallpaper Daemon)
+Install via Rust Cargo (or download precompiled binary from [awww releases](https://github.com/LGFae/awww/releases)):
+```bash
+sudo apt install -y cargo libwayland-dev libxkbcommon-dev
+cargo install awww
+# Ensure ~/.cargo/bin or ~/.local/bin is in your PATH
+```
+
+---
+
+### 4. Enable Services & Permissions
+
+```bash
+# Add user to hardware groups
+sudo usermod -aG video,input,audio $USER
+
+# Enable system network and bluetooth daemons
+sudo systemctl enable --now NetworkManager
+sudo systemctl enable --now bluetooth
+
+# Enable PipeWire audio services for the current user
+systemctl --user enable --now pipewire pipewire-pulse wireplumber
+```
+
+---
+
+### 5. Install Ioskeley Fonts
+
+```bash
+mkdir -p ~/.local/share/fonts
+# Copy Ioskeley font files into ~/.local/share/fonts/
+fc-cache -fv
+```
+
+---
+
+### 6. Apply Dotfiles
+
+```bash
+# Initialize and apply dotfiles
+chezmoi init <your-git-repo-url>
+chezmoi apply
+
+# Make all helper scripts executable
+chmod +x ~/.local/bin/*
+```
+
+---
+
+### 7. Launching Sway on Ubuntu
+
+You can select **Sway** directly from the GDM/SDDM login screen menu, or launch it from a TTY:
+
+```bash
+sway
+```
+
+---
+
+
 ## ⌨️ System Shortcuts Reference
 
 All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + <kbd>K</kbd>**:
