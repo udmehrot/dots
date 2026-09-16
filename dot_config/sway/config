@@ -19,7 +19,7 @@ set $term wezterm
 set $menu wofi --show drun
 
 # System Font
-font pango:IoskeleyMono Nerd Font Mono 10
+font pango:IoskeleyMono Nerd Font Mono 12
 
 
 ### Output configuration
@@ -27,8 +27,8 @@ font pango:IoskeleyMono Nerd Font Mono 10
 # Wallpaper is managed dynamically by awww
 #
 # Monitor arrangement: External monitor (DP-2) directly above laptop screen (eDP-1)
-output DP-2 scale 1.25 position 0 0
-output eDP-1 scale 1.0 position 0 1728
+output DP-2 mode 3840x2160@60Hz scale 1.0 position 0 0
+output eDP-1 scale 1.0 position 0 2160
 
 
 # Clamshell mode: disable laptop internal display when lid is closed
@@ -47,9 +47,9 @@ exec_always bash -c 'killall swaybg 2>/dev/null; pgrep -x awww-daemon >/dev/null
 
 ### Idle configuration
 exec swayidle -w \
-         timeout 300 'swaylock -f -c 191724' \
+         timeout 300 '/home/ud/.local/bin/lockscreen' \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep 'swaylock -f -c 191724'
+         before-sleep '/home/ud/.local/bin/lockscreen'
 
 ### Input configuration
 #
@@ -121,6 +121,10 @@ bindgesture pinch:4:inward floating toggle
 
     # Power menu (Wofi)
     bindsym $mod+Shift+e exec /home/ud/.local/bin/wofi-power
+
+    # Lock screen manually (Super + Escape or Super + Alt + L)
+    bindsym $mod+Escape exec /home/ud/.local/bin/lockscreen
+    bindsym $mod+Mod1+l exec /home/ud/.local/bin/lockscreen
 
     # Wallpaper switcher (Wofi + awww)
     bindsym $mod+Shift+b exec /home/ud/.local/bin/wofi-wallpaper
@@ -351,6 +355,7 @@ for_window [app_id="nm-connection-editor"] floating enable
 for_window [app_id="pavucontrol"] floating enable, resize set width 760 px height 520 px, move position center
 for_window [app_id="org.pulseaudio.pavucontrol"] floating enable, resize set width 760 px height 520 px, move position center
 for_window [app_id="swappy"] floating enable, resize set width 1050 px height 720 px, move position center, border pixel 3
+for_window [class="com-nuvio-app-MainKt"] inhibit_idle visible, border none
 
 
 
@@ -360,9 +365,9 @@ for_window [app_id="swappy"] floating enable, resize set width 1050 px height 72
 exec_always {
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-    gsettings set org.gnome.desktop.interface font-name 'Ioskeley Mono 11'
-    gsettings set org.gnome.desktop.interface monospace-font-name 'IoskeleyMono Nerd Font Mono 11'
-    gsettings set org.gnome.desktop.interface document-font-name 'Ioskeley Mono 11'
+    gsettings set org.gnome.desktop.interface font-name 'Ioskeley Mono 13'
+    gsettings set org.gnome.desktop.interface monospace-font-name 'IoskeleyMono Nerd Font Mono 13'
+    gsettings set org.gnome.desktop.interface document-font-name 'Ioskeley Mono 13'
 }
 
 #

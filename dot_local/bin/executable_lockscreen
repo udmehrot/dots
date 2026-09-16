@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# lockscreen - Lock the Wayland session with a random wallpaper from ~/Pictures
+# Fully integrated with Sway, swayidle, swaylock, and the Rosé Pine color scheme.
+# ==============================================================================
+
+set -euo pipefail
+
+PICTURES_DIR="${HOME}/Pictures"
+
+# Prevent launching multiple instances if screen is already locked
+if pgrep -x swaylock >/dev/null 2>&1; then
+    exit 0
+fi
+
+MULTI_MONITOR=false
+DRY_RUN=false
+CUSTOM_IMG=""
+
+show_help() {
+    cat <<EOF
+Usage: $(basename "$0") [OPTIONS] [IMAGE_PATH]
+
+Lock the screen using swaylock with a random wallpaper from ~/Pictures.
+
+Options:
+  -m, --multi     Pick a distinct random wallpaper for each connected monitor
+  -n, --dry-run   Print the selected wallpaper(s) and swaylock command without locking
+  -h, --help      Show this help message
+
+Examples:
+  $(basename "$0")                     # Lock screen with a random wallpaper across all monitors
+  $(basename "$0") --multi             # Lock screen with distinct random wallpapers per monitor
+  $(basename "$0") /path/to/image.png  # Lock screen with a specific wallpaper
+EOF
+}
+
+# Parse command line arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -m|--multi)
+            MULTI_MONITOR=true
+            shift
+            ;;
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            if [[ -f "$1" ]]; then
+                CUSTOM_IMG="$1"
+            else
+                echo "Warning: File '$1' not found, falling back to random wallpaper." >&2
+            fi
+            shift
+            ;;
+    esac
+done
+
+# Function to pick a random image from ~/Pictures (ignoring Screenshots directory)
+get_random_image() {
+    if [[ -d "$PICTURES_DIR" ]]; then
+        find "$PICTURES_DIR" -path "$PICTURES_DIR/Screenshots" -prune -o -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) -print 2>/dev/null | shuf -n 1
+    fi
+}
+
+swaylock_args=("-f")
+
+if [[ -n "$CUSTOM_IMG" ]]; then
+    swaylock_args+=("-i" "$CUSTOM_IMG" "-s" "fill")
+elif [[ "$MULTI_MONITOR" == true ]] && command -v swaymsg >/dev/null 2>&1; then
+    # Get active Sway output display names
+    outputs=$(swaymsg -t get_outputs 2>/dev/null | grep -oP '"name":\s*"\K[^"]+' || true)
+    if [[ -n "$outputs" ]]; then
+        for out in $outputs; do
+            img=$(get_random_image)
+            if [[ -n "$img" && -f "$img" ]]; then
+                swaylock_args+=("-i" "${out}:${img}")
+            fi
+        done
+        swaylock_args+=("-s" "fill")
+    fi
+fi
+
+# Fallback: single random wallpaper applied across all screens
+if [[ ${#swaylock_args[@]} -le 1 ]]; then
+    random_img=$(get_random_image)
+    if [[ -n "$random_img" && -f "$random_img" ]]; then
+        swaylock_args+=("-i" "$random_img" "-s" "fill")
+    else
+        # Fallback to Rosé Pine dark background if no images exist
+        swaylock_args+=("-c" "191724")
+    fi
+fi
+
+if [[ "$DRY_RUN" == true ]]; then
+    echo "swaylock ${swaylock_args[*]}"
+    exit 0
+fi
+
+exec swaylock "${swaylock_args[@]}"

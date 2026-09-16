@@ -1,0 +1,47 @@
+# Swaylock Configuration - Rosé Pine Theme
+# Loaded automatically by swaylock from ~/.config/swaylock/config
+
+# General settings
+daemonize
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+scaling=fill
+color=191724
+
+# Typography
+font=IoskeleyMono Nerd Font Mono
+font-size=16
+
+# Indicator dimensions
+indicator-radius=72
+indicator-thickness=8
+
+# Inner circle (translucent Rosé Pine base)
+inside-color=191724cc
+inside-clear-color=191724cc
+inside-caps-lock-color=191724cc
+inside-ver-color=191724cc
+inside-wrong-color=191724cc
+
+# Outer ring
+ring-color=ebbcba
+ring-clear-color=f6c177
+ring-caps-lock-color=f6c177
+ring-ver-color=9ccfd8
+ring-wrong-color=eb6f92
+
+# Keypress and backspace highlights
+key-hl-color=ebbcba
+bs-hl-color=eb6f92
+
+# Text labels inside indicator
+text-color=e0def4
+text-clear-color=f6c177
+text-caps-lock-color=f6c177
+text-ver-color=9ccfd8
+text-wrong-color=eb6f92
+
+# Layout and separator styling
+line-uses-inside
+separator-color=00000000

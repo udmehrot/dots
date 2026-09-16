@@ -25,6 +25,7 @@ add_entry "Super + Shift + W" "Wi-Fi Network Selector (nmtui)" '/home/ud/.local/
 add_entry "Super + Shift + B" "Wallpaper Switcher (awww)" '/home/ud/.local/bin/wofi-wallpaper'
 add_entry "Super + Ctrl + B" "Set Random Wallpaper (awww)" '/home/ud/.local/bin/wofi-wallpaper random'
 add_entry "Super + Shift + E" "Power / Session Menu" '/home/ud/.local/bin/wofi-power'
+add_entry "Super + Escape (or Super+Alt+L)" "Lock Screen (Random Wallpaper)" '/home/ud/.local/bin/lockscreen'
 add_entry "Super + N / Super + Shift + N" "Toggle Notification Center (SwayNC)" 'swaync-client -t -sw'
 
 # --- Window Management ---
