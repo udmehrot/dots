@@ -44,6 +44,11 @@ window {
     color: #e0def4;
 }
 
+.drun-generic-name {
+    margin: 0px;
+    padding: 0px;
+}
+
 #entry {
     padding: 6px 10px;
     border-radius: 8px;

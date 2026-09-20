@@ -49,13 +49,13 @@
 }
 
 /* Side Tool Panel */
-#painting-box {
+#paint-window #painting-box {
     background-color: #12101a;
     border-right: 2px solid #393552;
     padding: 10px 8px;
 }
 
-#painting-box label {
+#paint-window #painting-box label {
     color: #908caa;
     font-size: 11px;
     font-weight: bold;
@@ -64,8 +64,8 @@
 }
 
 /* Tool Buttons (Brush, Text, Rectangle, Ellipse, Arrow, Blur) */
-#painting-box radiobutton,
-#brush, #text, #rectangle, #ellipse, #arrow, #blur {
+#paint-window #painting-box radiobutton,
+#paint-window #brush, #paint-window #text, #paint-window #rectangle, #paint-window #ellipse, #paint-window #arrow, #paint-window #blur {
     background-color: #1c1926;
     border: 1px solid #393552;
     border-radius: 8px;
@@ -75,32 +75,32 @@
     transition: all 120ms ease-in-out;
 }
 
-#painting-box radiobutton:hover,
-#brush:hover, #text:hover, #rectangle:hover, #ellipse:hover, #arrow:hover, #blur:hover {
+#paint-window #painting-box radiobutton:hover,
+#paint-window #brush:hover, #paint-window #text:hover, #paint-window #rectangle:hover, #paint-window #ellipse:hover, #paint-window #arrow:hover, #paint-window #blur:hover {
     background-color: #2b2738;
     color: #ebbcba;
     border-color: #ebbcba;
 }
 
-#painting-box radiobutton:checked,
-#brush:checked, #text:checked, #rectangle:checked, #ellipse:checked, #arrow:checked, #blur:checked {
+#paint-window #painting-box radiobutton:checked,
+#paint-window #brush:checked, #paint-window #text:checked, #paint-window #rectangle:checked, #paint-window #ellipse:checked, #paint-window #arrow:checked, #paint-window #blur:checked {
     background-color: #ebbcba;
     color: #12101a;
     border-color: #ebbcba;
     box-shadow: 0 2px 8px rgba(235, 188, 186, 0.45);
 }
 
-#painting-box radiobutton indicator,
-#brush indicator, #text indicator, #rectangle indicator, #ellipse indicator, #arrow indicator, #blur indicator {
+#paint-window #painting-box radiobutton indicator,
+#paint-window #brush indicator, #paint-window #text indicator, #paint-window #rectangle indicator, #paint-window #ellipse indicator, #paint-window #arrow indicator, #paint-window #blur indicator {
     opacity: 0;
     min-width: 0;
     min-height: 0;
 }
 
 /* Stepper Buttons (Minus, Plus) */
-#minus-button, #plus-button,
-#text-minus-button, #text-plus-button,
-#transparency-minus-button, #transparency-plus-button {
+#paint-window #minus-button, #paint-window #plus-button,
+#paint-window #text-minus-button, #paint-window #text-plus-button,
+#paint-window #transparency-minus-button, #paint-window #transparency-plus-button {
     background-color: #1c1926;
     border: 1px solid #393552;
     border-radius: 6px;
@@ -109,15 +109,15 @@
     margin: 2px;
 }
 
-#minus-button:hover, #plus-button:hover,
-#text-minus-button:hover, #text-plus-button:hover,
-#transparency-minus-button:hover, #transparency-plus-button:hover {
+#paint-window #minus-button:hover, #paint-window #plus-button:hover,
+#paint-window #text-minus-button:hover, #paint-window #text-plus-button:hover,
+#paint-window #transparency-minus-button:hover, #paint-window #transparency-plus-button:hover {
     background-color: #ebbcba;
     color: #12101a;
 }
 
 /* Number Values */
-#stroke-size-button, #text-size-button, #transparency-button {
+#paint-window #stroke-size-button, #paint-window #text-size-button, #paint-window #transparency-button {
     background-color: #12101a;
     border: 1px solid #393552;
     border-radius: 6px;
@@ -128,7 +128,7 @@
 }
 
 /* Toggle Buttons */
-#fill-shape-toggle-button, #transparent-toggle-button {
+#paint-window #fill-shape-toggle-button, #paint-window #transparent-toggle-button {
     background-color: #1c1926;
     border: 1px solid #393552;
     border-radius: 6px;
@@ -137,14 +137,14 @@
     margin: 4px 2px;
 }
 
-#fill-shape-toggle-button:checked, #transparent-toggle-button:checked {
+#paint-window #fill-shape-toggle-button:checked, #paint-window #transparent-toggle-button:checked {
     background-color: #31748f;
     color: #12101a;
     border-color: #31748f;
 }
 
 /* Color Palette Buttons with High-Contrast Rings */
-#color-red-button {
+#paint-window #color-red-button {
     background-color: #eb6f92;
     border-radius: 50%;
     min-width: 22px;
@@ -153,12 +153,12 @@
     border: 2px solid #12101a;
 }
 
-#color-red-button:checked {
+#paint-window #color-red-button:checked {
     border-color: #e0def4;
     box-shadow: 0 0 0 2px #eb6f92;
 }
 
-#color-green-button {
+#paint-window #color-green-button {
     background-color: #31748f;
     border-radius: 50%;
     min-width: 22px;
@@ -167,12 +167,12 @@
     border: 2px solid #12101a;
 }
 
-#color-green-button:checked {
+#paint-window #color-green-button:checked {
     border-color: #e0def4;
     box-shadow: 0 0 0 2px #31748f;
 }
 
-#color-blue-button {
+#paint-window #color-blue-button {
     background-color: #9ccfd8;
     border-radius: 50%;
     min-width: 22px;
@@ -181,12 +181,12 @@
     border: 2px solid #12101a;
 }
 
-#color-blue-button:checked {
+#paint-window #color-blue-button:checked {
     border-color: #e0def4;
     box-shadow: 0 0 0 2px #9ccfd8;
 }
 
-#color-custom-button {
+#paint-window #color-custom-button {
     background-color: #ebbcba;
     border-radius: 50%;
     min-width: 22px;
@@ -195,13 +195,13 @@
     border: 2px solid #12101a;
 }
 
-#color-custom-button:checked {
+#paint-window #color-custom-button:checked {
     border-color: #e0def4;
     box-shadow: 0 0 0 2px #ebbcba;
 }
 
 /* Canvas Area: Elevated dark studio stage with distinct bounding border */
-#painting-area {
+#paint-window #painting-area {
     background-color: #060509;
     border: 2px solid #393552;
     margin: 8px;
