@@ -817,7 +817,7 @@ Scope {
                 right: true
             }
 
-            implicitHeight: 34
+            implicitHeight: 40
             color: "transparent"
 
             Item {
@@ -825,8 +825,8 @@ Scope {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.leftMargin: 12
-                    anchors.rightMargin: 12
+                    anchors.leftMargin: 14
+                    anchors.rightMargin: 14
                     spacing: 12
 
                     // ==========================================
@@ -838,7 +838,7 @@ Scope {
 
                         // Workspaces
                         RowLayout {
-                            spacing: 4
+                            spacing: 5
 
                             Repeater {
                                 model: I3.workspaces
@@ -850,9 +850,9 @@ Scope {
                                     readonly property var wsApps: rootScope.getWorkspaceApps(modelData.name)
                                     readonly property bool showIcons: wsApps.length > 0
 
-                                    implicitWidth: Math.max(28, wsContentRow.implicitWidth + 14)
-                                    height: 24
-                                    radius: 6
+                                    implicitWidth: Math.max(32, wsContentRow.implicitWidth + 16)
+                                    height: 30
+                                    radius: 7
 
                                     color: {
                                         if (modelData.focused) return "#ebbcba" // Rose
@@ -874,7 +874,7 @@ Scope {
                                             id: wsText
                                             text: modelData.name
                                             font.family: "IoskeleyMono Nerd Font Mono"
-                                            font.pixelSize: 12
+                                            font.pixelSize: 14
                                             font.bold: modelData.focused
                                             color: modelData.focused ? "#191724" : "#e0def4"
                                         }
@@ -888,13 +888,13 @@ Scope {
 
                                                 Item {
                                                     required property var modelData
-                                                    width: 16
-                                                    height: 16
+                                                    width: 19
+                                                    height: 19
 
                                                     IconImage {
                                                         id: appIconImg
                                                         anchors.centerIn: parent
-                                                        implicitSize: 15
+                                                        implicitSize: 18
                                                         source: modelData.icon || ""
                                                         visible: modelData.icon !== "" && status === Image.Ready
                                                     }
@@ -903,7 +903,7 @@ Scope {
                                                         anchors.centerIn: parent
                                                         visible: !modelData.icon || modelData.icon === "" || appIconImg.status !== Image.Ready
                                                         font.family: "IoskeleyMono Nerd Font Mono"
-                                                        font.pixelSize: 13
+                                                        font.pixelSize: 15
                                                         color: wsPill.modelData.focused ? "#191724" : "#e0def4"
                                                         text: modelData.glyph || "󰣆"
                                                     }
@@ -926,9 +926,9 @@ Scope {
                         // Weather Pill
                         Rectangle {
                             id: weatherPill
-                            height: 24
-                            implicitWidth: weatherRow.implicitWidth + 16
-                            radius: 6
+                            height: 30
+                            implicitWidth: weatherRow.implicitWidth + 18
+                            radius: 7
                             color: weatherMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                             Behavior on color {
@@ -942,14 +942,14 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 16
                                     color: "#f6c177" // Gold
                                     text: rootScope.weatherInfo.icon
                                 }
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 12
+                                    font.pixelSize: 14
                                     font.weight: Font.Medium
                                     color: "#e0def4" // Text
                                     text: rootScope.weatherInfo.temp
@@ -962,8 +962,10 @@ Scope {
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    weatherMenu.visible = !weatherMenu.visible
                                     if (weatherMenu.visible) {
+                                        weatherMenu.visible = false
+                                    } else if (Date.now() - weatherMenu.lastCloseTime > 200) {
+                                        weatherMenu.visible = true
                                         weatherProc.running = true
                                     }
                                 }
@@ -977,6 +979,12 @@ Scope {
                                 anchor.gravity: Edges.Bottom
                                 anchor.margins.top: 6
                                 color: "transparent"
+                                grabFocus: true
+
+                                property real lastCloseTime: 0
+                                onVisibleChanged: {
+                                    if (!visible) lastCloseTime = Date.now()
+                                }
 
                                 implicitWidth: 330
                                 implicitHeight: 310
@@ -1225,9 +1233,9 @@ Scope {
                     Rectangle {
                         id: clockPill
                         Layout.alignment: Qt.AlignCenter
-                        height: 24
-                        implicitWidth: clockRow.implicitWidth + 20
-                        radius: 6
+                        height: 30
+                        implicitWidth: clockRow.implicitWidth + 24
+                        radius: 7
                         color: clockMouse.containsMouse ? "#26233a" : "#1f1d2e" // Surface
 
                         Behavior on color {
@@ -1237,11 +1245,11 @@ Scope {
                         RowLayout {
                             id: clockRow
                             anchors.centerIn: parent
-                            spacing: 8
+                            spacing: 10
 
                             Text {
                                 font.family: "IoskeleyMono Nerd Font Mono"
-                                font.pixelSize: 13
+                                font.pixelSize: 16
                                 color: "#c4a7e7" // Iris
                                 text: "󰃮"
                             }
@@ -1249,14 +1257,14 @@ Scope {
                             Text {
                                 id: dateText
                                 font.family: "IoskeleyMono Nerd Font Mono"
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                                 font.weight: Font.Medium
                                 color: "#e0def4" // Text
                             }
 
                             Text {
                                 font.family: "IoskeleyMono Nerd Font Mono"
-                                font.pixelSize: 13
+                                font.pixelSize: 16
                                 color: "#9ccfd8" // Foam
                                 text: "󰥔"
                             }
@@ -1264,7 +1272,7 @@ Scope {
                             Text {
                                 id: timeText
                                 font.family: "IoskeleyMono Nerd Font Mono"
-                                font.pixelSize: 12
+                                font.pixelSize: 14
                                 font.bold: true
                                 color: "#ebbcba" // Rose
                             }
@@ -1288,8 +1296,12 @@ Scope {
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                rootScope.resetToToday()
-                                calMenu.visible = !calMenu.visible
+                                if (calMenu.visible) {
+                                    calMenu.visible = false
+                                } else if (Date.now() - calMenu.lastCloseTime > 200) {
+                                    rootScope.resetToToday()
+                                    calMenu.visible = true
+                                }
                             }
                         }
 
@@ -1301,6 +1313,12 @@ Scope {
                             anchor.gravity: Edges.Bottom
                             anchor.margins.top: 6
                             color: "transparent"
+                            grabFocus: true
+
+                            property real lastCloseTime: 0
+                            onVisibleChanged: {
+                                if (!visible) lastCloseTime = Date.now()
+                            }
 
                             implicitWidth: 320
                             implicitHeight: 330
@@ -1525,14 +1543,14 @@ Scope {
                                 Rectangle {
                                     id: trayPill
                                     required property var modelData
-                                    width: 24
-                                    height: 24
-                                    radius: 6
+                                    width: 30
+                                    height: 30
+                                    radius: 7
                                     color: trayMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                                     IconImage {
                                         anchors.centerIn: parent
-                                        implicitSize: 16
+                                        implicitSize: 19
                                         source: trayPill.modelData.icon || ""
                                     }
 
@@ -1557,9 +1575,9 @@ Scope {
                         // Speaker Volume (PipeWire)
                         Rectangle {
                             id: volPill
-                            height: 24
-                            implicitWidth: volRow.implicitWidth + 16
-                            radius: 6
+                            height: 30
+                            implicitWidth: volRow.implicitWidth + 18
+                            radius: 7
                             color: volMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                             Behavior on color {
@@ -1574,7 +1592,7 @@ Scope {
                                 Text {
                                     id: volIcon
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 16
                                     color: {
                                         if (audioMgr.isMuted) return "#eb6f92" // Love
                                         return "#9ccfd8" // Foam
@@ -1591,7 +1609,7 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 12
+                                    font.pixelSize: 14
                                     font.weight: Font.Medium
                                     color: "#e0def4" // Text
                                     text: {
@@ -1616,8 +1634,12 @@ Scope {
                                     if (mouse.button === Qt.RightButton) {
                                         audioProc.exec(["wpctl", "set-mute", "@DEFAULT_AUDIO_SINK@", "toggle"])
                                     } else {
-                                        wpctlStatusProc.running = true
-                                        audioMenu.visible = !audioMenu.visible
+                                        if (audioMenu.visible) {
+                                            audioMenu.visible = false
+                                        } else if (Date.now() - audioMenu.lastCloseTime > 200) {
+                                            wpctlStatusProc.running = true
+                                            audioMenu.visible = true
+                                        }
                                     }
                                 }
                                 onWheel: wheel => {
@@ -1634,6 +1656,12 @@ Scope {
                                 anchor.gravity: Edges.Bottom
                                 anchor.margins.top: 6
                                 color: "transparent"
+                                grabFocus: true
+
+                                property real lastCloseTime: 0
+                                onVisibleChanged: {
+                                    if (!visible) lastCloseTime = Date.now()
+                                }
 
                                 implicitWidth: 390
                                 implicitHeight: 560
@@ -1651,9 +1679,9 @@ Scope {
                         // Bluetooth
                         Rectangle {
                             id: btPill
-                            height: 24
-                            implicitWidth: btRow.implicitWidth + 16
-                            radius: 6
+                            height: 30
+                            implicitWidth: btRow.implicitWidth + 18
+                            radius: 7
                             color: btMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                             Behavior on color {
@@ -1677,7 +1705,7 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 16
                                     color: {
                                         if (!btPill.isEnabled) return "#6e6a86" // Muted
                                         if (btPill.connectedDevice) return "#c4a7e7" // Iris
@@ -1692,7 +1720,7 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 12
+                                    font.pixelSize: 14
                                     font.weight: Font.Medium
                                     color: btPill.isEnabled ? "#e0def4" : "#6e6a86"
                                     text: {
@@ -1719,8 +1747,12 @@ Scope {
                                             Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled
                                         }
                                     } else {
-                                        rootScope.refreshBluetooth()
-                                        btMenu.visible = !btMenu.visible
+                                        if (btMenu.visible) {
+                                            btMenu.visible = false
+                                        } else if (Date.now() - btMenu.lastCloseTime > 200) {
+                                            rootScope.refreshBluetooth()
+                                            btMenu.visible = true
+                                        }
                                     }
                                 }
                             }
@@ -1733,6 +1765,12 @@ Scope {
                                 anchor.gravity: Edges.Bottom
                                 anchor.margins.top: 6
                                 color: "transparent"
+                                grabFocus: true
+
+                                property real lastCloseTime: 0
+                                onVisibleChanged: {
+                                    if (!visible) lastCloseTime = Date.now()
+                                }
 
                                 implicitWidth: 320
                                 implicitHeight: Math.max(160, (rootScope.btDevices.length * 36) + 140)
@@ -1943,9 +1981,9 @@ Scope {
                         // WiFi (NetworkManager)
                         Rectangle {
                             id: wifiPill
-                            height: 24
-                            implicitWidth: wifiRow.implicitWidth + 16
-                            radius: 6
+                            height: 30
+                            implicitWidth: wifiRow.implicitWidth + 18
+                            radius: 7
                             color: wifiMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                             Behavior on color {
@@ -1976,7 +2014,7 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 16
                                     color: {
                                         if (!wifiPill.isWifiEnabled) return "#6e6a86" // Muted
                                         if (wifiPill.activeWifi) return "#9ccfd8" // Foam
@@ -1995,7 +2033,7 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 12
+                                    font.pixelSize: 14
                                     font.weight: Font.Medium
                                     color: wifiPill.isWifiEnabled ? "#e0def4" : "#6e6a86"
                                     text: {
@@ -2020,8 +2058,12 @@ Scope {
                                     if (mouse.button === Qt.RightButton) {
                                         Networking.wifiEnabled = !Networking.wifiEnabled
                                     } else {
-                                        rootScope.refreshWifi()
-                                        wifiMenu.visible = !wifiMenu.visible
+                                        if (wifiMenu.visible) {
+                                            wifiMenu.visible = false
+                                        } else if (Date.now() - wifiMenu.lastCloseTime > 200) {
+                                            rootScope.refreshWifi()
+                                            wifiMenu.visible = true
+                                        }
                                     }
                                 }
                             }
@@ -2034,6 +2076,12 @@ Scope {
                                 anchor.gravity: Edges.Bottom
                                 anchor.margins.top: 6
                                 color: "transparent"
+                                grabFocus: true
+
+                                property real lastCloseTime: 0
+                                onVisibleChanged: {
+                                    if (!visible) lastCloseTime = Date.now()
+                                }
 
                                 implicitWidth: 320
                                 implicitHeight: Math.max(180, (rootScope.wifiNetworks.length * 34) + 140)
@@ -2248,9 +2296,9 @@ Scope {
                         Rectangle {
                             id: batPill
                             visible: UPower.displayDevice && UPower.displayDevice.isPresent
-                            height: 24
-                            implicitWidth: batRow.implicitWidth + 16
-                            radius: 6
+                            height: 30
+                            implicitWidth: batRow.implicitWidth + 18
+                            radius: 7
                             color: batMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                             Behavior on color {
@@ -2265,7 +2313,7 @@ Scope {
                                 Text {
                                     id: batIcon
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 16
                                     color: {
                                         if (!UPower.displayDevice) return "#908caa" // Subtle
                                         var pct = UPower.displayDevice.percentage
@@ -2295,7 +2343,7 @@ Scope {
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 12
+                                    font.pixelSize: 14
                                     font.weight: Font.Medium
                                     color: "#e0def4" // Text
                                     text: {
@@ -2318,9 +2366,9 @@ Scope {
                         // Notification Center (SwayNC)
                         Rectangle {
                             id: notiPill
-                            height: 24
-                            implicitWidth: notiRow.implicitWidth + (rootScope.notiCount > 0 ? 14 : 16)
-                            radius: 6
+                            height: 30
+                            implicitWidth: notiRow.implicitWidth + (rootScope.notiCount > 0 ? 16 : 18)
+                            radius: 7
                             color: notiMouse.containsMouse ? "#26233a" : "#1f1d2e"
 
                             Behavior on color {
@@ -2330,11 +2378,11 @@ Scope {
                             RowLayout {
                                 id: notiRow
                                 anchors.centerIn: parent
-                                spacing: 5
+                                spacing: 6
 
                                 Text {
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 14
+                                    font.pixelSize: 16
                                     color: {
                                         if (rootScope.notiDnd) return "#eb6f92" // Love (DND)
                                         if (rootScope.notiCount > 0) return "#ebbcba" // Rose
@@ -2350,16 +2398,16 @@ Scope {
                                 // Unread Count Badge
                                 Rectangle {
                                     visible: rootScope.notiCount > 0
-                                    height: 16
-                                    implicitWidth: Math.max(16, countText.implicitWidth + 8)
-                                    radius: 8
+                                    height: 18
+                                    implicitWidth: Math.max(18, countText.implicitWidth + 8)
+                                    radius: 9
                                     color: rootScope.notiDnd ? "#eb6f92" : "#ebbcba"
 
                                     Text {
                                         id: countText
                                         anchors.centerIn: parent
                                         font.family: "IoskeleyMono Nerd Font Mono"
-                                        font.pixelSize: 10
+                                        font.pixelSize: 11
                                         font.bold: true
                                         color: "#191724" // Dark contrast on badge
                                         text: rootScope.notiCount
@@ -2369,7 +2417,7 @@ Scope {
                                 Text {
                                     visible: rootScope.notiCount === 0 && rootScope.notiDnd
                                     font.family: "IoskeleyMono Nerd Font Mono"
-                                    font.pixelSize: 11
+                                    font.pixelSize: 13
                                     font.weight: Font.Medium
                                     color: "#eb6f92"
                                     text: "DND"
