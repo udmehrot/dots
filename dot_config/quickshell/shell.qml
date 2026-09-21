@@ -15,6 +15,13 @@ Scope {
     id: rootScope
 
     // =========================================================================
+    // Power & Session Daemon (Lock, Reboot, Shutdown, IPC)
+    // =========================================================================
+    PowerDaemon {
+        id: powerDaemon
+    }
+
+    // =========================================================================
     // Workspace Apps State Manager
     // =========================================================================
     property var workspaceApps: ({})
@@ -823,18 +830,15 @@ Scope {
             Item {
                 anchors.fill: parent
 
+                // ==========================================
+                // LEFT: Workspaces
+                // ==========================================
                 RowLayout {
-                    anchors.fill: parent
+                    id: leftBarRow
+                    anchors.left: parent.left
                     anchors.leftMargin: 14
-                    anchors.rightMargin: 14
-                    spacing: 12
-
-                    // ==========================================
-                    // LEFT: Workspaces & Weather
-                    // ==========================================
-                    RowLayout {
-                        spacing: 8
-                        Layout.alignment: Qt.AlignVCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 8
 
                         // Workspaces
                         RowLayout {
@@ -922,6 +926,16 @@ Scope {
                                 }
                             }
                         }
+                    }
+
+                    // ==========================================
+                    // CENTER: Weather & Calendar/Clock (True Display Center)
+                    // ==========================================
+                    RowLayout {
+                        id: centerBarRow
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        spacing: 8
 
                         // Weather Pill
                         Rectangle {
@@ -1220,19 +1234,10 @@ Scope {
                                 }
                             }
                         }
-                    }
 
-                    // Spacer
-                    Item {
-                        Layout.fillWidth: true
-                    }
-
-                    // ==========================================
-                    // CENTER: Clock / Date / Calendar
-                    // ==========================================
+                    // Clock / Date / Calendar Pill
                     Rectangle {
                         id: clockPill
-                        Layout.alignment: Qt.AlignCenter
                         height: 30
                         implicitWidth: clockRow.implicitWidth + 24
                         radius: 7
@@ -1519,18 +1524,17 @@ Scope {
                             }
                         }
                     }
+                }
 
-                    // Spacer
-                    Item {
-                        Layout.fillWidth: true
-                    }
-
-                    // ==========================================
-                    // RIGHT: Tray, Volume, Bluetooth, WiFi, Battery
-                    // ==========================================
-                    RowLayout {
-                        spacing: 8
-                        Layout.alignment: Qt.AlignVCenter
+                // ==========================================
+                // RIGHT: Tray, Volume, Bluetooth, WiFi, Battery, Power, SwayNC
+                // ==========================================
+                RowLayout {
+                    id: rightBarRow
+                    anchors.right: parent.right
+                    anchors.rightMargin: 14
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 8
 
                         // System Tray
                         RowLayout {
@@ -2363,6 +2367,90 @@ Scope {
                             }
                         }
 
+                        // Power & Session Menu
+                        Rectangle {
+                            id: powerPill
+                            height: 30
+                            width: 30
+                            radius: 7
+                            color: powerMouse.containsMouse ? "#26233a" : "#1f1d2e"
+
+                            Behavior on color {
+                                ColorAnimation { duration: 120 }
+                            }
+
+                            Text {
+                                anchors.centerIn: parent
+                                font.family: "IoskeleyMono Nerd Font Mono"
+                                font.pixelSize: 15
+                                color: powerMouse.containsMouse ? "#eb6f92" : "#ebbcba"
+                                text: "󰐥"
+
+                                Behavior on color {
+                                    ColorAnimation { duration: 120 }
+                                }
+                            }
+
+                            MouseArea {
+                                id: powerMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    if (powerMenu.visible) {
+                                        powerMenu.visible = false
+                                    } else if (Date.now() - powerMenu.lastCloseTime > 200) {
+                                        powerWidget.pendingAction = ""
+                                        powerMenu.visible = true
+                                    }
+                                }
+                            }
+
+                            Connections {
+                                target: powerDaemon
+                                function onMenuToggleRequested() {
+                                    if (powerMenu.visible) {
+                                        powerMenu.visible = false
+                                    } else {
+                                        powerWidget.pendingAction = ""
+                                        powerMenu.visible = true
+                                    }
+                                }
+                            }
+
+                            PopupWindow {
+                                id: powerMenu
+                                anchor.window: barWindow
+                                anchor.item: powerPill
+                                anchor.edges: Edges.Bottom
+                                anchor.gravity: Edges.Bottom
+                                anchor.margins.top: 6
+                                color: "transparent"
+                                grabFocus: true
+
+                                property real lastCloseTime: 0
+                                onVisibleChanged: {
+                                    if (!visible) {
+                                        lastCloseTime = Date.now()
+                                        powerWidget.pendingAction = ""
+                                    }
+                                }
+
+                                implicitWidth: 260
+                                implicitHeight: powerWidget.implicitHeight
+
+                                visible: false
+
+                                PowerWidget {
+                                    id: powerWidget
+                                    anchors.fill: parent
+                                    daemon: powerDaemon
+                                    showCloseButton: false
+                                    onCloseRequested: powerMenu.visible = false
+                                }
+                            }
+                        }
+
                         // Notification Center (SwayNC)
                         Rectangle {
                             id: notiPill
@@ -2450,4 +2538,3 @@ Scope {
             }
         }
     }
-}

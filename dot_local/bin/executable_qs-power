@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# qs-power - Quickshell Power Daemon CLI helper & fallback
+# ==============================================================================
+set -euo pipefail
+
+ACTION="${1:-menu}"
+
+call_ipc() {
+    quickshell ipc call power "$1" 2>/dev/null
+}
+
+case "$ACTION" in
+    lock)
+        call_ipc lock || /home/ud/.local/bin/lockscreen
+        ;;
+    reboot)
+        call_ipc reboot || systemctl reboot
+        ;;
+    shutdown|poweroff)
+        call_ipc shutdown || systemctl poweroff
+        ;;
+    suspend)
+        call_ipc suspend || systemctl suspend
+        ;;
+    logout)
+        call_ipc logout || swaymsg exit
+        ;;
+    toggle|menu)
+        call_ipc toggle || /home/ud/.local/bin/wofi-power
+        ;;
+    -h|--help|help)
+        cat <<EOF
+Usage: $(basename "$0") [COMMAND]
+
+Commands:
+  lock       Lock the session (swaylock + Rosé Pine wallpaper)
+  reboot     Restart / reboot the machine
+  shutdown   Power off / shut down the machine
+  suspend    Suspend system into sleep
+  logout     Exit the current Sway session
+  menu       Toggle the Quickshell Power & Session menu (default)
+EOF
+        ;;
+    *)
+        echo "Unknown action: '$ACTION'. Use --help for usage." >&2
+        exit 1
+        ;;
+esac
