@@ -1,15 +1,15 @@
-# 🌸 Rosé Pine Sway & Quickshell Setup — Arch Linux
+# 🌸 Rosé Pine Sway & Waybar Setup — Arch Linux
 
-A modern, fluid, and cohesive Wayland desktop environment powered by **Sway**, **Quickshell**, **SwayNC**, and **Wofi**, fully styled with the **Rosé Pine** color palette and **Ioskeley Mono** typography.
+A modern, fluid, and cohesive Wayland desktop environment powered by **Sway**, **Waybar**, **SwayNC**, and **Wofi**, fully styled with the **Rosé Pine** color palette and **Ioskeley Mono** typography.
 
 ---
 
 ## 📸 Desktop Overview
 
 * **Window Manager**: [Sway](https://swaywm.org/) (Wayland i3-compatible compositor)
-* **Status Bar**: [Quickshell](https://quickshell.outfoxxed.me/) (`shell.qml` with interactive native dropdowns for Volume Sinks, Bluetooth, Wi-Fi, Calendar, Weather, and Battery)
-* **Notification Daemon**: [SwayNotificationCenter](https://github.com/ErikReider/SwayNotificationCenter) (`swaync` with rich widgets & Rosé Pine CSS)
-* **App Launcher & Menus**: [Wofi](https://hg.sr.ht/~scoopta/wofi) (App launcher, Clipboard history, Wi-Fi manager, Power menu, Wallpaper selector, and System Shortcuts cheat sheet)
+* **Status Bar**: [Waybar](https://github.com/Alexays/Waybar) (Rosé Pine pills with real-time system monitors for Network throughput, CPU, Memory, Disk, plus interactive popups for Calendar & wttr.in Weather)
+* **Control Center & Notifications**: [SwayNotificationCenter](https://github.com/ErikReider/SwayNotificationCenter) (`swaync` Control Center with audio mixer, per-app volume sliders, backlight, Wi-Fi networks, Bluetooth devices, and screenshot tool)
+* **App Launcher & Menus**: [Wofi](https://hg.sr.ht/~scoopta/wofi) (App launcher, Clipboard history, Wi-Fi manager, Bluetooth manager, Power menu, Wallpaper selector, and System Shortcuts cheat sheet)
 * **Wallpaper Daemon**: [awww](https://github.com/LGFae/awww) (Smooth animated wallpaper transitions)
 * **Screenshot & Annotation**: [Swappy](https://github.com/jtheoof/swappy) + `grim` + `slurp` + `wl-clipboard` (High-contrast studio editor)
 * **Terminal**: [Foot](https://codeberg.org/dnkl/foot) & [WezTerm](https://wezfurlong.org/wezterm/)
@@ -36,8 +36,8 @@ sudo pacman -S --needed \
     polkit polkit-gnome \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
 
-# Terminals & Shells
-sudo pacman -S --needed foot wezterm zsh bash curl git jq
+# Status Bar, Terminals & Shells
+sudo pacman -S --needed waybar foot wezterm zsh bash curl git jq btop
 
 # Audio & Media Controls
 sudo pacman -S --needed \
@@ -55,7 +55,7 @@ sudo pacman -S --needed \
 
 # GTK Theming & Engines
 sudo pacman -S --needed \
-    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas
+    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas gtk-layer-shell
 ```
 
 ---
@@ -69,9 +69,8 @@ Install an AUR helper (such as `yay` or `paru`) and install the remaining compon
 git clone https://aur.archlinux.org/yay.git /tmp/yay
 cd /tmp/yay && makepkg -si && cd ~
 
-# Install Quickshell, SwayNC, Wofi, and Awww from AUR
+# Install SwayNC, Wofi, and Awww from AUR
 yay -S --needed \
-    quickshell \
     sway-notification-center \
     wofi \
     awww
@@ -156,7 +155,7 @@ sway
 
 You can run this exact desktop setup on **Ubuntu 26.04 LTS**. Because LTS repositories can sometimes lag behind the fast-moving Wayland ecosystem, follow these steps to install the latest tools via official PPAs, modern package managers, and standalone binaries.
 
-### 1. Add PPAs & Repositories for Latest Sway & Quickshell
+### 1. Add PPAs & Repositories for Latest Sway & WezTerm
 
 ```bash
 sudo apt update
@@ -167,10 +166,7 @@ sudo apt install -y software-properties-common curl gpg wget
 sudo add-apt-repository -y ppa:ubuntusway-dev/stable
 # Alternative: sudo add-apt-repository -y ppa:pgentili/sway
 
-# 2. PPA for Quickshell
-sudo add-apt-repository -y ppa:avengemedia/danklinux
-
-# 3. WezTerm Official APT Repository (Optional)
+# 2. WezTerm Official APT Repository (Optional)
 curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
 
@@ -184,13 +180,13 @@ sudo apt update
 ```bash
 sudo apt install -y \
     sway swaylock swayidle xwayland \
-    quickshell sway-notification-center wofi \
+    waybar sway-notification-center wofi btop \
     foot wezterm zsh bash curl git jq \
     pipewire pipewire-pulse wireplumber pavucontrol playerctl brightnessctl \
     network-manager bluez bluez-tools upower \
     grim slurp swappy wl-clipboard \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
-    libgtk-3-bin libgtk-4-bin gsettings-desktop-schemas
+    libgtk-3-bin libgtk-4-bin gsettings-desktop-schemas libgtk-layer-shell0
 ```
 
 ---
@@ -327,6 +323,7 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 ```
 ~/.local/share/chezmoi/
 ├── README.md                           # This guide
+├── OS.md                               # Comprehensive system configuration blueprint
 ├── dot_bashrc                          # Bash configuration
 ├── dot_bash_profile                    # Bash profile & Wayland environment
 ├── dot_zshenv                          # Zsh environment variables
@@ -334,10 +331,19 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 ├── dot_config/
 │   ├── sway/
 │   │   └── config                      # Sway window manager configuration
-│   ├── quickshell/
-│   │   └── shell.qml                   # Quickshell top bar & interactive applets
+│   ├── waybar/
+│   │   ├── config.jsonc                # Waybar top bar layout & system monitors
+│   │   ├── style.css                   # Waybar Rosé Pine CSS theme
+│   │   └── scripts/
+│   │       ├── executable_calendar_menu.py    # Compact interactive calendar popup
+│   │       ├── executable_weather_menu.py     # Live weather card & 3-day forecast
+│   │       ├── executable_weather.py          # wttr.in weather data provider & cache
+│   │       ├── executable_notifications.py    # SwayNC unread count streaming helper
+│   │       ├── executable_bluetooth_menu.py   # Standalone Bluetooth device popup
+│   │       ├── executable_wifi_menu.py        # Standalone Wi-Fi network popup
+│   │       └── executable_volume_menu.py      # Standalone volume & audio popup
 │   ├── swaync/
-│   │   ├── config.json                 # SwayNotificationCenter widget layout
+│   │   ├── config.json                 # SwayNotificationCenter Control Center layout
 │   │   └── style.css                   # SwayNC Rosé Pine CSS theme
 │   ├── wofi/
 │   │   ├── config                      # Wofi general settings
@@ -358,9 +364,12 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 └── dot_local/
     └── bin/
         ├── cliphist-daemon             # Background clipboard watcher
-        ├── wofi-clipboard              # Clipboard search and paste menu
-        ├── wofi-power                  # Power & session action menu
-        ├── wofi-shortcuts              # System shortcuts cheat sheet
-        ├── wofi-wallpaper              # Animated wallpaper selector
-        └── wofi-wifi                   # Wi-Fi network selector
+        ├── executable_lockscreen       # Random lockscreen wallpaper script
+        ├── executable_nuvio            # Display-adaptive UI scaler & hardware launcher
+        ├── executable_wofi-bluetooth   # Bluetooth device manager & pairer
+        ├── executable_wofi-clipboard   # Clipboard search and paste menu
+        ├── executable_wofi-power       # Power & session action menu
+        ├── executable_wofi-shortcuts   # System shortcuts cheat sheet
+        ├── executable_wofi-wallpaper   # Animated wallpaper selector
+        └── executable_wofi-wifi        # Wi-Fi network selector
 ```

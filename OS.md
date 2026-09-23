@@ -1,6 +1,6 @@
 # 💻 ThinkPad T480 OS & Window Manager Configuration Blueprint
 
-> Exhaustive system documentation, configuration blueprint, and administration reference for **Arch Linux** & **Ubuntu 26.04 LTS ("Resolute Raccoon")**, **Intel Graphics**, **Sway (Wayland)**, **Quickshell**, **SwayNC**, and the unified **Rosé Pine** desktop ecosystem on the **Lenovo ThinkPad T480** (`thinkdad`).
+> Exhaustive system documentation, configuration blueprint, and administration reference for **Arch Linux** & **Ubuntu 26.04 LTS ("Resolute Raccoon")**, **Intel Graphics**, **Sway (Wayland)**, **Waybar**, **SwayNC**, and the unified **Rosé Pine** desktop ecosystem on the **Lenovo ThinkPad T480** (`thinkdad`).
 
 ---
 
@@ -23,12 +23,12 @@
    - [4.4 ThinkPad Hardware Function Keys (F1–F12)](#44-thinkpad-hardware-function-keys-f1f12)
    - [4.5 Idle & Session Management (swayidle)](#45-idle--session-management-swayidle)
    - [4.6 Window Rules & Floating Container Policies](#46-window-rules--floating-container-policies)
-5. [Quickshell Desktop Shell & Status Bar](#5-quickshell-desktop-shell--status-bar)
-   - [5.1 Modular Architecture & File Structure](#51-modular-architecture--file-structure)
-   - [5.2 Color Tokens & Theme Palette (RosePine.qml)](#52-color-tokens--theme-palette-rosepineqml)
-   - [5.3 Dynamic Tree & App Icon / Glyph Resolution](#53-dynamic-tree--app-icon--glyph-resolution)
-   - [5.4 Interactive Applets & Popovers Catalog](#54-interactive-applets--popovers-catalog)
-   - [5.5 Bar Geometry, Typography & Wayland Focus-Grab Popover Dismissal](#55-bar-geometry-typography--wayland-focus-grab-popover-dismissal)
+5. [Waybar Desktop Status Bar & System Monitors](#5-waybar-desktop-status-bar--system-monitors)
+   - [5.1 Architecture & Modular File Structure](#51-architecture--modular-file-structure)
+   - [5.2 Rosé Pine Color Palette & Pill Styling (style.css)](#52-rosé-pine-color-palette--pill-styling-stylecss)
+   - [5.3 Dynamic Workspaces & Window Icons](#53-dynamic-workspaces--window-icons)
+   - [5.4 System Monitors (Network, CPU, Memory, Disk)](#54-system-monitors-network-cpu-memory-disk)
+   - [5.5 Interactive Dropdown Popups & Outside-Click Dismissal](#55-interactive-dropdown-popups--outside-click-dismissal)
 6. [Notification Center (SwayNC)](#6-notification-center-swaync)
    - [6.1 Daemon Architecture & Styling](#61-daemon-architecture--styling)
    - [6.2 Widget Stack & Quick Control Grid](#62-widget-stack--quick-control-grid)
@@ -345,94 +345,92 @@ for_window [class="com-nuvio-app-MainKt"] inhibit_idle visible, border none
 
 ---
 
-## 5. Quickshell Desktop Shell & Status Bar
+## 5. Waybar Desktop Status Bar & System Monitors
 
-**Quickshell** provides the status bar and interactive system applets using modern Qt6/QML.
+**Waybar** provides a lightweight, highly customizable status bar built with GTK 3 and Wayland `layer-shell`, styled identically to the Rosé Pine palette with standalone interactive Python GTK applets.
 
-### 5.1 Modular Architecture & File Structure
-Directory: `/home/ud/.config/quickshell/`
+### 5.1 Architecture & Modular File Structure
+Directory: `/home/ud/.config/waybar/`
 ```text
-~/.config/quickshell/
-├── shell.qml                  # Core desktop shell, top bar & popup controllers (~2400 lines)
-├── RosePine.qml               # Color palette singleton and typography tokens
-├── AudioService.qml           # PipeWire / WirePlumber asynchronous IPC service
-├── AudioSlider.qml            # Smooth volume slider with mouse-wheel step support
-├── AudioWidget.qml            # Detailed multi-channel audio popover
-└── AudioWidgetStandalone.qml  # Dedicated pop-out audio control window
+~/.config/waybar/
+├── config.jsonc                # Core Waybar layout, modules, intervals & bindings
+├── style.css                   # Rosé Pine CSS theme with pill styling & state transitions
+└── scripts/
+    ├── calendar_menu.py        # Interactive calendar dropdown with live digital clock
+    ├── weather_menu.py         # Detailed weather card, metrics grid & 3-day forecast
+    ├── weather.py              # wttr.in JSON data provider with 15-minute file caching
+    ├── notifications.py        # SwayNC unread count streaming helper
+    ├── bluetooth_menu.py       # Standalone Bluetooth device popup
+    ├── wifi_menu.py            # Standalone Wi-Fi network popup
+    └── volume_menu.py          # Standalone audio volume & sink popup
 ```
 
-### 5.2 Color Tokens & Theme Palette (RosePine.qml)
-```qml
-pragma Singleton
-import QtQuick
+### 5.2 Rosé Pine Color Palette & Pill Styling (style.css)
+* **Bar Geometry**:
+  * Bar height: **`42px`** positioned at the top of all connected displays (`DP-2` and `eDP-1`).
+  * Module pills: Standardized height, **`7px`** corner radius, **`5px`** vertical breathing margin, and `#1f1d2e` (Surface) background.
+  * Side margins: Leftmost module (`#workspaces`) and rightmost module (`#custom-notification`) feature **`14px`** edge padding.
+* **Typography**:
+  * Base font: `IoskeleyMono Nerd Font Mono`, **`15px`**.
+  * Accents: `#ebbcba` (Rose), `#9ccfd8` (Foam), `#f6c177` (Gold), `#c4a7e7` (Iris), `#eb6f92` (Love).
+* **Hover & State Transitions**:
+  * Interactive pills transition smoothly to `#26233a` (Overlay) on hover.
+  * System monitor pills dynamically transition to warning (`#f6c177`) and critical (`#eb6f92`) text colors under heavy load.
 
-QtObject {
-    // Base surface colors
-    readonly property color base: "#191724"
-    readonly property color surface: "#1f1d2e"
-    readonly property color overlay: "#26233a"
-    readonly property color muted: "#6e6a86"
-    readonly property color subtle: "#908caa"
-    readonly property color text: "#e0def4"
+### 5.3 Dynamic Workspaces & Window Icons
+Waybar queries Sway IPC to display active workspaces along with icons for all open windows:
+* Format: `{name} {windows}`
+* Custom window rewrite rules map application classes to Nerd Font glyphs:
+  * `` Terminal (`wezterm`, `foot`, `kitty`, `alacritty`)
+  * `󰈹` Web Browser (`vivaldi`, `firefox`, `chrome`, `chromium`, `brave`)
+  * `󰨞` Code Editor (`code`, `nvim`, `vim`, `sublime`, `emacs`)
+  * `󰙯` Chat & Communication (`discord`, `vesktop`, `slack`, `telegram`)
+  * `󰓇` Music Player (`spotify`)
+  * `󰉋` File Manager (`thunar`, `nautilus`, `dolphin`, `yazi`)
+  * `󱓧` Knowledge & Notes (`obsidian`)
+  * `󰕼` Video & Media (`mpv`, `vlc`)
+  * `󰓓` Gaming (`steam`)
+* Active/focused workspace highlighted in `#ebbcba` (Rose) with dark `#191724` text.
 
-    // Accents
-    readonly property color love: "#eb6f92"
-    readonly property color gold: "#f6c177"
-    readonly property color rose: "#ebbcba"
-    readonly property color pine: "#31748f"
-    readonly property color foam: "#9ccfd8"
-    readonly property color iris: "#c4a7e7"
+### 5.4 System Monitors (Network, CPU, Memory, Disk)
+Waybar features real-time hardware and resource monitors positioned in `modules-right`:
+| Monitor | Format | Token / Values | Tooltip Content | Interactive Click Action |
+| :--- | :--- | :--- | :--- | :--- |
+| **Network** | `󰖩 {bandwidthDownBytes}` | Download throughput (e.g. `1.2kB/s`) | Interface, IP/CIDR, Up & Down bandwidth | Left-click: `wezterm -e btop`<br>Right-click: `/home/ud/.local/bin/wofi-wifi` |
+| **CPU** | `󰻠 {usage}%` | Overall CPU percentage (2s poll) | CPU usage %, CPU load, core frequencies | Left-click: `wezterm -e btop` |
+| **Memory** | `󰍛 {percentage}%` | RAM percentage (2s poll) | RAM Used/Total GiB, Available, Swap details | Left-click: `wezterm -e btop` |
+| **Disk** | `󰋊 {percentage_used}%` | Root partition percentage (30s poll) | Used / Total space, Free space on `/` | Left-click: `wezterm -e btop` |
 
-    // Highlights
-    readonly property color highlightLow: "#21202e"
-    readonly property color highlightMed: "#403d52"
-    readonly property color highlightHigh: "#524f67"
+* **Warning & Critical Thresholds**:
+  * CPU: Warning at 70%, Critical at 90%
+  * Memory: Warning at 75%, Critical at 90%
+  * Disk: Warning at 80%, Critical at 95%
+  * Network: Highlights `#eb6f92` on disconnection
 
-    // Font family
-    readonly property string fontMono: "IoskeleyMono Nerd Font Mono"
-}
-```
-
-### 5.3 Dynamic Tree & App Icon / Glyph Resolution
-Quickshell maintains real-time synchronization with the Sway compositor:
-1. Spawns `swaymsg -t get_tree --raw` in the background.
-2. Recursively parses the JSON container hierarchy into workspace nodes.
-3. For each active container, resolves its application icon via `Quickshell.iconPath()` or falls back to custom Nerd Font glyphs:
-   * `` Terminal (`wezterm`, `foot`, `kitty`)
-   * `󰈹` Web Browser (`vivaldi`, `firefox`, `chromium`)
-   * `󰨞` Code Editor (`code`, `nvim`)
-   * `󰉋` File Manager (`thunar`, `yazi`)
-   * `󱓧` Notes (`obsidian`)
-   * `󰕼` Media (`mpv`, `vlc`)
-
-### 5.4 Interactive Applets & Popovers Catalog
-* **Multi-Monitor Bar Variants**: Uses Quickshell's `Variants` over connected Wayland outputs to automatically draw independent status bars on `DP-2` and `eDP-1`.
-* **Audio Sinks & Stream Volume**: Asynchronous PipeWire service queries `wpctl` and `pactl` to display master volume sliders, mute buttons, and active output sink switchers.
-* **Bluetooth Popover**: Scans paired and connected devices via `bluetoothctl`, offering one-click connect/disconnect buttons.
-* **Wi-Fi Popover**: Queries `nmcli` for nearby access points with signal strength indicators.
-* **Interactive Calendar**: Dropdown with previous/next month navigation and "Jump to Today" action.
-* **Live Weather Widget**: Queries the Open-Meteo REST API using laptop geolocation to display live temperatures, conditions, and hourly forecast graphs.
-* **SwayNC Notification Badge**: Listens to `swaync-client -swb` to render unread notification counts and Do Not Disturb state.
-* **PowerBridge Dual Battery Indicator**: Real-time visualization of combined battery percentage, remaining charging/discharging time, and active power profiles.
-
-### 5.5 Bar Geometry, Typography & Wayland Focus-Grab Popover Dismissal
-* **Bar Geometry & Layer Shell**:
-  * Status bar window `implicitHeight` set to **`40px`** with **`14px`** horizontal side padding across both `eDP-1` and `DP-2`.
-  * Status bar pills feature a standardized height of **`30px`** and corner radius of **`7px`**, maintaining a symmetrical **`5px`** vertical breathing margin inside the bar.
-  * System tray items are housed in **`30×30px`** pills with **`19px`** high-resolution icons.
-* **Unified Typography & Glyph Sizing**:
-  * Pill body text (workspaces, weather, clock date/time, volume %, Bluetooth device name, Wi-Fi SSID, battery %) standardized to **`14px`** (`IoskeleyMono Nerd Font Mono`).
-  * Pill icons and status glyphs standardized to **`16px`** for immediate legibility across 1080p and 4K displays.
-  * Workspace application containers sized to `19×19px` with `18px` desktop icon images and `15px` fallback Nerd Font glyphs.
-  * SwayNC notification pill features an `18px` pill badge with `11px` bold unread counts and a `13px` DND indicator.
-* **Outside-Click Dismissal via Wayland Focus Grab (`grabFocus`)**:
-  * All interactive `PopupWindow` dropdowns (`weatherMenu`, `calMenu`, `audioMenu`, `btMenu`, `wifiMenu`) utilize `grabFocus: true` to bind to Wayland XDG popup grabbing semantics.
-  * Clicking anywhere outside an active dropdown (including root desktop background, tiling window surfaces, or other bar widgets) or pressing <kbd>Escape</kbd> automatically dismisses the popover.
-  * Debounced state tracking (`lastCloseTime`) on each trigger pill prevents event pass-through race conditions, ensuring clicking an open popover's trigger cleanly closes it without re-triggering an immediate open.
+### 5.5 Interactive Dropdown Popups & Outside-Click Dismissal
+Both **Calendar** and **Weather** modules open standalone, compact GTK 3 popups with outside-click dismissal:
+* **Calendar Dropdown (`calendar_menu.py`)**:
+  * Dimensions: Compact **`310px`** width card with `12px 14px` padding.
+  * Header: Displays formatted day and date with close button (`󰅖`).
+  * GTK Calendar: Month view with previous/next month navigation and highlight for the current day.
+  * Digital Clock: Real-time digital clock display (`HH:MM:SS`) updated every second.
+* **Weather Dropdown (`weather_menu.py`)**:
+  * Dimensions: Compact **`320px`** width card with `12px 14px` padding.
+  * Header: Current location (e.g. "Durham, North Carolina"), reload button (`󰑐`), and close button (`󰅖`).
+  * Current Weather: Prominent weather icon, temperature in °F, description, and "Feels like" temperature.
+  * Metrics Grid: Cards for Humidity (%), Wind speed (mph + direction), and UV Index.
+  * 3-Day Forecast: Daily high/low temperatures, condition icons, and daily outlook.
+* **Layer Shell Outside-Click Dismissal Paradigm**:
+  * Dropdown windows map a transparent fullscreen `Gtk.EventBox` overlay covering the entire display at layer `TOP`.
+  * The centered popup card translates its coordinates relative to the overlay.
+  * Clicks falling outside `[cx .. cx+width, cy .. cy+height]` immediately terminate the popup process.
+  * Single-instance enforcement via PID lockfiles (`/tmp/waybar_*_menu.pid`) guarantees toggling the pill cleanly dismisses an already open popup without flicker.
+* **Hover Tooltip Suppression**:
+  * `"tooltip": false` configured on `custom/weather` and `clock` in `config.jsonc` suppresses distracting default GTK tooltips while preserving interactive clicks.
 
 ---
 
-## 6. Notification Center (SwayNC)
+## 6. Notification Center & Control Center (SwayNC)
 
 * **Daemon**: `swaync` (SwayNotificationCenter)
 * **Configuration**: `/home/ud/.config/swaync/config.json`
@@ -443,16 +441,18 @@ Quickshell maintains real-time synchronization with the Sway compositor:
 * Built on Wayland `layer-shell` (layer: `overlay`), featuring a 380px panel width and responsive layout.
 
 ### 6.2 Widget Stack & Quick Control Grid
-1. **Header**: "Notifications" with "󰆴 Clear" button.
+1. **Header**: "Control Center" with "󰆴 Clear" button.
 2. **Do Not Disturb (DND) Switch**: Toggles system-wide notification popups.
-3. **Quick Toggle Grid**:
+3. **Volume Slider**: Master audio sink slider with per-application audio stream sliders (`show-per-app: true`).
+4. **Backlight Slider**: Intel display brightness adjustment (`intel_backlight`).
+5. **2-Column Quick Toggle Grid**:
    * `󰤨 Wi-Fi`: Wireless radio toggle (`nmcli radio wifi on/off`).
    * `󰂯 Bluetooth`: Bluetooth radio toggle (`bluetoothctl power on/off`).
+   * `󱛃 Wi-Fi Networks`: Quick access point picker (`/home/ud/.local/bin/wofi-wifi`).
+   * `󰂲 BT Devices`: Bluetooth device connection & pairing menu (`/home/ud/.local/bin/wofi-bluetooth`).
+   * `󰕾 Audio Mixer`: Full PulseAudio / PipeWire mixer (`pavucontrol`).
    * `󰄀 Screenshot`: Area capture tool (`grim -g "$(slurp)" - | swappy -f -`).
-   * `󰒓 Settings`: Centered floating control center (`foot -a floating_control -T "Audio & Network Control" nmtui`).
-4. **MPRIS Media Player**: Live album art, playback progress slider, track title, and media controls.
-5. **Volume Slider**: Quick master sink volume adjustment.
-6. **Backlight Slider**: Intel display brightness adjustment (`intel_backlight`).
+6. **MPRIS Media Player**: Live album art, playback progress slider, track title, and media controls.
 7. **Notification Stream**: Grouped, collapsible notification cards with action buttons.
 
 ---
@@ -469,8 +469,10 @@ Quickshell maintains real-time synchronization with the Sway compositor:
 | `wofi-shortcuts` | <kbd>Super</kbd> + <kbd>K</kbd> | Interactive, searchable cheat sheet of all system shortcuts and gestures. Pressing Enter executes the action. |
 | `wofi-clipboard` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Fuzzy-search clipboard history (text & images) via `cliphist` and decode selection directly back to Wayland clipboard. |
 | `wofi-wifi` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd> | Graphical Wi-Fi network selector or floating `nmtui` connection manager. |
+| `wofi-bluetooth` | SwayNC BT Button | Scans, pairs, connects, and trusts Bluetooth devices interactively via `bluetoothctl` and `wofi`. |
 | `wofi-power` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> | Session dialog: Lock (`lockscreen`), Suspend, Logout, Reboot, or Shutdown. |
 | `wofi-wallpaper` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Scans `~/Pictures/Walls/` and applies the chosen wallpaper via `awww` with animated transitions. |
+| `nuvio` | Application Launcher | Display-adaptive UI scaler (1.0x on 1080p, 2.0x on 4K) with Intel VA-API hardware acceleration and WebKitGTK threading compatibility fix. |
 
 ### 7.2 Random Lockscreen Wallpaper System (lockscreen + swaylock)
 * **Executable**: `/home/ud/.local/bin/lockscreen` (symlinked as `swaylock-random`).
@@ -653,16 +655,21 @@ Dotfiles are tracked and managed using **chezmoi** in `/home/ud/.local/share/che
 │   ├── gtk-4.0/
 │   ├── keyd/
 │   ├── nvim/
-│   ├── quickshell/
 │   ├── swappy/
 │   ├── sway/
 │   ├── swaylock/
 │   ├── swaync/
+│   ├── waybar/
+│   │   ├── config.jsonc
+│   │   ├── style.css
+│   │   └── scripts/
 │   └── wofi/
 └── dot_local/
     └── bin/
         ├── cliphist-daemon
         ├── executable_lockscreen
+        ├── executable_nuvio
+        ├── executable_wofi-bluetooth
         ├── executable_wofi-clipboard
         ├── executable_wofi-power
         ├── executable_wofi-shortcuts
@@ -709,15 +716,15 @@ sudo pacman -Syu --needed \
     pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl brightnessctl \
     networkmanager bluez bluez-utils upower power-profiles-daemon \
     grim slurp swappy wl-clipboard cliphist \
-    wezterm foot zsh git curl jq chezmoi keyd ly \
-    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas
+    wezterm foot zsh git curl jq chezmoi keyd ly waybar btop \
+    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas gtk-layer-shell
 
 # 2. Install yay AUR helper
 git clone https://aur.archlinux.org/yay.git /tmp/yay
 cd /tmp/yay && makepkg -si && cd ~
 
 # 3. AUR packages
-yay -S --needed quickshell sway-notification-center wofi awww eza
+yay -S --needed sway-notification-center wofi awww eza
 ```
 
 ### 13.2 Ubuntu 26.04 LTS Installation Blueprint (APT, PPAs & Builds)
@@ -731,8 +738,8 @@ sudo apt update && sudo apt install -y \
     pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl brightnessctl \
     network-manager bluez bluez-tools upower power-profiles-daemon \
     grim slurp swappy wl-clipboard \
-    foot zsh git curl jq chezmoi keyd \
-    libgtk-3-dev libgtk-4-dev gnome-themes-extra gsettings-desktop-schemas \
+    foot zsh git curl jq chezmoi keyd waybar btop \
+    libgtk-3-dev libgtk-4-dev gnome-themes-extra gsettings-desktop-schemas libgtk-layer-shell0 \
     build-essential cmake ninja-build pkg-config libpam0g-dev
 ```
 
@@ -754,21 +761,10 @@ echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable
 sudo apt update && sudo apt install -y wezterm sway-notification-center eza wofi
 ```
 
-#### Step 3: Quickshell Desktop Shell on Ubuntu 26.04
-Quickshell is built against modern Qt6 and Wayland libraries:
+#### Step 3: Status Bar (Waybar) on Ubuntu 26.04
+Waybar is available natively in Ubuntu 26.04 or via the Ubuntu Sway Remix PPA:
 ```bash
-# Install Qt6 and Wayland build headers
-sudo apt install -y \
-    qt6-base-dev qt6-declarative-dev qt6-wayland-dev \
-    libwayland-dev libpipewire-0.3-dev libwireplumber-0.5-dev \
-    libpam0g-dev libpolkit-gobject-1-dev libxcb-cursor-dev
-
-# Clone and compile Quickshell
-git clone https://github.com/outfoxxed/quickshell.git /tmp/quickshell
-cd /tmp/quickshell
-cmake -B build -GNinja -DCMAKE_BUILD_TYPE=Release
-ninja -C build
-sudo ninja -C build install
+sudo apt install -y waybar libgtk-layer-shell0
 ```
 
 #### Step 4: Auxiliary Utilities (cliphist, awww, ly TUI)
@@ -831,9 +827,9 @@ chmod +x ~/.local/bin/*
 | **Vulkan Support** | `vulkaninfo --summary` | `Intel(R) UHD Graphics 620 (KBL GT2)` |
 | **Sway Displays** | `swaymsg -t get_outputs` | `eDP-1` and `DP-2` configured with correct resolutions |
 | **Input Devices** | `swaymsg -t get_inputs` | Touchpad, TrackPoint, Cisco Touch identified |
-| **Quickshell Process** | `pgrep -x quickshell` | Process ID returned (daemon active) |
+| **Waybar Process** | `pgrep -x waybar` | Process ID returned (daemon active) |
 | **Lockscreen Dry-Run** | `lockscreen --dry-run` | Prints selected random wallpaper command |
 | **Audio Routing** | `wpctl status` | PipeWire client list, default sink marked with `*` |
 | **Dual Batteries** | `upower -i /org/freedesktop/UPower/devices/battery_BAT0` | State, percentage, and health reported |
 | **keyd Remapper** | `sudo systemctl status keyd` | `active (running)`, CapsLock acting as Hyper |
-| **Package Validation** | `dpkg -l \| grep -E "(sway\|pipewire\|quickshell)"` | Ubuntu: installed packages matching blueprint |
+| **Package Validation** | `dpkg -l \| grep -E "(sway\|pipewire\|waybar)"` | Ubuntu: installed packages matching blueprint |
