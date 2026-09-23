@@ -1,6 +1,6 @@
 # 💻 ThinkPad T480 OS & Window Manager Configuration Blueprint
 
-> Exhaustive system documentation, configuration blueprint, and administration reference for **Arch Linux** & **Ubuntu 26.04 LTS ("Resolute Raccoon")**, **Intel Graphics**, **Sway (Wayland)**, **Waybar**, **SwayNC**, and the unified **Rosé Pine** desktop ecosystem on the **Lenovo ThinkPad T480** (`thinkdad`).
+> Exhaustive system documentation, configuration blueprint, and administration reference for **Arch Linux** & **Ubuntu 26.04 LTS ("Resolute Raccoon")**, **Intel Graphics**, **Sway (Wayland)**, **Waybar**, **SwayOSD**, **SwayNC**, and the unified **Rosé Pine** desktop ecosystem on the **Lenovo ThinkPad T480** (`thinkdad`).
 
 ---
 
@@ -310,11 +310,11 @@ bindgesture pinch:4:inward floating toggle
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Print</kbd> | Area Selection | Saved to `~/Pictures/Screenshots/` |
 | <kbd>Shift</kbd> + <kbd>Print</kbd> | Full Screen | Saved to `~/Pictures/Screenshots/` |
 
-### 4.4 ThinkPad Hardware Function Keys (F1–F12)
-* **F1** (`XF86AudioMute`): Mute audio sink (`wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle`)
-* **F2 / F3** (`XF86AudioLowerVolume` / `XF86AudioRaiseVolume`): Volume -/+ 5% (capped at 150%)
-* **F4** (`XF86AudioMicMute`): Mute microphone (`wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle`)
-* **F5 / F6** (`XF86MonBrightnessDown` / `XF86MonBrightnessUp`): Screen brightness -/+ 5%
+### 4.4 ThinkPad Hardware Function Keys (F1–F12 with SwayOSD)
+* **F1** (`XF86AudioMute`): Mute audio sink with on-screen HUD (`swayosd-client --output-volume mute-toggle`)
+* **F2 / F3** (`XF86AudioLowerVolume` / `XF86AudioRaiseVolume`): Volume -/+ 5% with on-screen HUD (capped at 150%) via `swayosd-client --output-volume -5 / +5 --max-volume 150`
+* **F4** (`XF86AudioMicMute`): Mute microphone with on-screen HUD (`swayosd-client --input-volume mute-toggle`)
+* **F5 / F6** (`XF86MonBrightnessDown` / `XF86MonBrightnessUp`): Screen brightness -/+ 5% with on-screen HUD via `swayosd-client --brightness -5 / +5`
 * **F7** (`XF86Display`): Toggle external display power
 * **F8** (`XF86WLAN`): Toggle Wi-Fi radio (`rfkill toggle wifi`)
 * **F9** (`XF86Tools`): Open application launcher (`wofi`)
@@ -659,6 +659,9 @@ Dotfiles are tracked and managed using **chezmoi** in `/home/ud/.local/share/che
 │   ├── sway/
 │   ├── swaylock/
 │   ├── swaync/
+│   ├── swayosd/
+│   │   ├── config.toml
+│   │   └── style.css
 │   ├── waybar/
 │   │   ├── config.jsonc
 │   │   ├── style.css
@@ -828,6 +831,7 @@ chmod +x ~/.local/bin/*
 | **Sway Displays** | `swaymsg -t get_outputs` | `eDP-1` and `DP-2` configured with correct resolutions |
 | **Input Devices** | `swaymsg -t get_inputs` | Touchpad, TrackPoint, Cisco Touch identified |
 | **Waybar Process** | `pgrep -x waybar` | Process ID returned (daemon active) |
+| **SwayOSD Daemon** | `pgrep -x swayosd-server` | Process ID returned (daemon active) |
 | **Lockscreen Dry-Run** | `lockscreen --dry-run` | Prints selected random wallpaper command |
 | **Audio Routing** | `wpctl status` | PipeWire client list, default sink marked with `*` |
 | **Dual Batteries** | `upower -i /org/freedesktop/UPower/devices/battery_BAT0` | State, percentage, and health reported |

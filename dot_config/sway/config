@@ -272,22 +272,22 @@ bindsym $mod+r mode "resize"
 # Function Keys & Hardware Controls (ThinkPad T480):
 #
     # F1: Audio Mute
-    bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+    bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
 
-    # F2: Volume Down
-    bindsym --locked XF86AudioLowerVolume exec wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%-
+    # F2: Volume Down (with 150% cap)
+    bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume -5 --max-volume 150
 
-    # F3: Volume Up
-    bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+
+    # F3: Volume Up (with 150% cap)
+    bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume +5 --max-volume 150
 
     # F4: Microphone Mute
-    bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+    bindsym --locked XF86AudioMicMute exec swayosd-client --input-volume mute-toggle
 
     # F5: Screen Brightness Down
-    bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
+    bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness -5
 
     # F6: Screen Brightness Up
-    bindsym --locked XF86MonBrightnessUp exec brightnessctl set 5%+
+    bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness +5
 
     # F7: External Display
     bindsym --locked XF86Display exec swaymsg "output * power toggle"
@@ -371,10 +371,11 @@ exec_always {
 }
 
 #
-# Status Bar & Notification Daemon:
+# Status Bar, Notification & OSD Daemons:
 #
 exec waybar
 exec swaync
+exec swayosd-server
 
 include /etc/sway/config.d/*
 

@@ -1,0 +1,64 @@
+/* ==============================================================================
+   SwayOSD Rosé Pine Theme
+   ============================================================================== */
+
+window#osd {
+    border-radius: 12px;
+    border: 1px solid #26233a;
+    background: alpha(#191724, 0.94);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+window#osd #container {
+    margin: 14px 18px;
+}
+
+window#osd image,
+window#osd label {
+    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-size: 15px;
+    color: #e0def4;
+}
+
+window#osd image:disabled,
+window#osd label:disabled {
+    color: #eb6f92;
+    opacity: 0.85;
+}
+
+window#osd progressbar:disabled,
+window#osd image:disabled {
+    opacity: 0.7;
+}
+
+window#osd progressbar,
+window#osd segmentedprogress {
+    min-height: 8px;
+    border-radius: 999px;
+    background: transparent;
+    border: none;
+}
+
+window#osd trough,
+window#osd segment {
+    min-height: inherit;
+    border-radius: inherit;
+    border: none;
+    background: #1f1d2e;
+}
+
+window#osd progress,
+window#osd segment.active {
+    min-height: inherit;
+    border-radius: inherit;
+    border: none;
+    background: #ebbcba;
+}
+
+window#osd segment {
+    margin-left: 8px;
+}
+
+window#osd segment:first-child {
+    margin-left: 0;
+}

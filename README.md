@@ -8,6 +8,7 @@ A modern, fluid, and cohesive Wayland desktop environment powered by **Sway**, *
 
 * **Window Manager**: [Sway](https://swaywm.org/) (Wayland i3-compatible compositor)
 * **Status Bar**: [Waybar](https://github.com/Alexays/Waybar) (Rosé Pine pills with real-time system monitors for Network throughput, CPU, Memory, Disk, plus interactive popups for Calendar & wttr.in Weather)
+* **On-Screen Display (OSD)**: [SwayOSD](https://github.com/ErikReider/SwayOSD) (GTK layer-shell HUD for volume, mic, and brightness controls with Rosé Pine styling)
 * **Control Center & Notifications**: [SwayNotificationCenter](https://github.com/ErikReider/SwayNotificationCenter) (`swaync` Control Center with audio mixer, per-app volume sliders, backlight, Wi-Fi networks, Bluetooth devices, and screenshot tool)
 * **App Launcher & Menus**: [Wofi](https://hg.sr.ht/~scoopta/wofi) (App launcher, Clipboard history, Wi-Fi manager, Bluetooth manager, Power menu, Wallpaper selector, and System Shortcuts cheat sheet)
 * **Wallpaper Daemon**: [awww](https://github.com/LGFae/awww) (Smooth animated wallpaper transitions)
@@ -36,8 +37,8 @@ sudo pacman -S --needed \
     polkit polkit-gnome \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
 
-# Status Bar, Terminals & Shells
-sudo pacman -S --needed waybar foot wezterm zsh bash curl git jq btop
+# Status Bar, OSD, Terminals & Shells
+sudo pacman -S --needed waybar swayosd foot wezterm zsh bash curl git jq btop
 
 # Audio & Media Controls
 sudo pacman -S --needed \
@@ -345,6 +346,9 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 │   ├── swaync/
 │   │   ├── config.json                 # SwayNotificationCenter Control Center layout
 │   │   └── style.css                   # SwayNC Rosé Pine CSS theme
+│   ├── swayosd/
+│   │   ├── config.toml                 # SwayOSD server thresholds & durations
+│   │   └── style.css                   # SwayOSD Rosé Pine HUD theme
 │   ├── wofi/
 │   │   ├── config                      # Wofi general settings
 │   │   └── style.css                   # Wofi Rosé Pine CSS theme
