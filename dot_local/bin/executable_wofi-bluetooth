@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# wofi-bluetooth - Rosé Pine Themed Bluetooth Device Manager
+# ==============================================================================
+
+# Check power
+powered=$(bluetoothctl show | grep -i "Powered: yes")
+if [ -z "$powered" ]; then
+    choice=$(echo -e "󰂯  Turn Bluetooth On\n❌  Cancel" | wofi --dmenu --prompt "Bluetooth is Off" --width 320 --height 150 --location center)
+    if [[ "$choice" =~ "Turn Bluetooth On" ]]; then
+        bluetoothctl power on
+        notify-send "Bluetooth" "Bluetooth powered on"
+    fi
+    exit 0
+fi
+
+# Get connected devices
+connected_macs=$(bluetoothctl devices Connected | awk '{print $2}')
+
+# Build list of devices
+paired=$(bluetoothctl devices)
+options="󰂲  Turn Bluetooth Off\n󰑐  Open Bluetooth Manager (bluetoothctl)"
+
+device_lines=""
+while read -r line; do
+    [ -z "$line" ] && continue
+    mac=$(echo "$line" | awk '{print $2}')
+    name=$(echo "$line" | cut -d' ' -f3-)
+    if echo "$connected_macs" | grep -q "$mac"; then
+        device_lines="$device_lines\n󰂱  $name (Connected) - Disconnect"
+    else
+        device_lines="$device_lines\n󰂯  $name - Connect"
+    fi
+done <<< "$paired"
+
+menu=$(echo -e "$options$device_lines")
+
+selected=$(echo -e "$menu" | wofi \
+    --dmenu \
+    --prompt "Bluetooth Devices" \
+    --width 440 \
+    --height 360 \
+    --insensitive \
+    --location center)
+
+[ -z "$selected" ] && exit 0
+
+case "$selected" in
+    *"Turn Bluetooth Off"*)
+        bluetoothctl power off
+        ;;
+    *"Open Bluetooth Manager"*)
+        foot -a floating_control -T "Bluetooth (bluetoothctl)" bluetoothctl
+        ;;
+    *"Disconnect"*)
+        dev_name=$(echo "$selected" | sed -E 's/^[󰂱󰂯 ]*//' | sed 's/ (Connected) - Disconnect//')
+        mac=$(bluetoothctl devices | grep -F "$dev_name" | awk '{print $2}' | head -n1)
+        if [ -n "$mac" ]; then
+            bluetoothctl disconnect "$mac"
+            notify-send "Bluetooth" "Disconnected from $dev_name"
+        fi
+        ;;
+    *"Connect"*)
+        dev_name=$(echo "$selected" | sed -E 's/^[󰂱󰂯 ]*//' | sed 's/ - Connect//')
+        mac=$(bluetoothctl devices | grep -F "$dev_name" | awk '{print $2}' | head -n1)
+        if [ -n "$mac" ]; then
+            bluetoothctl connect "$mac"
+            notify-send "Bluetooth" "Connecting to $dev_name..."
+        fi
+        ;;
+esac

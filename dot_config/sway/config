@@ -373,7 +373,7 @@ exec_always {
 #
 # Status Bar & Notification Daemon:
 #
-exec quickshell
+exec waybar
 exec swaync
 
 include /etc/sway/config.d/*

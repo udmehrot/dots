@@ -33,22 +33,34 @@
   "widgets": [
     "title",
     "dnd",
-    "buttons-grid",
-    "mpris",
     "volume",
     "backlight",
+    "buttons-grid",
+    "mpris",
     "notifications"
   ],
   "widget-config": {
     "title": {
-      "text": "Notifications",
+      "text": "Control Center",
       "clear-all-button": true,
       "button-text": "󰆴 Clear"
     },
     "dnd": {
       "text": "Do Not Disturb"
     },
+    "volume": {
+      "label": "󰕾",
+      "show-per-app": true,
+      "show-per-app-icon": true,
+      "show-per-app-label": true,
+      "expand-per-app": false
+    },
+    "backlight": {
+      "label": "󰃠",
+      "device": "intel_backlight"
+    },
     "buttons-grid": {
+      "buttons-per-row": 2,
       "actions": [
         {
           "label": "󰤨  Wi-Fi",
@@ -65,27 +77,26 @@
           "update-command": "sh -c '[[ $(bluetoothctl show | grep -i \"Powered: yes\") ]] && echo true || echo false'"
         },
         {
+          "label": "󱛃  Wi-Fi Networks",
+          "command": "/home/ud/.local/bin/wofi-wifi"
+        },
+        {
+          "label": "󰂲  BT Devices",
+          "command": "/home/ud/.local/bin/wofi-bluetooth"
+        },
+        {
+          "label": "󰕾  Audio Mixer",
+          "command": "pavucontrol"
+        },
+        {
           "label": "󰄀  Screenshot",
           "command": "grim -g \"$(slurp)\" - | swappy -f -"
-        },
-
-        {
-          "label": "󰒓  Settings",
-          "command": "foot -a floating_control -T \"Audio & Network Control\" nmtui"
         }
       ]
     },
     "mpris": {
       "show-album-art": "always",
       "autohide": true
-    },
-    "volume": {
-      "label": "󰕾",
-      "show-per-app": false
-    },
-    "backlight": {
-      "label": "󰃠",
-      "device": "intel_backlight"
     },
     "notifications": {
       "vexpand": true

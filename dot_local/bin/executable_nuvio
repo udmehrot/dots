@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Nuvio Smart Launcher
+# - Automatically adapts Java UI scale based on focused display (1080p vs 4K)
+# - Enables Intel VA-API hardware decoding for HEVC / VP9 / H.264
+# ==============================================================================
+
+# 1. Determine optimal UI scale (1.0 on 1080p laptop screen, 2.0 on 4K external)
+if [ -n "$NUVIO_SCALE" ]; then
+    UI_SCALE="$NUVIO_SCALE"
+else
+    UI_SCALE=$(python3 -c '
+import subprocess, json
+try:
+    raw = subprocess.check_output(["swaymsg", "-t", "get_outputs"], stderr=subprocess.DEVNULL)
+    outputs = json.loads(raw)
+    focused = next((o for o in outputs if o.get("focused")), None)
+    if not focused and outputs:
+        focused = outputs[0]
+    if focused:
+        w = focused.get("rect", {}).get("width", 0)
+        # 4K or high resolution display: 2.0x scale
+        # 1080p / laptop screen: 1.0x scale
+        print("2.0" if w >= 2560 else "1.0")
+        exit(0)
+except Exception:
+    pass
+print("1.0")
+' 2>/dev/null || echo "1.0")
+fi
+
+# 2. Hardware acceleration & VA-API drivers
+export LIBVA_DRIVER_NAME="iHD"
+export NUVIO_MPV_HWDEC="vaapi"
+export NUVIO_MPV_GPU_CONTEXT="x11egl"
+
+# 3. Java HiDPI UI scale override
+JAVA_SCALE_OPT="-Dsun.java2d.uiScale=${UI_SCALE}"
+export _JAVA_OPTIONS="${JAVA_SCALE_OPT} ${JAVA_TOOL_OPTIONS:-}"
+# 4. WebKitGTK background main thread compatibility fix
+FIX_SRC="${HOME}/.local/share/nuvio/webkit_main_thread_fix.c"
+FIX_LIB="${HOME}/.var/app/com.nuvio.media.desktop/lib/webkit_main_thread_fix.so"
+if [ ! -f "$FIX_LIB" ] && [ -f "$FIX_SRC" ]; then
+    mkdir -p "$(dirname "$FIX_LIB")"
+    gcc -shared -fPIC -O2 -o "$FIX_LIB" "$FIX_SRC" 2>/dev/null || true
+fi
+
+exec flatpak run \
+    --env=LIBVA_DRIVER_NAME="iHD" \
+    --env=NUVIO_MPV_HWDEC="vaapi" \
+    --env=NUVIO_MPV_GPU_CONTEXT="x11egl" \
+    --env=_JAVA_OPTIONS="${JAVA_SCALE_OPT}" \
+    --env=LD_PRELOAD="/home/ud/.var/app/com.nuvio.media.desktop/lib/webkit_main_thread_fix.so" \
+    com.nuvio.media.desktop "$@"

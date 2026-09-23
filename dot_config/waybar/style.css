@@ -1,0 +1,231 @@
+/* ==============================================================================
+   Waybar Rosé Pine Theme - Mimicking Quickshell
+   ============================================================================== */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-size: 15px;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: transparent;
+    color: #e0def4;
+    transition-property: background-color;
+    transition-duration: 0.2s;
+}
+
+/* Remove default button effects */
+button {
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+button:hover {
+    background: inherit;
+    box-shadow: none;
+}
+
+/* Base Pill Styling for All Modules */
+#workspaces,
+#custom-weather,
+#clock,
+#tray,
+#battery,
+#custom-power,
+#custom-notification,
+#network,
+#cpu,
+#memory,
+#disk {
+    background-color: #1f1d2e;
+    color: #e0def4;
+    border-radius: 7px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    transition: background-color 0.12s ease;
+}
+
+/* Module Padding and Sizing */
+#custom-weather,
+#clock,
+#battery,
+#network,
+#cpu,
+#memory,
+#disk {
+    padding: 0 12px;
+}
+
+#tray {
+    padding: 0 8px;
+}
+
+#custom-power {
+    padding: 0 9px;
+    font-size: 17px;
+    color: #ebbcba;
+}
+
+#custom-notification {
+    padding: 0 10px;
+    margin-right: 14px;
+}
+
+/* Leftmost module margin */
+#workspaces {
+    background-color: transparent;
+    margin-left: 14px;
+    padding: 0;
+}
+
+/* Hover States */
+#custom-weather:hover,
+#clock:hover,
+#tray:hover,
+#battery:hover,
+#custom-notification:hover,
+#network:hover,
+#cpu:hover,
+#memory:hover,
+#disk:hover {
+    background-color: #26233a;
+}
+
+/* System Monitor State Warnings */
+#cpu.warning,
+#memory.warning,
+#disk.warning {
+    color: #f6c177;
+}
+
+#cpu.critical,
+#memory.critical,
+#disk.critical,
+#network.disconnected {
+    color: #eb6f92;
+}
+
+#custom-power:hover {
+    background-color: #26233a;
+    color: #eb6f92;
+}
+
+/* Workspaces Individual Buttons */
+#workspaces button {
+    background-color: #1f1d2e;
+    color: #e0def4;
+    border-radius: 7px;
+    min-width: 34px;
+    padding: 0 10px;
+    margin-right: 5px;
+    font-size: 15px;
+    transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+#workspaces button:hover {
+    background-color: #26233a;
+    color: #e0def4;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    background-color: #ebbcba;
+    color: #191724;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    background-color: #eb6f92;
+    color: #191724;
+    font-weight: bold;
+}
+
+/* Tray Item Styling */
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eb6f92;
+}
+
+#tray menu {
+    background: #191724;
+    border: 1px solid #26233a;
+    border-radius: 8px;
+    padding: 6px;
+    color: #e0def4;
+}
+
+#tray menu menuitem {
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+#tray menu menuitem:hover {
+    background-color: #26233a;
+    color: #ebbcba;
+}
+
+/* Tooltips */
+tooltip {
+    background: #191724;
+    border: 1px solid #26233a;
+    border-radius: 12px;
+    padding: 14px 18px;
+}
+
+tooltip label {
+    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-size: 16px;
+    color: #e0def4;
+}
+
+/* Calendar styling in tooltip/popup */
+calendar {
+    background-color: #191724;
+    color: #e0def4;
+    border: 1px solid #26233a;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 16px;
+}
+
+calendar:selected {
+    background-color: #ebbcba;
+    color: #191724;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+calendar:indeterminate {
+    color: #6e6a86;
+}
+
+calendar.header {
+    border-bottom: 1px solid #26233a;
+    font-size: 17px;
+    font-weight: bold;
+    color: #ebbcba;
+}
+
+calendar.button {
+    color: #e0def4;
+    font-size: 16px;
+}
+
+calendar.button:hover {
+    background-color: #26233a;
+    color: #ebbcba;
+    border-radius: 6px;
+}
+
+calendar.highlight {
+    color: #9ccfd8;
+    font-weight: bold;
+}

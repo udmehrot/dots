@@ -1,0 +1,172 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 42,
+    "spacing": 8,
+    "modules-left": [
+        "sway/workspaces"
+    ],
+    "modules-center": [
+        "custom/weather",
+        "clock"
+    ],
+    "modules-right": [
+        "network",
+        "cpu",
+        "memory",
+        "disk",
+        "tray",
+        "battery",
+        "custom/power",
+        "custom/notification"
+    ],
+
+    // Workspaces
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name} {windows}",
+        "format-window-separator": " ",
+        "window-format": "{name}",
+        "window-rewrite-default": "󰣆",
+        "window-rewrite": {
+            "class<.*wezterm.*>": "",
+            "class<.*terminal.*>": "",
+            "class<.*foot.*>": "",
+            "class<.*alacritty.*>": "",
+            "class<.*kitty.*>": "",
+            "class<.*vivaldi.*>": "󰈹",
+            "class<.*firefox.*>": "󰈹",
+            "class<.*chrome.*>": "󰈹",
+            "class<.*chromium.*>": "󰈹",
+            "class<.*brave.*>": "󰈹",
+            "class<.*code.*>": "󰨞",
+            "class<.*nvim.*>": "󰨞",
+            "class<.*vim.*>": "󰨞",
+            "class<.*sublime.*>": "󰨞",
+            "class<.*emacs.*>": "󰨞",
+            "class<.*discord.*>": "󰙯",
+            "class<.*vesktop.*>": "󰙯",
+            "class<.*spotify.*>": "󰓇",
+            "class<.*slack.*>": "󰒱",
+            "class<.*telegram.*>": "󰅣",
+            "class<.*thunar.*>": "󰉋",
+            "class<.*nautilus.*>": "󰉋",
+            "class<.*dolphin.*>": "󰉋",
+            "class<.*yazi.*>": "󰉋",
+            "class<.*obsidian.*>": "󱓧",
+            "class<.*mpv.*>": "󰕼",
+            "class<.*vlc.*>": "󰕼",
+            "class<.*steam.*>": "󰓓"
+        }
+    },
+
+    // Weather (wttr.in)
+    "custom/weather": {
+        "format": "{}",
+        "interval": 900,
+        "return-type": "json",
+        "exec": "/home/ud/.config/waybar/scripts/weather.py",
+        "on-click": "/home/ud/.config/waybar/scripts/weather_menu.py",
+        "tooltip": false,
+        "escape": false
+    },
+
+    // Clock & Date
+    "clock": {
+        "interval": 1,
+        "format": "<span color='#c4a7e7'>󰃮</span> {0:%a, %b %e}  <span color='#9ccfd8'>󰥔</span> <span color='#ebbcba' weight='bold'>{0:%H:%M:%S}</span>",
+        "tooltip": false,
+        "on-click": "/home/ud/.config/waybar/scripts/calendar_menu.py"
+    },
+
+    // Network Monitor
+    "network": {
+        "interval": 2,
+        "format-wifi": "<span color='#c4a7e7'>󰖩</span> {bandwidthDownBytes}",
+        "format-ethernet": "<span color='#c4a7e7'>󰛳</span> {bandwidthDownBytes}",
+        "format-linked": "<span color='#c4a7e7'>󰛳</span> (No IP)",
+        "format-disconnected": "<span color='#eb6f92'>󰖪</span> Off",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}\n󰇚 {bandwidthDownBytes}  󰕒 {bandwidthUpBytes}",
+        "tooltip-format-wifi": "󰖩 {essid} ({signalStrength}%)\nIP: {ipaddr}/{cidr}\n󰇚 {bandwidthDownBytes}  󰕒 {bandwidthUpBytes}",
+        "tooltip-format-ethernet": "󰛳 {ifname}\nIP: {ipaddr}/{cidr}\n󰇚 {bandwidthDownBytes}  󰕒 {bandwidthUpBytes}",
+        "tooltip-format-disconnected": "󰖪 Disconnected",
+        "on-click": "wezterm -e btop",
+        "on-click-right": "/home/ud/.local/bin/wofi-wifi"
+    },
+
+    // CPU Monitor
+    "cpu": {
+        "interval": 2,
+        "format": "<span color='#ebbcba'>󰻠</span> {usage}%",
+        "states": {
+            "warning": 70,
+            "critical": 90
+        },
+        "tooltip-format": "CPU: {usage}%\nLoad: {load}\nAvg Freq: {avg_frequency}GHz",
+        "on-click": "wezterm -e btop"
+    },
+
+    // Memory Monitor
+    "memory": {
+        "interval": 2,
+        "format": "<span color='#9ccfd8'>󰍛</span> {percentage}%",
+        "states": {
+            "warning": 75,
+            "critical": 90
+        },
+        "tooltip-format": "RAM: {used:0.1f}GiB / {total:0.1f}GiB ({percentage}%)\nAvail: {avail:0.1f}GiB\nSwap: {swapUsed:0.1f}GiB / {swapTotal:0.1f}GiB ({swapPercentage}%)",
+        "on-click": "wezterm -e btop"
+    },
+
+    // Disk Monitor
+    "disk": {
+        "interval": 30,
+        "format": "<span color='#f6c177'>󰋊</span> {percentage_used}%",
+        "path": "/",
+        "states": {
+            "warning": 80,
+            "critical": 95
+        },
+        "tooltip-format": "Disk (/): {used} / {total} used ({percentage_used}%)\nFree: {free}",
+        "on-click": "wezterm -e btop"
+    },
+
+    // System Tray
+    "tray": {
+        "icon-size": 18,
+        "spacing": 8
+    },
+    // Battery
+    "battery": {
+        "states": {
+            "warning": 40,
+            "critical": 20
+        },
+        "format": "<span color='#ebbcba'>{icon}</span> {capacity}%",
+        "format-charging": "<span color='#ebbcba'>󰂄</span> {capacity}%",
+        "format-plugged": "<span color='#ebbcba'>󰂄</span> {capacity}%",
+        "format-warning": "<span color='#f6c177'>{icon}</span> {capacity}%",
+        "format-critical": "<span color='#eb6f92'>{icon}</span> {capacity}%",
+        "format-icons": ["󰂎", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+        "tooltip-format": "{timeTo}, {capacity}%"
+    },
+
+    // Power & Session Menu
+    "custom/power": {
+        "format": "󰐥",
+        "tooltip": false,
+        "on-click": "/home/ud/.local/bin/wofi-power"
+    },
+
+    // Notification Center (SwayNC)
+    "custom/notification": {
+        "format": "{}",
+        "return-type": "json",
+        "exec": "/home/ud/.config/waybar/scripts/notifications.py",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "on-click-middle": "swaync-client -C",
+        "escape": false
+    }
+}
