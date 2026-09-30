@@ -31,12 +31,12 @@ def main():
 
         if is_dnd:
             if count > 0:
-                text = f"<span color='#eb6f92'>󰂛</span> <span foreground='#191724' background='#eb6f92' weight='bold'> {count} </span>"
+                text = f"<span color='#eb6f92'>󰂛</span> <span color='#eb6f92' weight='bold'>{count}</span>"
             else:
                 text = "<span color='#eb6f92'>󰂛</span> <span color='#eb6f92' weight='medium'>DND</span>"
         else:
             if count > 0:
-                text = f"<span color='#ebbcba'>󰂚</span> <span foreground='#191724' background='#ebbcba' weight='bold'> {count} </span>"
+                text = f"<span color='#ebbcba'>󰂚</span> <span color='#ebbcba' weight='bold'>{count}</span>"
             else:
                 text = "<span color='#908caa'>󰂜</span>"
 

@@ -25,7 +25,7 @@
    - [4.6 Window Rules & Floating Container Policies](#46-window-rules--floating-container-policies)
 5. [Waybar Desktop Status Bar & System Monitors](#5-waybar-desktop-status-bar--system-monitors)
    - [5.1 Architecture & Modular File Structure](#51-architecture--modular-file-structure)
-   - [5.2 Rosé Pine Color Palette & Pill Styling (style.css)](#52-rosé-pine-color-palette--pill-styling-stylecss)
+   - [5.2 Rosé Pine Color Palette & Flush Flat Styling (style.css)](#52-rosé-pine-color-palette--flush-flat-styling-stylecss)
    - [5.3 Dynamic Workspaces & Window Icons](#53-dynamic-workspaces--window-icons)
    - [5.4 System Monitors (Network, CPU, Memory, Disk)](#54-system-monitors-network-cpu-memory-disk)
    - [5.5 Interactive Dropdown Popups & Outside-Click Dismissal](#55-interactive-dropdown-popups--outside-click-dismissal)
@@ -354,7 +354,7 @@ Directory: `/home/ud/.config/waybar/`
 ```text
 ~/.config/waybar/
 ├── config.jsonc                # Core Waybar layout, modules, intervals & bindings
-├── style.css                   # Rosé Pine CSS theme with pill styling & state transitions
+├── style.css                   # Rosé Pine CSS theme with flush flat styling & state transitions
 └── scripts/
     ├── calendar_menu.py        # Interactive calendar dropdown with live digital clock
     ├── weather_menu.py         # Detailed weather card, metrics grid & 3-day forecast
@@ -365,17 +365,21 @@ Directory: `/home/ud/.config/waybar/`
     └── volume_menu.py          # Standalone audio volume & sink popup
 ```
 
-### 5.2 Rosé Pine Color Palette & Pill Styling (style.css)
-* **Bar Geometry**:
-  * Bar height: **`42px`** positioned at the top of all connected displays (`DP-2` and `eDP-1`).
-  * Module pills: Standardized height, **`7px`** corner radius, **`5px`** vertical breathing margin, and `#1f1d2e` (Surface) background.
+### 5.2 Rosé Pine Color Palette & Flush Flat Styling (style.css)
+* **Bar Geometry & Architecture**:
+  * Bar height: **`42px`** positioned at the top of all connected displays (`DP-2` and `eDP-1`) with a `#191724` (Rosé Pine Base) background and a `1px` `#26233a` (Overlay) bottom divider line.
+  * Flush Modules: All widgets (workspaces, weather, clock, monitors, tray, power, notifications) are rendered completely flush directly on Waybar with no background boxes, pills, or container borders.
   * Side margins: Leftmost module (`#workspaces`) and rightmost module (`#custom-notification`) feature **`14px`** edge padding.
-* **Typography**:
+* **Workspaces Indicator**:
+  * Inactive workspaces display subtle `#908caa` text and window glyphs.
+  * Active/focused workspace is emphasized with `#ebbcba` (Rose) text and a clean `2px` `#ebbcba` bottom accent border aligned with the bar edge.
+  * Urgent workspaces trigger a `#eb6f92` (Love) highlight.
+* **Typography & Accents**:
   * Base font: `IoskeleyMono Nerd Font Mono`, **`15px`**.
   * Accents: `#ebbcba` (Rose), `#9ccfd8` (Foam), `#f6c177` (Gold), `#c4a7e7` (Iris), `#eb6f92` (Love).
 * **Hover & State Transitions**:
-  * Interactive pills transition smoothly to `#26233a` (Overlay) on hover.
-  * System monitor pills dynamically transition to warning (`#f6c177`) and critical (`#eb6f92`) text colors under heavy load.
+  * Interactive text widgets smoothly highlight to `#ebbcba` on hover without introducing background boxes.
+  * System monitor labels dynamically transition to warning (`#f6c177`) and critical (`#eb6f92`) text colors under heavy load.
 
 ### 5.3 Dynamic Workspaces & Window Icons
 Waybar queries Sway IPC to display active workspaces along with icons for all open windows:
@@ -424,7 +428,7 @@ Both **Calendar** and **Weather** modules open standalone, compact GTK 3 popups 
   * Dropdown windows map a transparent fullscreen `Gtk.EventBox` overlay covering the entire display at layer `TOP`.
   * The centered popup card translates its coordinates relative to the overlay.
   * Clicks falling outside `[cx .. cx+width, cy .. cy+height]` immediately terminate the popup process.
-  * Single-instance enforcement via PID lockfiles (`/tmp/waybar_*_menu.pid`) guarantees toggling the pill cleanly dismisses an already open popup without flicker.
+  * Single-instance enforcement via PID lockfiles (`/tmp/waybar_*_menu.pid`) guarantees clicking the widget cleanly dismisses an already open popup without flicker.
 * **Hover Tooltip Suppression**:
   * `"tooltip": false` configured on `custom/weather` and `clock` in `config.jsonc` suppresses distracting default GTK tooltips while preserving interactive clicks.
 

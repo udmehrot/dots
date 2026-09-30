@@ -11,7 +11,8 @@
 }
 
 window#waybar {
-    background-color: transparent;
+    background-color: #191724;
+    border-bottom: 1px solid #26233a;
     color: #e0def4;
     transition-property: background-color;
     transition-duration: 0.2s;
@@ -25,11 +26,11 @@ button {
 }
 
 button:hover {
-    background: inherit;
+    background: transparent;
     box-shadow: none;
 }
 
-/* Base Pill Styling for All Modules */
+/* Base Flush Styling for All Modules */
 #workspaces,
 #custom-weather,
 #clock,
@@ -41,12 +42,12 @@ button:hover {
 #cpu,
 #memory,
 #disk {
-    background-color: #1f1d2e;
+    background-color: transparent;
     color: #e0def4;
-    border-radius: 7px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    transition: background-color 0.12s ease;
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    transition: color 0.12s ease;
 }
 
 /* Module Padding and Sizing */
@@ -57,7 +58,7 @@ button:hover {
 #cpu,
 #memory,
 #disk {
-    padding: 0 12px;
+    padding: 0 10px;
 }
 
 #tray {
@@ -65,13 +66,13 @@ button:hover {
 }
 
 #custom-power {
-    padding: 0 9px;
+    padding: 0 8px;
     font-size: 17px;
     color: #ebbcba;
 }
 
 #custom-notification {
-    padding: 0 10px;
+    padding: 0 8px;
     margin-right: 14px;
 }
 
@@ -92,7 +93,8 @@ button:hover {
 #cpu:hover,
 #memory:hover,
 #disk:hover {
-    background-color: #26233a;
+    background-color: transparent;
+    color: #ebbcba;
 }
 
 /* System Monitor State Warnings */
@@ -110,38 +112,42 @@ button:hover {
 }
 
 #custom-power:hover {
-    background-color: #26233a;
+    background-color: transparent;
     color: #eb6f92;
 }
 
 /* Workspaces Individual Buttons */
 #workspaces button {
-    background-color: #1f1d2e;
-    color: #e0def4;
-    border-radius: 7px;
-    min-width: 34px;
-    padding: 0 10px;
-    margin-right: 5px;
+    background-color: transparent;
+    color: #908caa;
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    min-width: 0;
+    padding: 0 8px;
+    margin: 0 2px;
     font-size: 15px;
-    transition: background-color 0.12s ease, color 0.12s ease;
+    transition: color 0.12s ease, border-color 0.12s ease;
 }
 
 #workspaces button:hover {
-    background-color: #26233a;
+    background-color: transparent;
     color: #e0def4;
 }
 
 #workspaces button.focused,
 #workspaces button.active {
-    background-color: #ebbcba;
-    color: #191724;
+    background-color: transparent;
+    color: #ebbcba;
     font-weight: bold;
+    border-bottom: 2px solid #ebbcba;
 }
 
 #workspaces button.urgent {
-    background-color: #eb6f92;
-    color: #191724;
+    background-color: transparent;
+    color: #eb6f92;
     font-weight: bold;
+    border-bottom: 2px solid #eb6f92;
 }
 
 /* Tray Item Styling */
@@ -151,7 +157,7 @@ button:hover {
 
 #tray > .needs-attention {
     -gtk-icon-effect: highlight;
-    background-color: #eb6f92;
+    background-color: transparent;
 }
 
 #tray menu {
