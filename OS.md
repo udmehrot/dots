@@ -375,7 +375,7 @@ Directory: `/home/ud/.config/waybar/`
   * Active/focused workspace is emphasized with `#ebbcba` (Rose) text and a clean `2px` `#ebbcba` bottom accent border aligned with the bar edge.
   * Urgent workspaces trigger a `#eb6f92` (Love) highlight.
 * **Typography & Accents**:
-  * Base font: `IoskeleyMono Nerd Font Mono`, **`15px`**.
+  * Base font: `IoskeleyMono Nerd Font Mono`, **`15px`** (with prominent **`18px`** sizing for Weather and Clock/Date).
   * Accents: `#ebbcba` (Rose), `#9ccfd8` (Foam), `#f6c177` (Gold), `#c4a7e7` (Iris), `#eb6f92` (Love).
 * **Hover & State Transitions**:
   * Interactive text widgets smoothly highlight to `#ebbcba` on hover without introducing background boxes.

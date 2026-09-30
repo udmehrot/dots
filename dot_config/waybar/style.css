@@ -52,7 +52,11 @@ button:hover {
 
 /* Module Padding and Sizing */
 #custom-weather,
-#clock,
+#clock {
+    padding: 0 10px;
+    font-size: 18px;
+}
+
 #battery,
 #network,
 #cpu,
