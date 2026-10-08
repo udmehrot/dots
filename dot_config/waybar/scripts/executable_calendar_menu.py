@@ -61,7 +61,7 @@ window {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 label {
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     color: #e0def4;
 }
 .header-date {
@@ -111,7 +111,7 @@ button:focus {
 .btn-close label {
     color: inherit;
     font-size: inherit;
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
 }
 .btn-close:hover {
     background-image: none;
@@ -122,7 +122,7 @@ button:focus {
     color: #eb6f92;
 }
 calendar {
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     font-size: 13px;
     background-color: #191724;
     color: #e0def4;

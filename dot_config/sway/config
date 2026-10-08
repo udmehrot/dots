@@ -19,7 +19,7 @@ set $term wezterm
 set $menu wofi --show drun
 
 # System Font
-font pango:IoskeleyMono Nerd Font Mono 12
+font pango:Inter 11
 
 
 ### Output configuration
@@ -27,8 +27,8 @@ font pango:IoskeleyMono Nerd Font Mono 12
 # Wallpaper is managed dynamically by awww
 #
 # Monitor arrangement: External monitor (DP-2) directly above laptop screen (eDP-1)
-output DP-2 mode 3840x2160@60Hz scale 1.0 position 0 0
-output eDP-1 scale 1.0 position 0 2160
+output DP-2 mode 3840x2160@60Hz scale 1.25 position 0 0
+output eDP-1 scale 1.0 position 0 1728
 
 
 # Clamshell mode: disable laptop internal display when lid is closed
@@ -365,9 +365,9 @@ for_window [class="com-nuvio-app-MainKt"] inhibit_idle visible, border none
 exec_always {
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
     gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-    gsettings set org.gnome.desktop.interface font-name 'Ioskeley Mono 13'
+    gsettings set org.gnome.desktop.interface font-name 'Inter 11'
     gsettings set org.gnome.desktop.interface monospace-font-name 'IoskeleyMono Nerd Font Mono 13'
-    gsettings set org.gnome.desktop.interface document-font-name 'Ioskeley Mono 13'
+    gsettings set org.gnome.desktop.interface document-font-name 'Inter 11'
 }
 
 #

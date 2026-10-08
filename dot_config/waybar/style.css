@@ -5,7 +5,7 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     font-size: 15px;
     min-height: 0;
 }
@@ -191,7 +191,7 @@ tooltip {
 }
 
 tooltip label {
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     font-size: 16px;
     color: #e0def4;
 }

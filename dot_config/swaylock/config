@@ -10,7 +10,7 @@ scaling=fill
 color=191724
 
 # Typography
-font=IoskeleyMono Nerd Font Mono
+font=Inter
 font-size=16
 
 # Indicator dimensions

@@ -16,7 +16,7 @@
 @define-color iris #c4a7e7;
 
 * {
-  font-family: "IoskeleyMono Nerd Font Mono", "Ioskeley Mono", monospace, sans-serif;
+  font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
   font-size: 13px;
   all: unset;
   transition: 200ms ease;

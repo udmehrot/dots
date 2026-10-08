@@ -58,7 +58,7 @@ window {
     padding: 16px;
 }
 label {
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     color: #e0def4;
 }
 .header-title {

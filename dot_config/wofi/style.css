@@ -5,7 +5,7 @@ window {
     background-color: #191724;
     border: 2px solid #ebbcba;
     border-radius: 12px;
-    font-family: "IoskeleyMono Nerd Font Mono", "Ioskeley Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     font-size: 13px;
     color: #e0def4;
 }

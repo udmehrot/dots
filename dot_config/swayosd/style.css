@@ -15,7 +15,7 @@ window#osd #container {
 
 window#osd image,
 window#osd label {
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     font-size: 15px;
     color: #e0def4;
 }

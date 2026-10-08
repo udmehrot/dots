@@ -85,7 +85,7 @@ window {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 label {
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
     color: #e0def4;
 }
 .header-title {
@@ -126,7 +126,7 @@ button:focus {
 .btn-icon label {
     color: inherit;
     font-size: inherit;
-    font-family: "IoskeleyMono Nerd Font Mono", monospace;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
 }
 .btn-icon:hover {
     background-image: none;

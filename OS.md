@@ -217,7 +217,7 @@ input "type:touch" {
 
 * **Configuration**: `/home/ud/.config/sway/config`
 * **Modifier Key**: `$mod = Mod4` (Windows / Super key)
-* **System Font**: `pango:IoskeleyMono Nerd Font Mono 12`
+* **System Font**: `pango:Inter 11`
 
 ### 4.1 Window Styling, Borders & Rosé Pine Theme
 ```swayconfig
@@ -375,7 +375,7 @@ Directory: `/home/ud/.config/waybar/`
   * Active/focused workspace is emphasized with `#ebbcba` (Rose) text and a clean `2px` `#ebbcba` bottom accent border aligned with the bar edge.
   * Urgent workspaces trigger a `#eb6f92` (Love) highlight.
 * **Typography & Accents**:
-  * Base font: `IoskeleyMono Nerd Font Mono`, **`15px`** (with prominent **`18px`** sizing for Weather and Clock/Date).
+  * Base font: `Inter`, **`15px`** (with `IoskeleyMono Nerd Font Mono` icon fallbacks, and prominent **`18px`** sizing for Weather and Clock/Date).
   * Accents: `#ebbcba` (Rose), `#9ccfd8` (Foam), `#f6c177` (Gold), `#c4a7e7` (Iris), `#eb6f92` (Love).
 * **Hover & State Transitions**:
   * Interactive text widgets smoothly highlight to `#ebbcba` on hover without introducing background boxes.
@@ -488,7 +488,7 @@ Both **Calendar** and **Weather** modules open standalone, compact GTK 3 popups 
   indicator-caps-lock
   scaling=fill
   color=191724
-  font=IoskeleyMono Nerd Font Mono
+  font=Inter
   font-size=16
   indicator-radius=72
   indicator-thickness=8
@@ -533,7 +533,7 @@ Managed via `awww-daemon --layer bottom`. Provides GPU-accelerated animated tran
 
 ### 7.5 Screenshot & Annotation Toolchain (grim + slurp + swappy)
 * **Configuration**: `/home/ud/.config/swappy/config`
-* Saves screenshots to `~/Pictures/Screenshots/` formatted as `screenshot-%Y%m%d-%H%M%S.png` with `Ioskeley Mono` typography and Rosé Pine accent annotations.
+* Saves screenshots to `~/Pictures/Screenshots/` formatted as `screenshot-%Y%m%d-%H%M%S.png` with `Inter` typography and Rosé Pine accent annotations.
 
 ---
 
@@ -635,7 +635,7 @@ Configured via `gsettings` and `~/.config/gtk-3.0/settings.ini` / `~/.config/gtk
 [Settings]
 gtk-application-prefer-dark-theme=1
 gtk-theme-name=Adwaita-dark
-gtk-font-name=Ioskeley Mono 13
+gtk-font-name=Inter 11
 ```
 
 ---

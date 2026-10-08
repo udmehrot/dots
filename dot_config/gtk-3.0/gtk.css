@@ -10,7 +10,7 @@
 #paint-window {
     background-color: #0b0910; /* Deep Obsidian */
     color: #e0def4;
-    font-family: "IoskeleyMono Nerd Font Mono", "Ioskeley Mono", monospace, sans-serif;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
 }
 
 #paint-window paned,
