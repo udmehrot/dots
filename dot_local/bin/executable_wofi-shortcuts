@@ -25,7 +25,8 @@ add_entry "Super + Shift + W" "Wi-Fi & Network Settings (Noctalia)" 'noctalia ms
 add_entry "Super + Shift + B" "Next Wallpaper (Noctalia)" 'noctalia msg wallpaper-next'
 add_entry "Super + Ctrl + B" "Random Wallpaper (Noctalia)" 'noctalia msg wallpaper-random'
 add_entry "Super + Shift + E" "Power / Session Menu (Noctalia)" 'noctalia msg panel-toggle session'
-add_entry "Super + Escape (or Super+Alt+L)" "Lock Screen (Random Wallpaper)" '/home/ud/.local/bin/lockscreen'
+add_entry "Super + Escape (or Super+Alt+L)" "Lock Screen (Noctalia Session Lock)" 'noctalia msg session lock'
+add_entry "Alt + Tab" "Window Switcher Carousel (Noctalia)" 'noctalia msg window-switcher'
 add_entry "Super + N" "Toggle Notifications (Noctalia)" 'noctalia msg panel-toggle notifications'
 add_entry "Super + Shift + N" "Toggle Control Center (Noctalia)" 'noctalia msg panel-toggle control-center'
 add_entry "F9" "Noctalia Desktop Settings" 'noctalia msg settings-toggle'
@@ -61,17 +62,17 @@ add_entry "Ctrl + Print" "Capture All Displays Fullscreen" 'noctalia msg screens
 
 
 
-# --- Hardware Keys ---
-add_entry "F1 / XF86AudioMute" "Mute / Unmute Audio" 'wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle'
-add_entry "F2 / F3 (Vol Down/Up)" "Adjust Audio Volume (-/+ 5%)" ''
-add_entry "F4 / XF86AudioMicMute" "Mute / Unmute Microphone" 'wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle'
-add_entry "F5 / F6 (Bright Down/Up)" "Adjust Screen Brightness (-/+ 5%)" ''
+# --- Hardware Keys (Noctalia OSD) ---
+add_entry "F1 / XF86AudioMute" "Mute / Unmute Audio (Noctalia)" 'noctalia msg volume-mute'
+add_entry "F2 / F3 (Vol Down/Up)" "Adjust Audio Volume (-/+ 5% Noctalia)" ''
+add_entry "F4 / XF86AudioMicMute" "Mute / Unmute Microphone (Noctalia)" 'noctalia msg mic-mute'
+add_entry "F5 / F6 (Bright Down/Up)" "Adjust Screen Brightness (-/+ 5% Noctalia)" ''
 add_entry "F7 / XF86Display" "Toggle Display Power" "swaymsg 'output * power toggle'"
 add_entry "F8 / XF86WLAN" "Toggle Wi-Fi Radio" 'rfkill toggle wifi'
 add_entry "F10 / XF86Bluetooth" "Toggle Bluetooth Radio" 'rfkill toggle bluetooth'
-add_entry "F11 / Fn + Space" "Cycle Keyboard Backlight" "brightnessctl --device='tpacpi::kbd_backlight' set +1"
+add_entry "F11 / Fn + Space" "Cycle Keyboard Backlight (Noctalia)" "noctalia msg keyboard-backlight-up"
 add_entry "Fn + 4 / XF86Sleep" "Suspend System" 'systemctl suspend'
-add_entry "Media Play/Pause/Prev/Next" "Control Media Playback" ''
+add_entry "Media Play/Pause/Prev/Next" "Control Media Playback (Noctalia)" 'noctalia msg media toggle'
 
 # --- Touch Gestures ---
 add_entry "3-Finger Swipe Left / Right" "Switch to Prev / Next Workspace" ''

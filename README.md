@@ -1,18 +1,23 @@
-# 🌸 Rosé Pine Sway & Waybar Setup — Arch Linux
+# 🌸 Rosé Pine Sway & Noctalia Shell Setup — Arch Linux
 
-A modern, fluid, and cohesive Wayland desktop environment powered by **Sway**, **Waybar**, **SwayNC**, and **Wofi**, fully styled with the **Rosé Pine** color palette and **Ioskeley Mono** typography.
+A modern, fluid, and cohesive Wayland desktop environment powered by **Sway** and **Noctalia Shell**, fully styled with the **Rosé Pine** color palette and **Ioskeley Mono** typography.
 
 ---
 
 ## 📸 Desktop Overview
 
 * **Window Manager**: [Sway](https://swaywm.org/) (Wayland i3-compatible compositor)
-* **Status Bar**: [Waybar](https://github.com/Alexays/Waybar) (Rosé Pine pills with real-time system monitors for Network throughput, CPU, Memory, Disk, plus interactive popups for Calendar & wttr.in Weather)
-* **On-Screen Display (OSD)**: [SwayOSD](https://github.com/ErikReider/SwayOSD) (GTK layer-shell HUD for volume, mic, and brightness controls with Rosé Pine styling)
-* **Control Center & Notifications**: [SwayNotificationCenter](https://github.com/ErikReider/SwayNotificationCenter) (`swaync` Control Center with audio mixer, per-app volume sliders, backlight, Wi-Fi networks, Bluetooth devices, and screenshot tool)
-* **App Launcher & Menus**: [Wofi](https://hg.sr.ht/~scoopta/wofi) (App launcher, Clipboard history, Wi-Fi manager, Bluetooth manager, Power menu, Wallpaper selector, and System Shortcuts cheat sheet)
-* **Wallpaper Daemon**: [awww](https://github.com/LGFae/awww) (Smooth animated wallpaper transitions)
-* **Screenshot & Annotation**: [Swappy](https://github.com/jtheoof/swappy) + `grim` + `slurp` + `wl-clipboard` (High-contrast studio editor)
+* **Desktop Shell**: [Noctalia Shell](https://noctalia.dev/) (Unified native Wayland shell layer)
+  * **Status Bar**: Dual-display status bar with workspace pills, network/cpu/mem/disk system monitors, tray, and clock
+  * **Control Center & Notifications**: Integrated PipeWire audio mixer, Wi-Fi networks, Bluetooth manager, media controls, and notification toasts
+  * **On-Screen Display (OSD)**: Native HUD for volume, mic, brightness, keyboard backlight, caps lock, and Wi-Fi toggles
+  * **Session Lockscreen**: PAM Wayland session lock (`ext-session-lock-v1`) with weather, media controls, clock, and login box
+  * **App Launcher & Dmenu**: Fast GPU-accelerated application drawer and `noctalia dmenu` system shortcuts provider
+  * **Clipboard Manager**: Native Wayland clipboard history (text & images) with encrypted storage
+  * **Wallpaper Engine**: Integrated multi-monitor wallpaper manager with transition animations
+  * **Screenshot & Annotation**: Built-in interactive region selector, markup studio, and multi-display capture
+  * **Window Switcher**: Interactive 3D carousel / compact strip Alt+Tab overlay
+  * **Authentication Agent**: Integrated graphical Polkit authentication agent
 * **Terminal**: [Foot](https://codeberg.org/dnkl/foot) & [WezTerm](https://wezfurlong.org/wezterm/)
 * **Typography**: `Ioskeley Mono` & `IoskeleyMono Nerd Font Mono`
 * **Theme & Colors**: Rosé Pine Dark (`#191724` Base, `#1f1d2e` Surface, `#ebbcba` Rose, `#eb6f92` Love, `#31748f` Pine, `#9ccfd8` Foam, `#c4a7e7` Iris)
@@ -37,44 +42,25 @@ sudo pacman -S --needed \
     polkit polkit-gnome \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
 
-# Status Bar, OSD, Terminals & Shells
-sudo pacman -S --needed waybar swayosd foot wezterm zsh bash curl git jq btop
+# Shell Layer, Terminals & System Monitors
+sudo pacman -S --needed noctalia foot wezterm zsh bash curl git jq btop
 
 # Audio & Media Controls
 sudo pacman -S --needed \
     pipewire pipewire-pulse pipewire-alsa wireplumber \
-    pavucontrol playerctl brightnessctl
+    pavucontrol brightnessctl
 
 # Networking & Bluetooth
 sudo pacman -S --needed \
-    networkmanager network-manager-applet bluez bluez-utils
+    networkmanager bluez bluez-utils
 
 # System Daemons & Utilities
 sudo pacman -S --needed \
-    upower chezmoi \
-    grim slurp swappy wl-clipboard cliphist
+    upower chezmoi wl-clipboard
 
 # GTK Theming & Engines
 sudo pacman -S --needed \
-    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas gtk-layer-shell
-```
-
----
-
-### 2. AUR Helper & AUR Packages
-
-Install an AUR helper (such as `yay` or `paru`) and install the remaining components:
-
-```bash
-# Install yay (if not already installed)
-git clone https://aur.archlinux.org/yay.git /tmp/yay
-cd /tmp/yay && makepkg -si && cd ~
-
-# Install SwayNC, Wofi, and Awww from AUR
-yay -S --needed \
-    sway-notification-center \
-    wofi \
-    awww
+    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas
 ```
 
 ---
@@ -276,17 +262,21 @@ sway
 All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + <kbd>K</kbd>**:
 
 ### 🚀 Applications & Launchers
-| Shortcut | Action |
-| :--- | :--- |
-| **<kbd>Super</kbd> + <kbd>Return</kbd>** | Launch Foot Terminal |
-| **<kbd>Super</kbd> + <kbd>D</kbd>** | Application Launcher (Wofi) |
-| **<kbd>Super</kbd> + <kbd>K</kbd>** | System Shortcuts & Keybinds List (Wofi) |
-| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd>** | Clipboard History Manager (`cliphist`) |
-| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd>** | Wi-Fi Network Selector (`nmtui` in floating window) |
-| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>** | Wallpaper Switcher Menu (`awww`) |
-| **<kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>B</kbd>** | Set Random Wallpaper |
-| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>** | Power & Session Menu (Lock, Suspend, Reboot, Shutdown) |
-| **<kbd>Super</kbd> + <kbd>N</kbd>** / **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd>** | Toggle Notification Center (`swaync`) |
+| Shortcut | Action | Command |
+| :--- | :--- | :--- |
+| **<kbd>Super</kbd> + <kbd>Return</kbd>** | Launch Foot Terminal | `foot` |
+| **<kbd>Super</kbd> + <kbd>D</kbd>** | Application Launcher (Noctalia) | `noctalia msg panel-toggle launcher` |
+| **<kbd>Super</kbd> + <kbd>K</kbd>** | System Shortcuts & Keybinds List | `wofi-shortcuts` (via `noctalia dmenu`) |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd>** | Clipboard History Manager (Noctalia) | `noctalia msg panel-toggle clipboard` |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd>** | Wi-Fi & Network Settings (Noctalia) | `noctalia msg panel-toggle control-center network` |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>** | Next Wallpaper (Noctalia) | `noctalia msg wallpaper-next` |
+| **<kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>B</kbd>** | Random Wallpaper (Noctalia) | `noctalia msg wallpaper-random` |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd>** | Power & Session Menu (Noctalia) | `noctalia msg panel-toggle session` |
+| **<kbd>Super</kbd> + <kbd>Escape</kbd>** / **<kbd>Super</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd>** | Lock Screen (Noctalia Session Lock) | `noctalia msg session lock` |
+| **<kbd>Super</kbd> + <kbd>N</kbd>** | Toggle Notification Center (Noctalia) | `noctalia msg panel-toggle notifications` |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd>** | Toggle Control Center (Noctalia) | `noctalia msg panel-toggle control-center` |
+| **<kbd>Alt</kbd> + <kbd>Tab</kbd>** | Window Switcher Carousel (Noctalia) | `noctalia msg window-switcher` |
+| **<kbd>F9</kbd>** | Noctalia Desktop Settings | `noctalia msg settings-toggle` |
 
 ### 🪟 Window Management
 | Shortcut | Action |
@@ -301,14 +291,26 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 | **<kbd>Super</kbd> + <kbd>S</kbd>** / **<kbd>Super</kbd> + <kbd>W</kbd>** / **<kbd>Super</kbd> + <kbd>E</kbd>** | Stacking / Tabbed / Toggle Split Layout |
 | **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd>** | Reload Sway Configuration |
 
-### 📸 Screenshots
+### 📸 Screenshots (Noctalia)
 | Shortcut | Action | Output |
 | :--- | :--- | :--- |
-| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>**<br>or **<kbd>Super</kbd> + <kbd>Print</kbd>** | Select Area $\rightarrow$ Annotate in Swappy | Clipboard / `~/Pictures/Screenshots/` |
-| **<kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>S</kbd>** | Quick Area Selection | Directly copied to Clipboard |
-| **<kbd>Print</kbd>** or **<kbd>Ctrl</kbd> + <kbd>Print</kbd>** | Quick Full Screen | Directly copied to Clipboard |
-| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Print</kbd>** | Area Selection | Saved to `~/Pictures/Screenshots/` |
-| **<kbd>Shift</kbd> + <kbd>Print</kbd>** | Full Screen | Saved to `~/Pictures/Screenshots/` |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd>**<br>or **<kbd>Super</kbd> + <kbd>Print</kbd>** | Interactive Region Select $\rightarrow$ Annotation Studio | Clipboard + `~/Pictures/Screenshots/` |
+| **<kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>S</kbd>**<br>or **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Print</kbd>** | Quick Area Selection | Clipboard + `~/Pictures/Screenshots/` |
+| **<kbd>Print</kbd>** or **<kbd>Ctrl</kbd> + <kbd>Print</kbd>** | Quick Full Screen (Focused Monitor) | Clipboard + `~/Pictures/Screenshots/` |
+| **<kbd>Shift</kbd> + <kbd>Print</kbd>** | Full Screen (All Monitors) | Clipboard + `~/Pictures/Screenshots/` |
+
+### 🎛️ Hardware & Function Keys (Noctalia OSD)
+| Key | Action | Backend |
+| :--- | :--- | :--- |
+| **<kbd>F1</kbd>** (`XF86AudioMute`) | Mute / Unmute Audio | `noctalia msg volume-mute` |
+| **<kbd>F2</kbd> / <kbd>F3</kbd>** | Volume Down / Up (-/+ 5%) | `noctalia msg volume-down / volume-up` |
+| **<kbd>F4</kbd>** (`XF86AudioMicMute`) | Mute / Unmute Microphone | `noctalia msg mic-mute` |
+| **<kbd>F5</kbd> / <kbd>F6</kbd>** | Screen Brightness Down / Up (-/+ 5%) | `noctalia msg brightness-down / brightness-up` |
+| **<kbd>F7</kbd>** (`XF86Display`) | Toggle Display Power | `swaymsg "output * power toggle"` |
+| **<kbd>F8</kbd>** (`XF86WLAN`) | Toggle Wi-Fi Radio | `rfkill toggle wifi` |
+| **<kbd>F10</kbd>** (`XF86Bluetooth`) | Toggle Bluetooth Radio | `rfkill toggle bluetooth` |
+| **<kbd>F11</kbd> / <kbd>Fn</kbd> + <kbd>Space</kbd>** | Step ThinkPad Keyboard Backlight | `noctalia msg keyboard-backlight-up` |
+| **Media Keys** (Play/Pause/Prev/Next) | Control Media Playback | `noctalia msg media toggle/previous/next` |
 
 ### 👆 Touch & Gesture Controls (ThinkPad / External Touchscreens)
 * **3-Finger Horizontal Swipe**: Switch to previous / next workspace

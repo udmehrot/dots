@@ -273,15 +273,17 @@ bindgesture pinch:4:inward floating toggle
 | :--- | :--- | :--- |
 | <kbd>Super</kbd> + <kbd>Return</kbd> | Launch Terminal | `wezterm` |
 | <kbd>Super</kbd> + <kbd>D</kbd> | Application Launcher | `noctalia msg panel-toggle launcher` |
-| <kbd>Super</kbd> + <kbd>K</kbd> | System Shortcuts Cheat Sheet | `/home/ud/.local/bin/wofi-shortcuts` |
+| <kbd>Super</kbd> + <kbd>K</kbd> | System Shortcuts Cheat Sheet | `/home/ud/.local/bin/wofi-shortcuts` (via `noctalia dmenu`) |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Clipboard History Picker | `noctalia msg panel-toggle clipboard` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd> | Wi-Fi Manager | `noctalia msg panel-toggle control-center network` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> | Power & Session Menu | `noctalia msg panel-toggle session` |
-| <kbd>Super</kbd> + <kbd>Escape</kbd> / <kbd>Alt</kbd>+<kbd>L</kbd> | **Lock Screen (Random Wallpaper)** | `/home/ud/.local/bin/lockscreen` |
+| <kbd>Super</kbd> + <kbd>Escape</kbd> / <kbd>Alt</kbd>+<kbd>L</kbd> | **Lock Screen (Noctalia Session Lock)** | `noctalia msg session lock` |
+| <kbd>Alt</kbd> + <kbd>Tab</kbd> | **Window Switcher Carousel** | `noctalia msg window-switcher` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Wallpaper Selector Menu | `noctalia msg panel-toggle wallpaper` |
 | <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>B</kbd> | Instant Random Wallpaper | `noctalia msg wallpaper-random` |
 | <kbd>Super</kbd> + <kbd>N</kbd> | Toggle Notifications | `noctalia msg panel-toggle control-center notifications` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> | Toggle Control Center | `noctalia msg panel-toggle control-center` |
+| <kbd>F9</kbd> | Noctalia Desktop Settings | `noctalia msg settings-toggle` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> | Reload Sway Configuration | `swaymsg reload` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Q</kbd> | Close / Kill Focused Window | `swaymsg kill` |
 
@@ -310,27 +312,27 @@ bindgesture pinch:4:inward floating toggle
 | <kbd>Print</kbd> / <kbd>Ctrl</kbd> + <kbd>Print</kbd> | Quick Full Screen (Focused Monitor) | Clipboard + `~/Pictures/Screenshots/` (`screenshot-fullscreen`) |
 | <kbd>Shift</kbd> + <kbd>Print</kbd> | Full Screen (All Monitors) | Clipboard + `~/Pictures/Screenshots/` (`screenshot-fullscreen all`) |
 
-### 4.4 ThinkPad Hardware Function Keys (F1–F12 with SwayOSD)
-* **F1** (`XF86AudioMute`): Mute audio sink with on-screen HUD (`swayosd-client --output-volume mute-toggle`)
-* **F2 / F3** (`XF86AudioLowerVolume` / `XF86AudioRaiseVolume`): Volume -/+ 5% with on-screen HUD (capped at 150%) via `swayosd-client --output-volume -5 / +5 --max-volume 150`
-* **F4** (`XF86AudioMicMute`): Mute microphone with on-screen HUD (`swayosd-client --input-volume mute-toggle`)
-* **F5 / F6** (`XF86MonBrightnessDown` / `XF86MonBrightnessUp`): Screen brightness -/+ 5% with on-screen HUD via `swayosd-client --brightness -5 / +5`
+### 4.4 ThinkPad Hardware Function Keys (F1–F12 with Noctalia OSD)
+* **F1** (`XF86AudioMute`): Mute audio sink with Noctalia OSD HUD (`noctalia msg volume-mute`)
+* **F2 / F3** (`XF86AudioLowerVolume` / `XF86AudioRaiseVolume`): Volume -/+ 5% with Noctalia OSD HUD via `noctalia msg volume-down 5` / `noctalia msg volume-up 5`
+* **F4** (`XF86AudioMicMute`): Mute microphone with Noctalia OSD HUD (`noctalia msg mic-mute`)
+* **F5 / F6** (`XF86MonBrightnessDown` / `XF86MonBrightnessUp`): Screen brightness -/+ 5% with Noctalia OSD HUD via `noctalia msg brightness-down 5` / `noctalia msg brightness-up 5`
 * **F7** (`XF86Display`): Toggle external display power
 * **F8** (`XF86WLAN`): Toggle Wi-Fi radio (`rfkill toggle wifi`)
 * **F9** (`XF86Tools`): Open Noctalia settings (`noctalia msg settings-toggle`)
 * **F10** (`XF86Bluetooth`): Toggle Bluetooth radio (`rfkill toggle bluetooth`)
-* **F11 / Fn+Space** (`XF86Keyboard` / `XF86KbdLightOnOff`): Step keyboard backlight (`brightnessctl --device='tpacpi::kbd_backlight' set +1`)
+* **F11 / Fn+Space** (`XF86Keyboard` / `XF86KbdLightOnOff`): Step keyboard backlight (`noctalia msg keyboard-backlight-up`)
 * **F12** (`XF86Favorites`): Launch WezTerm
 * **Fn + 4** (`XF86Sleep`): Suspend system (`systemctl suspend`)
-* **Media Keys** (`Play / Pause / Next / Prev`): Controlled via `playerctl`
+* **Media Keys** (`Play / Pause / Next / Prev / Stop`): Controlled via Noctalia (`noctalia msg media toggle / next / previous / stop`)
 
 ### 4.5 Idle & Session Management (swayidle)
 Configured in `~/.config/sway/config`:
 ```swayconfig
 exec swayidle -w \
-     timeout 300 '/home/ud/.local/bin/lockscreen' \
+     timeout 300 'noctalia msg session lock' \
      timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-     before-sleep '/home/ud/.local/bin/lockscreen'
+     before-sleep 'noctalia msg session lock'
 ```
 
 ### 4.6 Window Rules & Floating Container Policies
@@ -434,107 +436,66 @@ Both **Calendar** and **Weather** modules open standalone, compact GTK 3 popups 
 
 ---
 
-## 6. Notification Center & Control Center (SwayNC)
+## 6. Notification Center & Control Center (Noctalia Shell)
 
-* **Daemon**: `swaync` (SwayNotificationCenter)
-* **Configuration**: `/home/ud/.config/swaync/config.json`
-* **Styling**: `/home/ud/.config/swaync/style.css` (Rosé Pine CSS theme)
+* **Shell Daemon**: `noctalia` (`noctalia v5.2.1`)
+* **Configuration**: `~/.local/state/noctalia/settings.toml`
+* **Theme**: Rosé Pine Dark (`builtin = "Rosé Pine"`)
 
 ### 6.1 Daemon Architecture & Styling
-* Slides out smoothly from the top-right edge (<kbd>Super</kbd> + <kbd>N</kbd>).
-* Built on Wayland `layer-shell` (layer: `overlay`), featuring a 380px panel width and responsive layout.
+* Seamless, GPU-accelerated layer-shell overlay for notifications and control center.
+* D-Bus Service: Claims `org.freedesktop.Notifications` with toast banners, actions, and persistent history.
+* Triggered via:
+  * Notifications Panel: <kbd>Super</kbd> + <kbd>N</kbd> (`noctalia msg panel-toggle control-center notifications`)
+  * Control Center: <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> (`noctalia msg panel-toggle control-center`)
 
 ### 6.2 Widget Stack & Quick Control Grid
-1. **Header**: "Control Center" with "󰆴 Clear" button.
-2. **Do Not Disturb (DND) Switch**: Toggles system-wide notification popups.
-3. **Volume Slider**: Master audio sink slider with per-application audio stream sliders (`show-per-app: true`).
-4. **Backlight Slider**: Intel display brightness adjustment (`intel_backlight`).
-5. **2-Column Quick Toggle Grid**:
-   * `󰤨 Wi-Fi`: Wireless radio toggle (`nmcli radio wifi on/off`).
-   * `󰂯 Bluetooth`: Bluetooth radio toggle (`bluetoothctl power on/off`).
-   * `󱛃 Wi-Fi Networks`: Quick access point picker (`/home/ud/.local/bin/wofi-wifi`).
-   * `󰂲 BT Devices`: Bluetooth device connection & pairing menu (`/home/ud/.local/bin/wofi-bluetooth`).
-   * `󰕾 Audio Mixer`: Full PulseAudio / PipeWire mixer (`pavucontrol`).
-   * `󰄀 Screenshot`: Area capture tool (`grim -g "$(slurp)" - | swappy -f -`).
-6. **MPRIS Media Player**: Live album art, playback progress slider, track title, and media controls.
-7. **Notification Stream**: Grouped, collapsible notification cards with action buttons.
+1. **Audio Mixer Tab**: Master volume slider, default audio sink selector, and per-app audio stream sliders over PipeWire.
+2. **Network Tab**: NetworkManager integration (`org.noctalia.SecretAgent`) with Wi-Fi network scanning, signal metrics, and connect/disconnect toggles.
+3. **Bluetooth Tab**: BlueZ agent (`/org/noctalia/BluetoothAgent`) for wireless peripheral discovery, connection, and pairing.
+4. **Media Player**: Integrated MPRIS media discovery with play/pause, next/previous, progress, and metadata display.
+5. **Session Dashboard**: Quick action buttons for Lock, Suspend, Logout, Reboot, and Shutdown.
 
 ---
 
-## 7. App Launchers & Custom Utility Scripts
+## 7. App Launchers & Integrated Subsystems (Noctalia)
 
-* **Application Launcher**: `wofi` styled in Rosé Pine (`~/.config/wofi/config` & `style.css`).
-* **Location**: `/home/ud/.local/bin/`
-
-### 7.1 Helper Scripts Catalog (~/.local/bin/)
-| Script | Invocation | Purpose |
+### 7.1 Helper Scripts & Launcher Catalog
+| Tool / Script | Invocation | Purpose |
 | :--- | :--- | :--- |
-| `lockscreen` | <kbd>Super</kbd> + <kbd>Escape</kbd> | Locks session with `swaylock` using a random wallpaper from `~/Pictures`. Supports `--multi` and `--dry-run`. |
-| `wofi-shortcuts` | <kbd>Super</kbd> + <kbd>K</kbd> | Interactive, searchable cheat sheet of all system shortcuts and gestures. Pressing Enter executes the action. |
-| `wofi-clipboard` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Fuzzy-search clipboard history (text & images) via `cliphist` and decode selection directly back to Wayland clipboard. |
-| `wofi-wifi` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd> | Graphical Wi-Fi network selector or floating `nmtui` connection manager. |
-| `wofi-bluetooth` | SwayNC BT Button | Scans, pairs, connects, and trusts Bluetooth devices interactively via `bluetoothctl` and `wofi`. |
-| `wofi-power` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> | Session dialog: Lock (`lockscreen`), Suspend, Logout, Reboot, or Shutdown. |
-| `wofi-wallpaper` | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Scans `~/Pictures/Walls/` and applies the chosen wallpaper via `awww` with animated transitions. |
-| `nuvio` | Application Launcher | Display-adaptive UI scaler (1.0x on 1080p, 2.0x on 4K) with Intel VA-API hardware acceleration and WebKitGTK threading compatibility fix. |
+| **Noctalia Launcher** | <kbd>Super</kbd> + <kbd>D</kbd> | GPU-accelerated application drawer with fuzzy search (`noctalia msg panel-toggle launcher`). |
+| `wofi-shortcuts` | <kbd>Super</kbd> + <kbd>K</kbd> | Interactive, searchable cheat sheet of all system shortcuts and gestures piped into `noctalia dmenu`. |
+| **Noctalia Clipboard** | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Native Wayland clipboard manager (`ext_data_control_manager_v1`) supporting text, images, and search. |
+| **Noctalia Session Lock** | <kbd>Super</kbd> + <kbd>Escape</kbd> | PAM Wayland session lockscreen (`ext-session-lock-v1`) with weather, media controls, and login box. |
+| **Noctalia Window Switcher** | <kbd>Alt</kbd> + <kbd>Tab</kbd> | Interactive 3D carousel / compact strip Alt+Tab window switcher (`noctalia msg window-switcher`). |
+| **Noctalia Wallpaper Picker** | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Interactive thumbnail grid to select wallpapers with GPU transitions. |
+| **Noctalia Polkit Agent** | Automatic | Built-in graphical privilege elevation agent for GUI authentication prompts. |
+| `nuvio` | Application Launcher | Display-adaptive UI scaler with Intel VA-API hardware acceleration. |
 
-### 7.2 Random Lockscreen Wallpaper System (lockscreen + swaylock)
-* **Executable**: `/home/ud/.local/bin/lockscreen` (symlinked as `swaylock-random`).
-* **Swaylock Configuration**: `/home/ud/.config/swaylock/config`:
-  ```ini
-  daemonize
-  ignore-empty-password
-  show-failed-attempts
-  indicator-caps-lock
-  scaling=fill
-  color=191724
-  font=Inter
-  font-size=16
-  indicator-radius=72
-  indicator-thickness=8
-  inside-color=191724cc
-  inside-clear-color=191724cc
-  inside-caps-lock-color=191724cc
-  inside-ver-color=191724cc
-  inside-wrong-color=191724cc
-  ring-color=ebbcba
-  ring-clear-color=f6c177
-  ring-caps-lock-color=f6c177
-  ring-ver-color=9ccfd8
-  ring-wrong-color=eb6f92
-  key-hl-color=ebbcba
-  bs-hl-color=eb6f92
-  text-color=e0def4
-  text-clear-color=f6c177
-  text-caps-lock-color=f6c177
-  text-ver-color=9ccfd8
-  text-wrong-color=eb6f92
-  line-uses-inside
-  separator-color=00000000
-  ```
-* **Selection Logic**: Recursively searches `~/Pictures` for `.png`, `.jpg`, `.jpeg`, and `.webp` images, explicitly excluding `~/Pictures/Screenshots/` to safeguard private captures.
-* **Multi-Monitor Support**: When run with `-m` or `--multi`, queries `swaymsg -t get_outputs` and assigns an independent random wallpaper to each connected monitor (e.g. `DP-2` and `eDP-1`).
+### 7.2 Native Session Lockscreen
+* **Protocol**: `ext-session-lock-v1`
+* **Configuration**: `~/.local/state/noctalia/settings.toml` (`[lockscreen_widgets]`)
+* **Features**: Live clock, date, weather card, MPRIS media playback controls, caps lock indicator, keyboard layout indicator, and PAM password authentication.
 * **Triggers**:
   1. Manual shortcut: <kbd>Super</kbd> + <kbd>Escape</kbd> or <kbd>Super</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd>
-  2. Power Menu: <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> $\rightarrow$ "🔒 Lock"
+  2. Session Menu: <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> $\rightarrow$ "Lock"
   3. Idle timeout: `swayidle` after 300 seconds (5 minutes) of inactivity
   4. System suspend: `swayidle` `before-sleep` trigger
 
-### 7.3 Clipboard History Daemon (cliphist-daemon)
-Executed automatically on Sway startup (`~/.local/bin/cliphist-daemon`):
-```bash
-#!/usr/bin/env bash
-wl-paste --type text --watch cliphist store &
-wl-paste --type image --watch cliphist store &
-```
+### 7.3 Native Clipboard History
+* Uses Wayland `ext_data_control_manager_v1` directly within Noctalia.
+* Retains text and image clipboard entries with encrypted storage via Secret Service.
+* Accessible via <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd>.
 
-### 7.4 Wallpaper Transition Daemon (awww)
-Managed via `awww-daemon --layer bottom`. Provides GPU-accelerated animated transitions (`wipe`, `wave`, `grow`, `fade`) when updating wallpapers.
+### 7.4 Native Wallpaper Engine
+* Multi-monitor support (`DP-2` and `eDP-1`) with independent wallpapers.
+* GPU-accelerated transition animations and random wallpaper cycle (<kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>B</kbd>).
+* Integrated interactive picker (<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>).
 
-### 7.5 Screenshot & Annotation Toolchain (Noctalia)
+### 7.5 Screenshot & Annotation Toolchain
 * **Configuration**: `~/.local/state/noctalia/settings.toml` (`[shell.screenshot]`)
 * Saves screenshots to `~/Pictures/Screenshots/` formatted as `screenshot_%Y%m%d_%H%M%S.png` and copies directly to clipboard.
-* Features integrated GPU-accelerated drawing overlay (`screenshot-annotate`), interactive area selection (`screenshot-region`), and multi-output full screen capture (`screenshot-fullscreen`).
+* Features integrated drawing overlay (`screenshot-annotate`), interactive area selection (`screenshot-region`), and multi-output full screen capture (`screenshot-fullscreen`).
 
 ---
 

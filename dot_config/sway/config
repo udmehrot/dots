@@ -39,17 +39,15 @@ bindswitch --reload --locked lid:off output eDP-1 enable
 exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
-# Clipboard history daemon (text & images)
-exec_always /home/ud/.local/bin/cliphist-daemon
+# Clipboard and wallpaper are natively managed by Noctalia Shell
+# exec_always /home/ud/.local/bin/cliphist-daemon
+# exec_always bash -c 'killall swaybg 2>/dev/null; pgrep -x awww-daemon >/dev/null || awww-daemon --layer bottom'
 
-# Wallpaper daemon (awww)
-exec_always bash -c 'killall swaybg 2>/dev/null; pgrep -x awww-daemon >/dev/null || awww-daemon --layer bottom'
-
-### Idle configuration
+### Idle configuration (Noctalia Session Lock)
 exec swayidle -w \
-         timeout 300 '/home/ud/.local/bin/lockscreen' \
+         timeout 300 'noctalia msg session lock' \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep '/home/ud/.local/bin/lockscreen'
+         before-sleep 'noctalia msg session lock'
 
 ### Input configuration
 #
@@ -121,9 +119,12 @@ bindgesture pinch:4:inward floating toggle
     # Power & Session menu (Noctalia)
     bindsym $mod+Shift+e exec noctalia msg panel-toggle session
 
-    # Lock screen manually (Super + Escape or Super + Alt + L)
-    bindsym $mod+Escape exec /home/ud/.local/bin/lockscreen
-    bindsym $mod+Mod1+l exec /home/ud/.local/bin/lockscreen
+    # Lock screen manually (Noctalia Session Lock)
+    bindsym $mod+Escape exec noctalia msg session lock
+    bindsym $mod+Mod1+l exec noctalia msg session lock
+
+    # Alt+Tab Window Switcher (Noctalia)
+    bindsym Mod1+Tab exec noctalia msg window-switcher
 
     # Wallpaper switcher (Noctalia)
     bindsym $mod+Shift+b exec noctalia msg panel-toggle wallpaper
@@ -270,23 +271,23 @@ bindsym $mod+r mode "resize"
 #
 # Function Keys & Hardware Controls (ThinkPad T480):
 #
-    # F1: Audio Mute
-    bindsym --locked XF86AudioMute exec swayosd-client --output-volume mute-toggle
+    # F1: Audio Mute (Noctalia)
+    bindsym --locked XF86AudioMute exec noctalia msg volume-mute
 
-    # F2: Volume Down (with 150% cap)
-    bindsym --locked XF86AudioLowerVolume exec swayosd-client --output-volume -5 --max-volume 150
+    # F2: Volume Down (Noctalia)
+    bindsym --locked XF86AudioLowerVolume exec noctalia msg volume-down 5
 
-    # F3: Volume Up (with 150% cap)
-    bindsym --locked XF86AudioRaiseVolume exec swayosd-client --output-volume +5 --max-volume 150
+    # F3: Volume Up (Noctalia)
+    bindsym --locked XF86AudioRaiseVolume exec noctalia msg volume-up 5
 
-    # F4: Microphone Mute
-    bindsym --locked XF86AudioMicMute exec swayosd-client --input-volume mute-toggle
+    # F4: Microphone Mute (Noctalia)
+    bindsym --locked XF86AudioMicMute exec noctalia msg mic-mute
 
-    # F5: Screen Brightness Down
-    bindsym --locked XF86MonBrightnessDown exec swayosd-client --brightness -5
+    # F5: Screen Brightness Down (Noctalia)
+    bindsym --locked XF86MonBrightnessDown exec noctalia msg brightness-down 5
 
-    # F6: Screen Brightness Up
-    bindsym --locked XF86MonBrightnessUp exec swayosd-client --brightness +5
+    # F6: Screen Brightness Up (Noctalia)
+    bindsym --locked XF86MonBrightnessUp exec noctalia msg brightness-up 5
 
     # F7: External Display
     bindsym --locked XF86Display exec swaymsg "output * power toggle"
@@ -301,28 +302,28 @@ bindsym $mod+r mode "resize"
     bindsym --locked XF86Search exec $menu
     bindsym --locked XF86Bluetooth exec rfkill toggle bluetooth
 
-    # F11: Keyboard Backlight / Launch
-    bindsym --locked XF86Keyboard exec brightnessctl --device='tpacpi::kbd_backlight' set +1
+    # F11: Keyboard Backlight / Launch (Noctalia)
+    bindsym --locked XF86Keyboard exec noctalia msg keyboard-backlight-up
     bindsym --locked XF86LaunchA exec $menu
 
     # F12: Favorites / Star Key
     bindsym --locked XF86Favorites exec $term
     bindsym --locked XF86Launch1 exec $term
 
-    # Keyboard Backlight (Fn+Space)
-    bindsym --locked XF86KbdLightOnOff exec brightnessctl --device='tpacpi::kbd_backlight' set +1
-    bindsym --locked XF86KbdBrightnessUp exec brightnessctl --device='tpacpi::kbd_backlight' set +1
-    bindsym --locked XF86KbdBrightnessDown exec brightnessctl --device='tpacpi::kbd_backlight' set 1-
+    # Keyboard Backlight (Fn+Space - Noctalia)
+    bindsym --locked XF86KbdLightOnOff exec noctalia msg keyboard-backlight-up
+    bindsym --locked XF86KbdBrightnessUp exec noctalia msg keyboard-backlight-up
+    bindsym --locked XF86KbdBrightnessDown exec noctalia msg keyboard-backlight-up
 
     # Sleep / Suspend (Fn+4)
     bindsym --locked XF86Sleep exec systemctl suspend
 
-    # Media Playback Controls
-    bindsym --locked XF86AudioPlay exec playerctl play-pause
-    bindsym --locked XF86AudioPause exec playerctl play-pause
-    bindsym --locked XF86AudioPrev exec playerctl previous
-    bindsym --locked XF86AudioNext exec playerctl next
-    bindsym --locked XF86AudioStop exec playerctl stop
+    # Media Playback Controls (Noctalia)
+    bindsym --locked XF86AudioPlay exec noctalia msg media toggle
+    bindsym --locked XF86AudioPause exec noctalia msg media toggle
+    bindsym --locked XF86AudioPrev exec noctalia msg media previous
+    bindsym --locked XF86AudioNext exec noctalia msg media next
+    bindsym --locked XF86AudioStop exec noctalia msg media stop
 
     # Calculator
     bindsym --locked XF86Calculator exec $term -e python
@@ -368,12 +369,13 @@ exec_always {
 }
 
 #
-# Status Bar, Notification & OSD Daemons:
+# Desktop Shell & Daemons (Noctalia Shell):
 #
+# Waybar, SwayNC, and SwayOSD are replaced by Noctalia
 # exec waybar
-exec noctalia -d
 # exec swaync
-exec swayosd-server
+# exec swayosd-server
+exec noctalia -d
 
 include /etc/sway/config.d/*
 
