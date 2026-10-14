@@ -16,7 +16,7 @@ set $right l
 # Your preferred terminal emulator
 set $term wezterm
 # Your preferred application launcher
-set $menu wofi --show drun
+set $menu noctalia msg panel-toggle launcher
 
 # System Font
 font pango:Inter 11
@@ -107,32 +107,31 @@ bindgesture pinch:4:inward floating toggle
     bindsym $mod+Shift+q kill
 
     # Start your launcher
-    bindsym $mod+d exec /home/ud/.local/bin/wofi --show drun
+    bindsym $mod+d exec noctalia msg panel-toggle launcher
 
     # System shortcuts cheat sheet (Cmd / Super + K)
     bindsym $mod+k exec /home/ud/.local/bin/wofi-shortcuts
 
-    # Clipboard manager (Wofi + cliphist)
-    bindsym $mod+Shift+v exec /home/ud/.local/bin/wofi-clipboard
+    # Clipboard manager (Noctalia)
+    bindsym $mod+Shift+v exec noctalia msg panel-toggle clipboard
 
+    # WiFi manager (Noctalia Control Center)
+    bindsym $mod+Shift+w exec noctalia msg panel-toggle control-center network
 
-    # WiFi manager (Wofi + nmcli)
-    bindsym $mod+Shift+w exec /home/ud/.local/bin/wofi-wifi
-
-    # Power menu (Wofi)
-    bindsym $mod+Shift+e exec /home/ud/.local/bin/wofi-power
+    # Power & Session menu (Noctalia)
+    bindsym $mod+Shift+e exec noctalia msg panel-toggle session
 
     # Lock screen manually (Super + Escape or Super + Alt + L)
     bindsym $mod+Escape exec /home/ud/.local/bin/lockscreen
     bindsym $mod+Mod1+l exec /home/ud/.local/bin/lockscreen
 
-    # Wallpaper switcher (Wofi + awww)
-    bindsym $mod+Shift+b exec /home/ud/.local/bin/wofi-wallpaper
-    bindsym $mod+Ctrl+b exec /home/ud/.local/bin/wofi-wallpaper random
+    # Wallpaper switcher (Noctalia)
+    bindsym $mod+Shift+b exec noctalia msg panel-toggle wallpaper
+    bindsym $mod+Ctrl+b exec noctalia msg wallpaper-random
 
-    # Notification Center (SwayNC)
-    bindsym $mod+Shift+n exec swaync-client -t -sw
-    bindsym $mod+n exec swaync-client -t -sw
+    # Notification & Control Center (Noctalia)
+    bindsym $mod+n exec noctalia msg panel-toggle control-center notifications
+    bindsym $mod+Shift+n exec noctalia msg panel-toggle control-center
 
 
     # Drag floating windows by holding down $mod and left mouse button.
@@ -296,7 +295,7 @@ bindsym $mod+r mode "resize"
     bindsym --locked XF86WLAN exec rfkill toggle wifi
 
     # F9: Settings / Tools
-    bindsym --locked XF86Tools exec $menu
+    bindsym --locked XF86Tools exec noctalia msg settings-toggle
 
     # F10: Search / Bluetooth
     bindsym --locked XF86Search exec $menu
@@ -328,23 +327,21 @@ bindsym $mod+r mode "resize"
     # Calculator
     bindsym --locked XF86Calculator exec $term -e python
 
-    # Screenshots:
-    # 1. Interactive Area Screenshot & Annotate (Swappy): Super+Print or Super+Shift+S
-    bindsym $mod+Print exec bash -c 'grim -g "$(slurp)" - | swappy -f -'
-    bindsym $mod+Shift+s exec bash -c 'grim -g "$(slurp)" - | swappy -f -'
+    # Screenshots (Noctalia):
+    # 1. Interactive Area Screenshot & Annotate: Super+Print or Super+Shift+S
+    bindsym $mod+Print exec noctalia msg screenshot-region
+    bindsym $mod+Shift+s exec noctalia msg screenshot-region
 
-    # 2. Quick Full Screen -> Copy to Clipboard (Print or Ctrl+Print)
-    bindsym Print exec bash -c 'grim - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Full screen copied to clipboard"'
-    bindsym Ctrl+Print exec bash -c 'grim - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Full screen copied to clipboard"'
+    # 2. Quick Full Screen (Focused Monitor) -> Clipboard + ~/Pictures/Screenshots: Print or Ctrl+Print
+    bindsym Print exec noctalia msg screenshot-fullscreen
+    bindsym Ctrl+Print exec noctalia msg screenshot-fullscreen
 
-    # 3. Direct Area -> Copy to Clipboard without editor (Super+Ctrl+S)
-    bindsym $mod+Ctrl+s exec bash -c 'grim -g "$(slurp)" - | wl-copy && notify-send -a "Screenshot" "Screenshot Copied" "Selection copied to clipboard"'
+    # 3. Direct Area Selection -> Clipboard + ~/Pictures/Screenshots: Super+Ctrl+S or Super+Shift+Print
+    bindsym $mod+Ctrl+s exec noctalia msg screenshot-region
+    bindsym $mod+Shift+Print exec noctalia msg screenshot-region
 
-    # 4. Area / Section Selection -> Save to ~/Pictures/Screenshots/ (Super+Shift+Print)
-    bindsym $mod+Shift+Print exec bash -c 'FILE=~/Pictures/Screenshots/$(date +%Y-%m-%d-%H%M%S.png); mkdir -p ~/Pictures/Screenshots && grim -g "$(slurp)" "$FILE" && notify-send -a "Screenshot" "Screenshot Saved" "Saved selection to $FILE"'
-
-    # 5. Full Screen -> Save to ~/Pictures/Screenshots/ (Shift+Print)
-    bindsym Shift+Print exec bash -c 'FILE=~/Pictures/Screenshots/$(date +%Y-%m-%d-%H%M%S.png); mkdir -p ~/Pictures/Screenshots && grim "$FILE" && notify-send -a "Screenshot" "Screenshot Saved" "Saved full screen to $FILE"'
+    # 4. Full Screen (All Displays) -> Clipboard + ~/Pictures/Screenshots: Shift+Print
+    bindsym Shift+Print exec noctalia msg screenshot-fullscreen all
 
 
 #
@@ -373,8 +370,9 @@ exec_always {
 #
 # Status Bar, Notification & OSD Daemons:
 #
-exec waybar
-exec swaync
+# exec waybar
+exec noctalia -d
+# exec swaync
 exec swayosd-server
 
 include /etc/sway/config.d/*

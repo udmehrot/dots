@@ -272,15 +272,16 @@ bindgesture pinch:4:inward floating toggle
 | Keybinding | Action | Command Executed |
 | :--- | :--- | :--- |
 | <kbd>Super</kbd> + <kbd>Return</kbd> | Launch Terminal | `wezterm` |
-| <kbd>Super</kbd> + <kbd>D</kbd> | Application Launcher | `/home/ud/.local/bin/wofi --show drun` |
+| <kbd>Super</kbd> + <kbd>D</kbd> | Application Launcher | `noctalia msg panel-toggle launcher` |
 | <kbd>Super</kbd> + <kbd>K</kbd> | System Shortcuts Cheat Sheet | `/home/ud/.local/bin/wofi-shortcuts` |
-| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Clipboard History Picker | `/home/ud/.local/bin/wofi-clipboard` |
-| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd> | Wi-Fi Manager | `/home/ud/.local/bin/wofi-wifi` |
-| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> | Power & Session Menu | `/home/ud/.local/bin/wofi-power` |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Clipboard History Picker | `noctalia msg panel-toggle clipboard` |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd> | Wi-Fi Manager | `noctalia msg panel-toggle control-center network` |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> | Power & Session Menu | `noctalia msg panel-toggle session` |
 | <kbd>Super</kbd> + <kbd>Escape</kbd> / <kbd>Alt</kbd>+<kbd>L</kbd> | **Lock Screen (Random Wallpaper)** | `/home/ud/.local/bin/lockscreen` |
-| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Wallpaper Selector Menu | `/home/ud/.local/bin/wofi-wallpaper` |
-| <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>B</kbd> | Instant Random Wallpaper | `/home/ud/.local/bin/wofi-wallpaper random` |
-| <kbd>Super</kbd> + <kbd>N</kbd> / <kbd>Shift</kbd>+<kbd>N</kbd> | Toggle Notification Center | `swaync-client -t -sw` |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Wallpaper Selector Menu | `noctalia msg panel-toggle wallpaper` |
+| <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>B</kbd> | Instant Random Wallpaper | `noctalia msg wallpaper-random` |
+| <kbd>Super</kbd> + <kbd>N</kbd> | Toggle Notifications | `noctalia msg panel-toggle control-center notifications` |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd> | Toggle Control Center | `noctalia msg panel-toggle control-center` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>C</kbd> | Reload Sway Configuration | `swaymsg reload` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Q</kbd> | Close / Kill Focused Window | `swaymsg kill` |
 
@@ -301,14 +302,13 @@ bindgesture pinch:4:inward floating toggle
 | <kbd>Super</kbd> + <kbd>1</kbd> .. <kbd>0</kbd> | Switch to Workspace 1..10 |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>1</kbd> .. <kbd>0</kbd> | Move Window to Workspace 1..10 |
 
-#### Screenshot Toolchain
-| Keybinding | Action | Destination |
+#### Screenshot Toolchain (Noctalia)
+| Keybinding | Action | Destination / Tool |
 | :--- | :--- | :--- |
-| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> / <kbd>Super</kbd> + <kbd>Print</kbd> | Interactive Area Select & Annotate | Swappy Editor (Save / Copy) |
-| <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>S</kbd> | Quick Area Selection | Directly copied to Clipboard |
-| <kbd>Print</kbd> / <kbd>Ctrl</kbd> + <kbd>Print</kbd> | Quick Full Screen | Directly copied to Clipboard |
-| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Print</kbd> | Area Selection | Saved to `~/Pictures/Screenshots/` |
-| <kbd>Shift</kbd> + <kbd>Print</kbd> | Full Screen | Saved to `~/Pictures/Screenshots/` |
+| <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>S</kbd> / <kbd>Super</kbd> + <kbd>Print</kbd> | Interactive Area Select & Annotate | Noctalia Region Select & Annotation (`screenshot-region`) |
+| <kbd>Super</kbd> + <kbd>Ctrl</kbd> + <kbd>S</kbd> / <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>Print</kbd> | Quick Area Selection | Clipboard + `~/Pictures/Screenshots/` (`screenshot-region`) |
+| <kbd>Print</kbd> / <kbd>Ctrl</kbd> + <kbd>Print</kbd> | Quick Full Screen (Focused Monitor) | Clipboard + `~/Pictures/Screenshots/` (`screenshot-fullscreen`) |
+| <kbd>Shift</kbd> + <kbd>Print</kbd> | Full Screen (All Monitors) | Clipboard + `~/Pictures/Screenshots/` (`screenshot-fullscreen all`) |
 
 ### 4.4 ThinkPad Hardware Function Keys (F1–F12 with SwayOSD)
 * **F1** (`XF86AudioMute`): Mute audio sink with on-screen HUD (`swayosd-client --output-volume mute-toggle`)
@@ -317,7 +317,7 @@ bindgesture pinch:4:inward floating toggle
 * **F5 / F6** (`XF86MonBrightnessDown` / `XF86MonBrightnessUp`): Screen brightness -/+ 5% with on-screen HUD via `swayosd-client --brightness -5 / +5`
 * **F7** (`XF86Display`): Toggle external display power
 * **F8** (`XF86WLAN`): Toggle Wi-Fi radio (`rfkill toggle wifi`)
-* **F9** (`XF86Tools`): Open application launcher (`wofi`)
+* **F9** (`XF86Tools`): Open Noctalia settings (`noctalia msg settings-toggle`)
 * **F10** (`XF86Bluetooth`): Toggle Bluetooth radio (`rfkill toggle bluetooth`)
 * **F11 / Fn+Space** (`XF86Keyboard` / `XF86KbdLightOnOff`): Step keyboard backlight (`brightnessctl --device='tpacpi::kbd_backlight' set +1`)
 * **F12** (`XF86Favorites`): Launch WezTerm
@@ -531,9 +531,10 @@ wl-paste --type image --watch cliphist store &
 ### 7.4 Wallpaper Transition Daemon (awww)
 Managed via `awww-daemon --layer bottom`. Provides GPU-accelerated animated transitions (`wipe`, `wave`, `grow`, `fade`) when updating wallpapers.
 
-### 7.5 Screenshot & Annotation Toolchain (grim + slurp + swappy)
-* **Configuration**: `/home/ud/.config/swappy/config`
-* Saves screenshots to `~/Pictures/Screenshots/` formatted as `screenshot-%Y%m%d-%H%M%S.png` with `Inter` typography and Rosé Pine accent annotations.
+### 7.5 Screenshot & Annotation Toolchain (Noctalia)
+* **Configuration**: `~/.local/state/noctalia/settings.toml` (`[shell.screenshot]`)
+* Saves screenshots to `~/Pictures/Screenshots/` formatted as `screenshot_%Y%m%d_%H%M%S.png` and copies directly to clipboard.
+* Features integrated GPU-accelerated drawing overlay (`screenshot-annotate`), interactive area selection (`screenshot-region`), and multi-output full screen capture (`screenshot-fullscreen`).
 
 ---
 
