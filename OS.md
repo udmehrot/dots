@@ -743,53 +743,44 @@ yay -S --needed sway-notification-center wofi awww eza
 #### Step 1: Base System, Wayland, Graphics, Audio & Toolchain (APT)
 ```bash
 sudo apt update && sudo apt install -y \
-    sway swaylock swayidle xwayland \
-    policykit-1-gnome xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
+    sway xwayland \
+    xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
     libgl1-mesa-dri mesa-vulkan-drivers intel-media-va-driver-non-free vainfo libva-wayland2 \
     pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl brightnessctl \
     network-manager bluez bluez-tools upower power-profiles-daemon \
-    grim slurp swappy wl-clipboard \
-    foot zsh git curl jq chezmoi keyd waybar btop \
+    grim slurp wl-clipboard \
+    foot zsh git curl jq chezmoi keyd btop \
     libgtk-3-dev libgtk-4-dev gnome-themes-extra gsettings-desktop-schemas libgtk-layer-shell0 \
     build-essential cmake ninja-build pkg-config libpam0g-dev
 ```
 
-#### Step 2: Third-Party Repositories (WezTerm, SwayNC, eza)
+#### Step 2: Third-Party Repositories (WezTerm & eza)
 ```bash
 # 1. WezTerm Terminal
 sudo mkdir -p /etc/apt/keyrings
 curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/wezterm-fury.gpg
 echo 'deb [signed-by=/etc/apt/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
 
-# 2. SwayNC Notification Center
-sudo add-apt-repository -y ppa:erik-reider/sway-notification-center
-
-# 3. eza (Modern ls)
+# 2. eza (Modern ls)
 wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --yes --dearmor -o /etc/apt/keyrings/gierens.gpg
 echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
 
 # Update & Install
-sudo apt update && sudo apt install -y wezterm sway-notification-center eza wofi
+sudo apt update && sudo apt install -y wezterm eza
 ```
 
-#### Step 3: Status Bar (Waybar) on Ubuntu 26.04
-Waybar is available natively in Ubuntu 26.04 or via the Ubuntu Sway Remix PPA:
+#### Step 3: Desktop Shell Layer (Noctalia Shell) on Ubuntu 26.04
+Noctalia Shell serves as the unified replacement for `waybar`, `swaylock`, `swayidle`, `swaync`, `swayosd`, `cliphist`, `awww`, and `wofi`:
 ```bash
-sudo apt install -y waybar libgtk-layer-shell0
+# Install Noctalia Shell via official installer
+curl -fsSL https://noctalia.dev/install.sh | bash
+
+# Ensure noctalia is executable and in PATH (/usr/bin or ~/.local/bin)
+noctalia --version
 ```
 
-#### Step 4: Auxiliary Utilities (cliphist, awww, ly TUI)
+#### Step 4: Display Manager (Ly TUI)
 ```bash
-# 1. cliphist (Wayland clipboard history manager)
-mkdir -p ~/.local/bin
-curl -sL https://github.com/sentriz/cliphist/releases/latest/download/v0.5.0-linux-amd64 -o ~/.local/bin/cliphist
-chmod +x ~/.local/bin/cliphist
-
-# 2. awww (Wallpaper animation daemon)
-# Installed via cargo or downloaded prebuilt binary
-cargo install awww || curl -sL https://github.com/Aetf/awww/releases/latest/download/awww-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C ~/.local/bin
-
-# 3. Ly TUI Display Manager
 sudo apt install -y build-essential libpam0g-dev libxcb-xkb-dev
 git clone --recurse-submodules https://github.com/fairyglade/ly /tmp/ly
 cd /tmp/ly && make && sudo make install
@@ -845,4 +836,4 @@ chmod +x ~/.local/bin/*
 | **Audio Routing** | `wpctl status` | PipeWire client list, default sink marked with `*` |
 | **Dual Batteries** | `upower -i /org/freedesktop/UPower/devices/battery_BAT0` | State, percentage, and health reported |
 | **keyd Remapper** | `sudo systemctl status keyd` | `active (running)`, CapsLock acting as Hyper |
-| **Package Validation** | `dpkg -l \| grep -E "(sway\|pipewire\|waybar)"` | Ubuntu: installed packages matching blueprint |
+| **Package Validation** | `dpkg -l \| grep -E "(sway\|pipewire)" && which noctalia` | Ubuntu: installed packages matching blueprint |

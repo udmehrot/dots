@@ -164,34 +164,50 @@ sudo apt update
 
 ### 2. Install Core Packages & Dependencies
 
+Install Sway, audio, networking, hardware acceleration, and portal libraries:
+
 ```bash
 sudo apt install -y \
-    sway swaylock swayidle xwayland \
-    waybar sway-notification-center wofi btop \
-    foot wezterm zsh bash curl git jq \
+    sway xwayland \
+    foot wezterm zsh bash curl git jq btop \
     pipewire pipewire-pulse wireplumber pavucontrol playerctl brightnessctl \
-    network-manager bluez bluez-tools upower \
-    grim slurp swappy wl-clipboard \
+    network-manager bluez bluez-tools upower power-profiles-daemon \
+    grim slurp wl-clipboard \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
+    libgl1-mesa-dri mesa-vulkan-drivers intel-media-va-driver-non-free vainfo \
     libgtk-3-bin libgtk-4-bin gsettings-desktop-schemas libgtk-layer-shell0
 ```
+> [!NOTE]
+> Standalone daemons like `swaylock`, `swayidle`, `waybar`, `sway-notification-center`, `wofi`, `cliphist`, `awww`, and `swappy` are **not needed** on Ubuntu—Noctalia Shell provides all of these capabilities natively in a single unified binary.
 
 ---
 
-### 3. Install Latest Modern Tools on LTS
+### 3. Install Modern Tools on LTS
 
 #### A. Chezmoi (Dotfile Manager)
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
 ```
 
-#### B. Noctalia Shell
-Install Noctalia Shell (precompiled binary or release package from [noctalia.dev](https://noctalia.dev/)):
+#### B. Noctalia Shell (Unified Desktop Shell Layer)
+Install the latest Noctalia Shell:
 ```bash
-# Ensure noctalia is installed and available in /usr/bin or ~/.local/bin
+# Via official installer script:
 curl -fsSL https://noctalia.dev/install.sh | bash
+
+# Or download the prebuilt release package:
+# https://github.com/noctalia-dev/noctalia/releases
 ```
-*(Noctalia natively provides the status bar, control center, notification daemon, session lock, idle manager, clipboard history, wallpaper transitions, and screenshot tools, eliminating the need for standalone daemons like cliphist, awww, waybar, swaync, or swayidle).*
+Noctalia natively provides:
+* **Dual-Monitor Status Bar** (with capsule styling and system monitors)
+* **Control Center & Notifications** (audio mixer, Wi-Fi, Bluetooth, DND)
+* **On-Screen Display HUD** (volume, brightness, mic mute, keyboard backlight)
+* **Session Lockscreen** (PAM authentication, weather, media player, login box)
+* **Idle & Power Manager** (screen fade dimming, DPMS sleep, caffeine inhibitor)
+* **Clipboard Manager** (persistent image & text history via `ext_data_control_manager_v1`)
+* **Wallpaper Engine** (GPU transitions, multi-monitor wallpapers, interactive gallery)
+* **App Launcher & Dmenu** (fast application search and `noctalia dmenu` shortcuts)
+* **Screenshot & Canvas Studio** (interactive region selection, markup tools, file save)
 
 ---
 
