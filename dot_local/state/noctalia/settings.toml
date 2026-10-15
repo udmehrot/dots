@@ -28,6 +28,26 @@ order = [ "default" ]
     scale = 1.2500000111758709
     thickness = 40
 
+[idle]
+behavior_order = [ "lock", "screen-off" ]
+pre_action_fade_seconds = 2.0
+
+    [idle.behavior.lock]
+    action = "lock"
+    command = ""
+    enabled = true
+    locked_timeout = 0.0
+    resume_command = ""
+    timeout = 300.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    command = "swaymsg \"output * power off\""
+    enabled = true
+    locked_timeout = 0.0
+    resume_command = "swaymsg \"output * power on\""
+    timeout = 600.0
+
 [location]
 address = "Apex, NC"
 

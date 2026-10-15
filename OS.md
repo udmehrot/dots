@@ -469,18 +469,23 @@ Both **Calendar** and **Weather** modules open standalone, compact GTK 3 popups 
 | **Noctalia Session Lock** | <kbd>Super</kbd> + <kbd>Escape</kbd> | PAM Wayland session lockscreen (`ext-session-lock-v1`) with weather, media controls, and login box. |
 | **Noctalia Window Switcher** | <kbd>Alt</kbd> + <kbd>Tab</kbd> | Interactive 3D carousel / compact strip Alt+Tab window switcher (`noctalia msg window-switcher`). |
 | **Noctalia Wallpaper Picker** | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> | Interactive thumbnail grid to select wallpapers with GPU transitions. |
+| **Noctalia Caffeine** | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> | Toggle idle inhibitor (`noctalia msg caffeine-toggle`) to keep screen awake. |
 | **Noctalia Polkit Agent** | Automatic | Built-in graphical privilege elevation agent for GUI authentication prompts. |
 | `nuvio` | Application Launcher | Display-adaptive UI scaler with Intel VA-API hardware acceleration. |
 
-### 7.2 Native Session Lockscreen
-* **Protocol**: `ext-session-lock-v1`
-* **Configuration**: `~/.local/state/noctalia/settings.toml` (`[lockscreen_widgets]`)
+### 7.2 Native Session Lockscreen & Idle Management
+* **Protocols**: `ext-session-lock-v1` (locking), `ext-idle-notifier-v1` (idle detection)
+* **Configuration**: `~/.local/state/noctalia/settings.toml` (`[lockscreen]`, `[idle]`, `[lockscreen_widgets]`)
 * **Features**: Live clock, date, weather card, MPRIS media playback controls, caps lock indicator, keyboard layout indicator, and PAM password authentication.
-* **Triggers**:
+* **Idle Behaviors**:
+  1. **Idle Dimming**: 2.0s screen fade before action (`pre_action_fade_seconds`)
+  2. **Idle Lock**: Auto-locks after 300 seconds (5 minutes) of inactivity (`action = "lock"`)
+  3. **Screen Off**: Powers down displays after 600 seconds (10 minutes) of inactivity (`swaymsg "output * power off"`)
+  4. **Caffeine Mode**: Toggleable idle inhibitor via <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> (`noctalia msg caffeine-toggle`)
+  5. **System Suspend / Lid Close**: Native logind `PrepareForSleep` listener (`lock_before_suspend = true`)
+* **Manual Triggers**:
   1. Manual shortcut: <kbd>Super</kbd> + <kbd>Escape</kbd> or <kbd>Super</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd>
   2. Session Menu: <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> $\rightarrow$ "Lock"
-  3. Idle timeout: `swayidle` after 300 seconds (5 minutes) of inactivity
-  4. System suspend: `swayidle` `before-sleep` trigger
 
 ### 7.3 Native Clipboard History
 * Uses Wayland `ext_data_control_manager_v1` directly within Noctalia.

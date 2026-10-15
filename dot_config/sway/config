@@ -43,11 +43,8 @@ exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 # exec_always /home/ud/.local/bin/cliphist-daemon
 # exec_always bash -c 'killall swaybg 2>/dev/null; pgrep -x awww-daemon >/dev/null || awww-daemon --layer bottom'
 
-### Idle configuration (Noctalia Session Lock)
-exec swayidle -w \
-         timeout 300 'noctalia msg session lock' \
-         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep 'noctalia msg session lock'
+### Idle configuration
+# Managed natively by Noctalia Shell ([idle] in ~/.local/state/noctalia/settings.toml)
 
 ### Input configuration
 #
@@ -122,6 +119,9 @@ bindgesture pinch:4:inward floating toggle
     # Lock screen manually (Noctalia Session Lock)
     bindsym $mod+Escape exec noctalia msg session lock
     bindsym $mod+Mod1+l exec noctalia msg session lock
+
+    # Caffeine / Idle Inhibitor toggle (Noctalia)
+    bindsym $mod+Shift+i exec noctalia msg caffeine-toggle
 
     # Alt+Tab Window Switcher (Noctalia)
     bindsym Mod1+Tab exec noctalia msg window-switcher

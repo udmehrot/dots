@@ -30,6 +30,7 @@ add_entry "Alt + Tab" "Window Switcher Carousel (Noctalia)" 'noctalia msg window
 add_entry "Super + N" "Toggle Notifications (Noctalia)" 'noctalia msg panel-toggle notifications'
 add_entry "Super + Shift + N" "Toggle Control Center (Noctalia)" 'noctalia msg panel-toggle control-center'
 add_entry "F9" "Noctalia Desktop Settings" 'noctalia msg settings-toggle'
+add_entry "Super + Shift + I" "Toggle Caffeine / Idle Inhibitor (Noctalia)" 'noctalia msg caffeine-toggle'
 
 # --- Window Management ---
 add_entry "Super + Shift + Q" "Close / Kill Focused Window" 'swaymsg kill'
