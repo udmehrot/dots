@@ -370,7 +370,7 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 └── dot_local/
     └── bin/
         ├── cliphist-daemon             # Background clipboard watcher
-        ├── executable_lockscreen       # Random lockscreen wallpaper script
+        ├── executable_lockscreen       # Session lock wrapper (delegates to Noctalia session lock)
         ├── executable_nuvio            # Display-adaptive UI scaler & hardware launcher
         ├── executable_wofi-bluetooth   # Bluetooth device manager & pairer
         ├── executable_wofi-clipboard   # Clipboard search and paste menu

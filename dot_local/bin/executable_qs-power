@@ -34,7 +34,7 @@ case "$ACTION" in
 Usage: $(basename "$0") [COMMAND]
 
 Commands:
-  lock       Lock the session (swaylock + Rosé Pine wallpaper)
+  lock       Lock the session (Noctalia Session Lock)
   reboot     Restart / reboot the machine
   shutdown   Power off / shut down the machine
   suspend    Suspend system into sleep

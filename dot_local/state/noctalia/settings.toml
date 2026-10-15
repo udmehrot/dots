@@ -1,5 +1,45 @@
 config_version = 14
 
+[bar]
+order = [ "default" ]
+
+    [bar.default]
+    background_opacity = 0.0
+    capsule = true
+    capsule_opacity = 0.91999997943639755
+    capsule_radius = 3
+    capsule_thickness = 0.65999998897314072
+    end = [
+        "media",
+        "tray",
+        "clipboard",
+        "network",
+        "bluetooth",
+        "volume",
+        "battery",
+        "control-center",
+        "bar",
+        "notifications",
+        "session"
+    ]
+    font_family = "Ioskeley Mono"
+    margin_ends = 0
+    radius = 0
+    scale = 1.2500000111758709
+    thickness = 40
+
+[location]
+address = "Apex, NC"
+
+[lockscreen]
+allow_empty_password = false
+blur_intensity = 0.5
+blurred_desktop = true
+edge_smoothness = 0.3
+enabled = true
+fingerprint = true
+lock_before_suspend = true
+
 [lockscreen_widgets]
 enabled = true
 schema_version = 2
@@ -64,10 +104,22 @@ widget_order = [ "lockscreen-login-box@DP-2", "lockscreen-login-box@eDP-1" ]
         show_unlock_hint = true
         show_weather = true
 
+[nightlight]
+enabled = true
+
+[plugins]
+enabled = [
+    "prponkshe/umbriel-displays",
+    "noctalia/wallhaven",
+    "davemhammer/obsidian",
+    "yugaaank/better-clock",
+    "liamwh/emoji-picker"
+]
+
 [shell]
+clipboard_enabled = true
 font_family = "Ioskeley Mono"
 polkit_agent = true
-clipboard_enabled = true
 
     [shell.screenshot]
     annotate = true
@@ -81,15 +133,34 @@ clipboard_enabled = true
 
 [theme]
 builtin = "Rosé Pine"
+community_palette = "Rose Pine Moon"
+mode = "dark"
+source = "builtin"
+wallpaper_scheme = "vibrant"
 
 [wallpaper.default]
-path = "/home/ud/Pictures/Walls/illustration/something-beautiful-in-nature.jpg"
+path = "/home/ud/Pictures/Walls/os/arch-btw.png"
 
 [wallpaper.last]
-path = "/home/ud/Pictures/Walls/illustration/something-beautiful-in-nature.jpg"
+path = "/home/ud/Pictures/Walls/os/arch-btw.png"
 
 [wallpaper.monitors.DP-2]
-path = "/home/ud/Pictures/Walls/illustration/something-beautiful-in-nature.jpg"
+path = "/home/ud/Pictures/Walls/wallhaven-og7yyl.jpg"
 
 [wallpaper.monitors.eDP-1]
-path = "/home/ud/Pictures/Walls/illustration/something-beautiful-in-nature.jpg"
+path = "/home/ud/Pictures/Walls/os/arch-btw.png"
+
+[weather]
+unit = "imperial"
+
+[widget.bar]
+type = "prponkshe/umbriel-displays:bar"
+
+[widget.clock]
+format = "{:%b %d}  {:%H:%M:%S}"
+
+[widget.network]
+show_label = false
+
+[widget.workspaces]
+style = "minimal"

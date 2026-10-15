@@ -32,12 +32,12 @@
 6. [Notification Center (SwayNC)](#6-notification-center-swaync)
    - [6.1 Daemon Architecture & Styling](#61-daemon-architecture--styling)
    - [6.2 Widget Stack & Quick Control Grid](#62-widget-stack--quick-control-grid)
-7. [App Launchers & Custom Utility Scripts](#7-app-launchers--custom-utility-scripts)
-   - [7.1 Helper Scripts Catalog (~/.local/bin/)](#71-helper-scripts-catalog-localbin)
-   - [7.2 Random Lockscreen Wallpaper System (lockscreen + swaylock)](#72-random-lockscreen-wallpaper-system-lockscreen--swaylock)
-   - [7.3 Clipboard History Daemon (cliphist-daemon)](#73-clipboard-history-daemon-cliphist-daemon)
-   - [7.4 Wallpaper Transition Daemon (awww)](#74-wallpaper-transition-daemon-awww)
-   - [7.5 Screenshot & Annotation Toolchain (grim + slurp + swappy)](#75-screenshot--annotation-toolchain-grim--slurp--swappy)
+7. [App Launchers & Integrated Subsystems (Noctalia)](#7-app-launchers--integrated-subsystems-noctalia)
+   - [7.1 Helper Scripts & Launcher Catalog](#71-helper-scripts--launcher-catalog)
+   - [7.2 Native Session Lockscreen](#72-native-session-lockscreen)
+   - [7.3 Native Clipboard History](#73-native-clipboard-history)
+   - [7.4 Native Wallpaper Engine](#74-native-wallpaper-engine)
+   - [7.5 Screenshot & Annotation Toolchain](#75-screenshot--annotation-toolchain)
 8. [Keyboard Remapping (keyd) & Hardware Controls](#8-keyboard-remapping-keyd--hardware-controls)
    - [8.1 evdev Kernel Remapping Configuration](#81-evdev-kernel-remapping-configuration)
    - [8.2 The CapsLock Hyper Layer Paradigm](#82-the-capslock-hyper-layer-paradigm)
@@ -798,7 +798,7 @@ chmod +x ~/.local/bin/*
 | **Input Devices** | `swaymsg -t get_inputs` | Touchpad, TrackPoint, Cisco Touch identified |
 | **Waybar Process** | `pgrep -x waybar` | Process ID returned (daemon active) |
 | **SwayOSD Daemon** | `pgrep -x swayosd-server` | Process ID returned (daemon active) |
-| **Lockscreen Dry-Run** | `lockscreen --dry-run` | Prints selected random wallpaper command |
+| **Lockscreen Dry-Run** | `lockscreen --dry-run` | Prints Noctalia session lock command |
 | **Audio Routing** | `wpctl status` | PipeWire client list, default sink marked with `*` |
 | **Dual Batteries** | `upower -i /org/freedesktop/UPower/devices/battery_BAT0` | State, percentage, and health reported |
 | **keyd Remapper** | `sudo systemctl status keyd` | `active (running)`, CapsLock acting as Hyper |
