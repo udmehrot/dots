@@ -6,9 +6,12 @@ order = [ "default" ]
     [bar.default]
     background_opacity = 0.0
     capsule = true
-    capsule_opacity = 0.91999997943639755
-    capsule_radius = 3
-    capsule_thickness = 0.65999998897314072
+    capsule_border = "#ebbcba"
+    capsule_border_width = 1.0
+    capsule_fill = "surface"
+    capsule_opacity = 0.94999999999999996
+    capsule_radius = 4
+    capsule_thickness = 0.69999999999999996
     end = [
         "media",
         "tray",
@@ -55,7 +58,7 @@ address = "Apex, NC"
 allow_empty_password = false
 blur_intensity = 0.5
 blurred_desktop = true
-edge_smoothness = 0.3
+edge_smoothness = 0.29999999999999999
 enabled = true
 fingerprint = true
 lock_before_suspend = true
@@ -150,6 +153,13 @@ polkit_agent = true
     directory = "/home/ud/Pictures/Screenshots"
     freeze_screen = true
     save_to_file = true
+
+[shell.panel]
+control_center_placement = "floating"
+open_near_click_control_center = true
+session_placement = "floating"
+open_near_click_session = true
+transparency_mode = "solid"
 
 [theme]
 builtin = "Rosé Pine"
