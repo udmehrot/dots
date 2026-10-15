@@ -155,10 +155,16 @@ polkit_agent = true
     save_to_file = true
 
 [shell.panel]
+clipboard_placement = "floating"
 control_center_placement = "floating"
-open_near_click_control_center = true
+launcher_placement = "floating"
+polkit_placement = "floating"
 session_placement = "floating"
+wallpaper_placement = "floating"
+open_near_click_clipboard = true
+open_near_click_control_center = true
 open_near_click_session = true
+open_near_click_wallpaper = true
 transparency_mode = "solid"
 
 [theme]
