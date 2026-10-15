@@ -21,7 +21,7 @@
    - [4.2 Touchpad, TrackPoint & Multitouch Gestures](#42-touchpad-trackpoint--multitouch-gestures)
    - [4.3 Comprehensive Keybindings Reference](#43-comprehensive-keybindings-reference)
    - [4.4 ThinkPad Hardware Function Keys (F1–F12)](#44-thinkpad-hardware-function-keys-f1f12)
-   - [4.5 Idle & Session Management (swayidle)](#45-idle--session-management-swayidle)
+   - [4.5 Idle & Session Management (Noctalia Idle)](#45-idle--session-management-noctalia-idle)
    - [4.6 Window Rules & Floating Container Policies](#46-window-rules--floating-container-policies)
 5. [Waybar Desktop Status Bar & System Monitors](#5-waybar-desktop-status-bar--system-monitors)
    - [5.1 Architecture & Modular File Structure](#51-architecture--modular-file-structure)
@@ -34,7 +34,7 @@
    - [6.2 Widget Stack & Quick Control Grid](#62-widget-stack--quick-control-grid)
 7. [App Launchers & Integrated Subsystems (Noctalia)](#7-app-launchers--integrated-subsystems-noctalia)
    - [7.1 Helper Scripts & Launcher Catalog](#71-helper-scripts--launcher-catalog)
-   - [7.2 Native Session Lockscreen](#72-native-session-lockscreen)
+   - [7.2 Native Session Lockscreen & Idle Management](#72-native-session-lockscreen--idle-management)
    - [7.3 Native Clipboard History](#73-native-clipboard-history)
    - [7.4 Native Wallpaper Engine](#74-native-wallpaper-engine)
    - [7.5 Screenshot & Annotation Toolchain](#75-screenshot--annotation-toolchain)
@@ -326,14 +326,32 @@ bindgesture pinch:4:inward floating toggle
 * **Fn + 4** (`XF86Sleep`): Suspend system (`systemctl suspend`)
 * **Media Keys** (`Play / Pause / Next / Prev / Stop`): Controlled via Noctalia (`noctalia msg media toggle / next / previous / stop`)
 
-### 4.5 Idle & Session Management (swayidle)
-Configured in `~/.config/sway/config`:
-```swayconfig
-exec swayidle -w \
-     timeout 300 'noctalia msg session lock' \
-     timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-     before-sleep 'noctalia msg session lock'
+### 4.5 Idle & Session Management (Noctalia Idle)
+Idle timeouts, screen dimming, display power off, and session locking are managed natively by **Noctalia Shell** using Wayland `ext-idle-notifier-v1`, configured in `~/.local/state/noctalia/settings.toml`:
+```toml
+[idle]
+behavior_order = [ "lock", "screen-off" ]
+pre_action_fade_seconds = 2.0
+
+    [idle.behavior.lock]
+    action = "lock"
+    command = ""
+    enabled = true
+    locked_timeout = 0.0
+    resume_command = ""
+    timeout = 300.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    command = "swaymsg \"output * power off\""
+    enabled = true
+    locked_timeout = 0.0
+    resume_command = "swaymsg \"output * power on\""
+    timeout = 600.0
 ```
+* **Idle Dimming**: Fullscreen fade dimming 2.0 seconds prior to locking (`pre_action_fade_seconds = 2.0`).
+* **Caffeine (Idle Inhibitor)**: Toggleable anytime with <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> (`noctalia msg caffeine-toggle`) or via the status bar.
+* **Suspend & Sleep**: Automatically locks before sleep using systemd-logind's `PrepareForSleep` signal (`lock_before_suspend = true`).
 
 ### 4.6 Window Rules & Floating Container Policies
 ```swayconfig
@@ -347,11 +365,26 @@ for_window [class="com-nuvio-app-MainKt"] inhibit_idle visible, border none
 
 ---
 
-## 5. Waybar Desktop Status Bar & System Monitors
+## 5. Desktop Shell & Status Bar (Noctalia Shell & Legacy Waybar Archive)
 
-**Waybar** provides a lightweight, highly customizable status bar built with GTK 3 and Wayland `layer-shell`, styled identically to the Rosé Pine palette with standalone interactive Python GTK applets.
+The desktop shell is powered by **Noctalia Shell**, providing a unified, GPU-accelerated Wayland layer-shell status bar across both displays (`DP-2` and `eDP-1`), fully styled in Rosé Pine Dark with Ioskeley Mono typography.
 
-### 5.1 Architecture & Modular File Structure
+### 5.1 Noctalia Unified Bar Architecture & Plugins
+* **Configuration**: `~/.local/state/noctalia/settings.toml` (`[bar]`, `[widget.*]`, `[plugins]`)
+* **Bar Geometry**:
+  * Position: Top of screen, capsule style (`capsule = true`, `capsule_radius = 3`, `scale = 1.25`, `thickness = 40`)
+  * Displays: Multi-monitor enabled via `prponkshe/umbriel-displays:bar` plugin for independent workspaces and monitor metrics.
+* **Integrated Widgets (`order = [ "default" ]`)**:
+  * **Workspaces**: Pill-style workspace indicators with minimal dots and focus highlights.
+  * **System Monitors**: CPU usage, RAM utilization, network RX/TX bandwidth, and storage capacity.
+  * **Media Player**: MPRIS media stream widget with track metadata and playback controls.
+  * **Tray**: Standard Wayland StatusNotifierItem system tray for background apps.
+  * **Control Center & Notifications**: One-click toggles for quick settings and notification drawer.
+  * **Clock & Date**: Formatted `{:%b %d}  {:%H:%M:%S}`.
+  * **Caffeine & Battery**: Idle inhibitor indicator and ThinkPad dual battery monitor.
+
+### 5.2 Legacy Waybar Archive (Historical Reference)
+*(Waybar has been superseded by Noctalia Shell. Its configuration is preserved in `~/.config/waybar/` for reference).*
 Directory: `/home/ud/.config/waybar/`
 ```text
 ~/.config/waybar/
@@ -639,16 +672,15 @@ Dotfiles are tracked and managed using **chezmoi** in `/home/ud/.local/share/che
 │   │   └── scripts/
 │   └── wofi/
 └── dot_local/
-    └── bin/
-        ├── cliphist-daemon
-        ├── executable_lockscreen
-        ├── executable_nuvio
-        ├── executable_wofi-bluetooth
-        ├── executable_wofi-clipboard
-        ├── executable_wofi-power
-        ├── executable_wofi-shortcuts
-        ├── executable_wofi-wallpaper
-        └── executable_wofi-wifi
+    ├── bin/
+    │   ├── executable_lockscreen       # Noctalia session lock wrapper
+    │   ├── executable_nuvio            # Display scaler & app launcher
+    │   ├── executable_qs-power         # Power CLI wrapper
+    │   ├── executable_wofi-shortcuts   # System shortcuts cheat sheet (noctalia dmenu)
+    │   └── ...
+    └── state/
+        └── noctalia/
+            └── settings.toml           # Unified Noctalia Shell configuration
 ```
 
 ### 12.2 Daily Workflow & Synchronization
@@ -683,15 +715,20 @@ git push
 ```bash
 # 1. Base system, Wayland, graphics, audio, and tools
 sudo pacman -Syu --needed \
-    sway swaylock swayidle xorg-xwayland \
+    sway xorg-xwayland \
+    noctalia \
     polkit polkit-gnome \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk \
     mesa vulkan-intel intel-media-driver libva-utils \
     pipewire pipewire-pulse pipewire-alsa wireplumber pavucontrol playerctl brightnessctl \
     networkmanager bluez bluez-utils upower power-profiles-daemon \
-    grim slurp swappy wl-clipboard cliphist \
-    wezterm foot zsh git curl jq chezmoi keyd ly waybar btop \
-    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas gtk-layer-shell
+    grim slurp wl-clipboard \
+    wezterm foot zsh git curl jq chezmoi keyd ly btop \
+    gtk3 gtk4 gnome-themes-extra gsettings-desktop-schemas
+
+# Note: The following 10 legacy packages are replaced by Noctalia Shell:
+# swaylock swayidle swaybg awww waybar swaync swayosd cliphist wofi swappy
+# (To remove them: sudo pacman -R swaylock swayidle swaybg awww waybar swaync swayosd cliphist wofi swappy)
 
 # 2. Install yay AUR helper
 git clone https://aur.archlinux.org/yay.git /tmp/yay
@@ -801,8 +838,9 @@ chmod +x ~/.local/bin/*
 | **Vulkan Support** | `vulkaninfo --summary` | `Intel(R) UHD Graphics 620 (KBL GT2)` |
 | **Sway Displays** | `swaymsg -t get_outputs` | `eDP-1` and `DP-2` configured with correct resolutions |
 | **Input Devices** | `swaymsg -t get_inputs` | Touchpad, TrackPoint, Cisco Touch identified |
-| **Waybar Process** | `pgrep -x waybar` | Process ID returned (daemon active) |
-| **SwayOSD Daemon** | `pgrep -x swayosd-server` | Process ID returned (daemon active) |
+| **Noctalia Daemon** | `pgrep -x noctalia` | Process ID returned (daemon active) |
+| **Noctalia Caffeine** | `noctalia msg caffeine-toggle` | Toggles idle inhibitor state (ok) |
+| **Noctalia Config Validation** | `noctalia config validate ~/.local/state/noctalia/settings.toml` | `✓ Config is valid` |
 | **Lockscreen Dry-Run** | `lockscreen --dry-run` | Prints Noctalia session lock command |
 | **Audio Routing** | `wpctl status` | PipeWire client list, default sink marked with `*` |
 | **Dual Batteries** | `upower -i /org/freedesktop/UPower/devices/battery_BAT0` | State, percentage, and health reported |

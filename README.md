@@ -38,11 +38,11 @@ sudo pacman -Syu
 
 # Base Wayland, Compositor & Graphics
 sudo pacman -S --needed \
-    sway swaylock swayidle xorg-xwayland \
-    polkit polkit-gnome \
+    sway xorg-xwayland \
+    polkit \
     xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk
 
-# Shell Layer, Terminals & System Monitors
+# Unified Desktop Shell Layer (Noctalia), Terminals & System Monitors
 sudo pacman -S --needed noctalia foot wezterm zsh bash curl git jq btop
 
 # Audio & Media Controls
@@ -180,30 +180,18 @@ sudo apt install -y \
 
 ### 3. Install Latest Modern Tools on LTS
 
-Some newer Wayland tools are best installed directly via their official installers or release binaries:
-
 #### A. Chezmoi (Dotfile Manager)
 ```bash
 sh -c "$(curl -fsLS get.chezmoi.io)" -- -b ~/.local/bin
 ```
 
-#### B. Cliphist (Wayland Clipboard Manager)
+#### B. Noctalia Shell
+Install Noctalia Shell (precompiled binary or release package from [noctalia.dev](https://noctalia.dev/)):
 ```bash
-mkdir -p ~/.local/bin
-# Download latest Linux x86_64 binary
-curl -s https://api.github.com/repos/sentriz/cliphist/releases/latest \
-  | jq -r '.assets[] | select(.name | test("linux_amd64")) | .browser_download_url' \
-  | wget -qi - -O ~/.local/bin/cliphist
-chmod +x ~/.local/bin/cliphist
+# Ensure noctalia is installed and available in /usr/bin or ~/.local/bin
+curl -fsSL https://noctalia.dev/install.sh | bash
 ```
-
-#### C. Awww (Smooth Animated Wallpaper Daemon)
-Install via Rust Cargo (or download precompiled binary from [awww releases](https://github.com/LGFae/awww/releases)):
-```bash
-sudo apt install -y cargo libwayland-dev libxkbcommon-dev
-cargo install awww
-# Ensure ~/.cargo/bin or ~/.local/bin is in your PATH
-```
+*(Noctalia natively provides the status bar, control center, notification daemon, session lock, idle manager, clipboard history, wallpaper transitions, and screenshot tools, eliminating the need for standalone daemons like cliphist, awww, waybar, swaync, or swayidle).*
 
 ---
 
@@ -275,6 +263,7 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 | **<kbd>Super</kbd> + <kbd>Escape</kbd>** / **<kbd>Super</kbd> + <kbd>Alt</kbd> + <kbd>L</kbd>** | Lock Screen (Noctalia Session Lock) | `noctalia msg session lock` |
 | **<kbd>Super</kbd> + <kbd>N</kbd>** | Toggle Notification Center (Noctalia) | `noctalia msg panel-toggle notifications` |
 | **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>N</kbd>** | Toggle Control Center (Noctalia) | `noctalia msg panel-toggle control-center` |
+| **<kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd>** | Toggle Caffeine (Idle Inhibitor) | `noctalia msg caffeine-toggle` |
 | **<kbd>Alt</kbd> + <kbd>Tab</kbd>** | Window Switcher Carousel (Noctalia) | `noctalia msg window-switcher` |
 | **<kbd>F9</kbd>** | Noctalia Desktop Settings | `noctalia msg settings-toggle` |
 
@@ -368,14 +357,13 @@ All shortcuts can be searched on the fly by pressing **<kbd>Super / Cmd</kbd> + 
 │   ├── keyd/                           # Keyboard remap configurations
 │   └── nvim/                           # LazyVim Neovim configuration
 └── dot_local/
-    └── bin/
-        ├── cliphist-daemon             # Background clipboard watcher
-        ├── executable_lockscreen       # Session lock wrapper (delegates to Noctalia session lock)
-        ├── executable_nuvio            # Display-adaptive UI scaler & hardware launcher
-        ├── executable_wofi-bluetooth   # Bluetooth device manager & pairer
-        ├── executable_wofi-clipboard   # Clipboard search and paste menu
-        ├── executable_wofi-power       # Power & session action menu
-        ├── executable_wofi-shortcuts   # System shortcuts cheat sheet
-        ├── executable_wofi-wallpaper   # Animated wallpaper selector
-        └── executable_wofi-wifi        # Wi-Fi network selector
+    ├── bin/
+    │   ├── executable_lockscreen       # Session lock wrapper (delegates to Noctalia session lock)
+    │   ├── executable_nuvio            # Display-adaptive UI scaler & hardware launcher
+    │   ├── executable_qs-power         # Power CLI wrapper
+    │   ├── executable_wofi-shortcuts   # System shortcuts cheat sheet (piped into noctalia dmenu)
+    │   └── ...
+    └── state/
+        └── noctalia/
+            └── settings.toml           # Unified Noctalia Shell settings & widgets
 ```
