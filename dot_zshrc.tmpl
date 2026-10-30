@@ -102,7 +102,7 @@ export NVM_DIR="$HOME/.nvm"
 export SUDO_EDITOR="/snap/bin/nvim"
 
 # opencode
-export PATH=/home/udmehrot/.opencode/bin:$PATH
+export PATH={{ .chezmoi.homeDir }}/.opencode/bin:$PATH
 
 # GitLab container aliases
 alias glab-start='podman start gitlab'
@@ -120,4 +120,4 @@ osc7_cwd  # Run once on shell startup
 
 
 # Added by Antigravity CLI installer
-export PATH="/home/udmehrot/.local/bin:$PATH"
+export PATH="{{ .chezmoi.homeDir }}/.local/bin:$PATH"

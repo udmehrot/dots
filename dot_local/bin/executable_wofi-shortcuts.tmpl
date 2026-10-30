@@ -19,7 +19,7 @@ entries=""
 # --- Launchers & Tools ---
 add_entry "Super + Return" "Launch Terminal (foot)" 'foot'
 add_entry "Super + D" "Application Launcher (Noctalia)" 'noctalia msg panel-toggle launcher'
-add_entry "Super + K" "Keyboard Shortcuts List (this menu)" '/home/ud/.local/bin/wofi-shortcuts'
+add_entry "Super + K" "Keyboard Shortcuts List (this menu)" '{{ .chezmoi.homeDir }}/.local/bin/wofi-shortcuts'
 add_entry "Super + Shift + V" "Clipboard History Manager (Noctalia)" 'noctalia msg panel-toggle clipboard'
 add_entry "Super + Shift + W" "Wi-Fi & Network Settings (Noctalia)" 'noctalia msg panel-toggle control-center network'
 add_entry "Super + Shift + B" "Next Wallpaper (Noctalia)" 'noctalia msg wallpaper-next'

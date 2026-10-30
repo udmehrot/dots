@@ -1,4 +1,4 @@
-export SHELL="$HOME/.local/bin/zsh"
+export SHELL=/usr/bin/zsh
 export TERMINAL="wezterm"
 export BROWSER="vivaldi"
 export PATH="$HOME/.local/bin:$PATH"

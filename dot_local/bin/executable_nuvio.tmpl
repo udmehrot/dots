@@ -50,5 +50,5 @@ exec flatpak run \
     --env=NUVIO_MPV_HWDEC="vaapi" \
     --env=NUVIO_MPV_GPU_CONTEXT="x11egl" \
     --env=_JAVA_OPTIONS="${JAVA_SCALE_OPT}" \
-    --env=LD_PRELOAD="/home/ud/.var/app/com.nuvio.media.desktop/lib/webkit_main_thread_fix.so" \
+    --env=LD_PRELOAD="{{ .chezmoi.homeDir }}/.var/app/com.nuvio.media.desktop/lib/webkit_main_thread_fix.so" \
     com.nuvio.media.desktop "$@"

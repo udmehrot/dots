@@ -12,7 +12,7 @@ call_ipc() {
 
 case "$ACTION" in
     lock)
-        call_ipc lock || /home/ud/.local/bin/lockscreen
+        call_ipc lock || {{ .chezmoi.homeDir }}/.local/bin/lockscreen
         ;;
     reboot)
         call_ipc reboot || systemctl reboot
@@ -27,7 +27,7 @@ case "$ACTION" in
         call_ipc logout || swaymsg exit
         ;;
     toggle|menu)
-        call_ipc toggle || /home/ud/.local/bin/wofi-power
+        call_ipc toggle || {{ .chezmoi.homeDir }}/.local/bin/wofi-power
         ;;
     -h|--help|help)
         cat <<EOF

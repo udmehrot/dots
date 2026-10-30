@@ -163,7 +163,7 @@ The Intel UHD 620 GPU leverages open-source userspace drivers:
     ```
 
 ### 3.2 Global Wayland Session Environment
-Global environment parameters are loaded by `systemd --user` from `/home/ud/.config/environment.d/`:
+Global environment parameters are loaded by `systemd --user` from `/home/udmehrot/.config/environment.d/`:
 
 #### `~/.config/environment.d/20-wayland.conf`
 ```ini
@@ -182,14 +182,14 @@ _JAVA_AWT_WM_NONREPARENTING=1
 
 #### `~/.config/environment.d/10-defaults.conf`
 ```ini
-SHELL=/home/ud/.local/bin/zsh
+SHELL=/usr/bin/zsh
 TERMINAL=wezterm
 BROWSER=vivaldi
-PATH=/home/ud/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=/home/udmehrot/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ```
 
 ### 3.3 Multi-Monitor Topology & Clamshell Management
-Configured in `/home/ud/.config/sway/config`:
+Configured in `/home/udmehrot/.config/sway/config`:
 ```swayconfig
 # Output arrangement: External 4K monitor (DP-2) directly above laptop screen (eDP-1)
 output DP-2 mode 3840x2160@60Hz scale 1.0 position 0 0
@@ -215,7 +215,7 @@ input "type:touch" {
 
 ## 4. Window Manager (Sway Compositor)
 
-* **Configuration**: `/home/ud/.config/sway/config`
+* **Configuration**: `/home/udmehrot/.config/sway/config`
 * **Modifier Key**: `$mod = Mod4` (Windows / Super key)
 * **System Font**: `pango:Inter 11`
 
@@ -273,7 +273,7 @@ bindgesture pinch:4:inward floating toggle
 | :--- | :--- | :--- |
 | <kbd>Super</kbd> + <kbd>Return</kbd> | Launch Terminal | `wezterm` |
 | <kbd>Super</kbd> + <kbd>D</kbd> | Application Launcher | `noctalia msg panel-toggle launcher` |
-| <kbd>Super</kbd> + <kbd>K</kbd> | System Shortcuts Cheat Sheet | `/home/ud/.local/bin/wofi-shortcuts` (via `noctalia dmenu`) |
+| <kbd>Super</kbd> + <kbd>K</kbd> | System Shortcuts Cheat Sheet | `/home/udmehrot/.local/bin/wofi-shortcuts` (via `noctalia dmenu`) |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Clipboard History Picker | `noctalia msg panel-toggle clipboard` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd> | Wi-Fi Manager | `noctalia msg panel-toggle control-center network` |
 | <kbd>Super</kbd> + <kbd>Shift</kbd> + <kbd>E</kbd> | Power & Session Menu | `noctalia msg panel-toggle session` |
@@ -385,7 +385,7 @@ The desktop shell is powered by **Noctalia Shell**, providing a unified, GPU-acc
 
 ### 5.2 Legacy Waybar Archive (Historical Reference)
 *(Waybar has been superseded by Noctalia Shell. Its configuration is preserved in `~/.config/waybar/` for reference).*
-Directory: `/home/ud/.config/waybar/`
+Directory: `/home/udmehrot/.config/waybar/`
 ```text
 ~/.config/waybar/
 ├── config.jsonc                # Core Waybar layout, modules, intervals & bindings
@@ -435,7 +435,7 @@ Waybar queries Sway IPC to display active workspaces along with icons for all op
 Waybar features real-time hardware and resource monitors positioned in `modules-right`:
 | Monitor | Format | Token / Values | Tooltip Content | Interactive Click Action |
 | :--- | :--- | :--- | :--- | :--- |
-| **Network** | `󰖩 {bandwidthDownBytes}` | Download throughput (e.g. `1.2kB/s`) | Interface, IP/CIDR, Up & Down bandwidth | Left-click: `wezterm -e btop`<br>Right-click: `/home/ud/.local/bin/wofi-wifi` |
+| **Network** | `󰖩 {bandwidthDownBytes}` | Download throughput (e.g. `1.2kB/s`) | Interface, IP/CIDR, Up & Down bandwidth | Left-click: `wezterm -e btop`<br>Right-click: `/home/udmehrot/.local/bin/wofi-wifi` |
 | **CPU** | `󰻠 {usage}%` | Overall CPU percentage (2s poll) | CPU usage %, CPU load, core frequencies | Left-click: `wezterm -e btop` |
 | **Memory** | `󰍛 {percentage}%` | RAM percentage (2s poll) | RAM Used/Total GiB, Available, Swap details | Left-click: `wezterm -e btop` |
 | **Disk** | `󰋊 {percentage_used}%` | Root partition percentage (30s poll) | Used / Total space, Free space on `/` | Left-click: `wezterm -e btop` |
@@ -642,7 +642,7 @@ gtk-font-name=Inter 11
 
 ## 12. Dotfiles & State Management (chezmoi)
 
-Dotfiles are tracked and managed using **chezmoi** in `/home/ud/.local/share/chezmoi/`.
+Dotfiles are tracked and managed using **chezmoi** in `/home/udmehrot/.local/share/chezmoi/`.
 
 ### 12.1 Tracked Files Hierarchy
 ```text

@@ -40,7 +40,7 @@ exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DE
 exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 
 # Clipboard and wallpaper are natively managed by Noctalia Shell
-# exec_always /home/ud/.local/bin/cliphist-daemon
+# exec_always {{ .chezmoi.homeDir }}/.local/bin/cliphist-daemon
 # exec_always bash -c 'killall swaybg 2>/dev/null; pgrep -x awww-daemon >/dev/null || awww-daemon --layer bottom'
 
 ### Idle configuration
@@ -105,7 +105,7 @@ bindgesture pinch:4:inward floating toggle
     bindsym $mod+d exec noctalia msg panel-toggle launcher
 
     # System shortcuts cheat sheet (Cmd / Super + K)
-    bindsym $mod+k exec /home/ud/.local/bin/wofi-shortcuts
+    bindsym $mod+k exec {{ .chezmoi.homeDir }}/.local/bin/wofi-shortcuts
 
     # Clipboard manager (Noctalia)
     bindsym $mod+Shift+v exec noctalia msg panel-toggle clipboard

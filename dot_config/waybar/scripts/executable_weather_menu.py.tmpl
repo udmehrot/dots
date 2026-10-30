@@ -480,7 +480,7 @@ class WeatherMenu(Gtk.Window):
             except Exception:
                 pass
             import subprocess
-            subprocess.run(["/home/ud/.config/waybar/scripts/weather.py"])
+            subprocess.run(["{{ .chezmoi.homeDir }}/.config/waybar/scripts/weather.py"])
             GLib.idle_add(self.render_content)
 
         threading.Thread(target=do_refresh, daemon=True).start()

@@ -2,7 +2,7 @@
 # ~/.bash_profile
 #
 
-export SHELL="$HOME/.local/bin/zsh"
+export SHELL=/usr/bin/zsh
 export TERMINAL="wezterm"
 export BROWSER="vivaldi"
 export PATH="$HOME/.local/bin:$PATH"
@@ -12,6 +12,6 @@ export MOZ_USE_XINPUT2=1
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
-if [ -t 1 ] && [ -x "$HOME/.local/bin/zsh" ] && [ -z "$ZSH_VERSION" ]; then
-    exec "$HOME/.local/bin/zsh" -l
+if [ -t 1 ] && [ -x /usr/bin/zsh ] && [ -z "$ZSH_VERSION" ]; then
+    exec /usr/bin/zsh -l
 fi

@@ -150,7 +150,7 @@ polkit_agent = true
     close_on_save = true
     confirm_region = false
     copy_to_clipboard = true
-    directory = "/home/ud/Pictures/Screenshots"
+    directory = "{{ .chezmoi.homeDir }}/Pictures/Screenshots"
     freeze_screen = true
     save_to_file = true
 
@@ -175,16 +175,16 @@ source = "builtin"
 wallpaper_scheme = "vibrant"
 
 [wallpaper.default]
-path = "/home/ud/Pictures/Walls/os/arch-btw.png"
+path = "{{ .chezmoi.homeDir }}/Pictures/Walls/os/arch-btw.png"
 
 [wallpaper.last]
-path = "/home/ud/Pictures/Walls/os/arch-btw.png"
+path = "{{ .chezmoi.homeDir }}/Pictures/Walls/os/arch-btw.png"
 
 [wallpaper.monitors.DP-2]
-path = "/home/ud/Pictures/Walls/wallhaven-og7yyl.jpg"
+path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-og7yyl.jpg"
 
 [wallpaper.monitors.eDP-1]
-path = "/home/ud/Pictures/Walls/os/arch-btw.png"
+path = "{{ .chezmoi.homeDir }}/Pictures/Walls/os/arch-btw.png"
 
 [weather]
 unit = "imperial"

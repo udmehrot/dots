@@ -66,8 +66,8 @@
         "format": "{}",
         "interval": 900,
         "return-type": "json",
-        "exec": "/home/ud/.config/waybar/scripts/weather.py",
-        "on-click": "/home/ud/.config/waybar/scripts/weather_menu.py",
+        "exec": "{{ .chezmoi.homeDir }}/.config/waybar/scripts/weather.py",
+        "on-click": "{{ .chezmoi.homeDir }}/.config/waybar/scripts/weather_menu.py",
         "tooltip": false,
         "escape": false
     },
@@ -77,7 +77,7 @@
         "interval": 1,
         "format": "<span color='#c4a7e7'>󰃮</span> {0:%a, %b %e}  <span color='#9ccfd8'>󰥔</span> <span color='#ebbcba' weight='bold'>{0:%H:%M:%S}</span>",
         "tooltip": false,
-        "on-click": "/home/ud/.config/waybar/scripts/calendar_menu.py"
+        "on-click": "{{ .chezmoi.homeDir }}/.config/waybar/scripts/calendar_menu.py"
     },
 
     // Network Monitor
@@ -92,7 +92,7 @@
         "tooltip-format-ethernet": "󰛳 {ifname}\nIP: {ipaddr}/{cidr}\n󰇚 {bandwidthDownBytes}  󰕒 {bandwidthUpBytes}",
         "tooltip-format-disconnected": "󰖪 Disconnected",
         "on-click": "wezterm -e btop",
-        "on-click-right": "/home/ud/.local/bin/wofi-wifi"
+        "on-click-right": "{{ .chezmoi.homeDir }}/.local/bin/wofi-wifi"
     },
 
     // CPU Monitor
@@ -156,14 +156,14 @@
     "custom/power": {
         "format": "󰐥",
         "tooltip": false,
-        "on-click": "/home/ud/.local/bin/wofi-power"
+        "on-click": "{{ .chezmoi.homeDir }}/.local/bin/wofi-power"
     },
 
     // Notification Center (SwayNC)
     "custom/notification": {
         "format": "{}",
         "return-type": "json",
-        "exec": "/home/ud/.config/waybar/scripts/notifications.py",
+        "exec": "{{ .chezmoi.homeDir }}/.config/waybar/scripts/notifications.py",
         "on-click": "swaync-client -t -sw",
         "on-click-right": "swaync-client -d -sw",
         "on-click-middle": "swaync-client -C",

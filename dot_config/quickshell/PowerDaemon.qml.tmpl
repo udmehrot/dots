@@ -43,7 +43,7 @@ Item {
     function lock(): void {
         console.log("PowerDaemon: Locking session...")
         actionTriggered("lock")
-        execProc.exec(["/home/ud/.local/bin/lockscreen"])
+        execProc.exec(["{{ .chezmoi.homeDir }}/.local/bin/lockscreen"])
     }
 
     function reboot(): void {
