@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+"""Reapply this Wayland session's existing Kanshi configuration after Sway reload."""
+import os
+import json
+from pathlib import Path
+import runpy
+import signal
+import subprocess
+import sys
+import time
+
+
+def lid_closed():
+    for path in Path('/proc/acpi/button/lid').glob('*/state'):
+        if 'closed' in path.read_text().lower():
+            return True
+    return False
+
+
+try:
+    # Sway handles this request only after the current reload, including the
+    # --reload switch bindings, has returned to its IPC event loop.
+    subprocess.run(['swaymsg', '-t', 'get_version', '-r'], check=True,
+                   stdout=subprocess.DEVNULL)
+    config = Path(os.environ.get('XDG_CONFIG_HOME') or Path.home() / '.config') / 'kanshi/config'
+    select = runpy.run_path(str(Path.home() / '.local/bin/kanshi-save-layout'))['session_kanshi']
+    pid = select(config)
+    if pid:
+        os.kill(pid, signal.SIGHUP)
+        # A profile can enable eDP after the reload's lid:on binding. Keep
+        # enforcing the closed lid while Kanshi's asynchronous apply settles.
+        if lid_closed():
+            deadline = time.monotonic() + 5
+            while time.monotonic() < deadline and lid_closed():
+                outputs = json.loads(subprocess.check_output(
+                    ['swaymsg', '-t', 'get_outputs', '-r'], text=True))
+                if any(output['name'] == 'eDP-1' and output['active'] for output in outputs):
+                    subprocess.run(['swaymsg', 'output', 'eDP-1', 'disable'],
+                                   stdout=subprocess.DEVNULL, check=True)
+                time.sleep(0.25)
+except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as error:
+    print(f'kanshi-reapply: {error}', file=sys.stderr)
+    sys.exit(1)

@@ -1,0 +1,16 @@
+id = "udmehrot/monitor-layout"
+name = "Save Monitor Layout"
+version = "1.0.0"
+plugin_api = 43
+author = "udmehrot"
+description = "Save the current Sway layout as a Kanshi profile."
+icon = "device-desktop"
+tags = ["launcher", "utility"]
+dependencies = ["swaymsg", "kanshi", "notify-send"]
+
+[[launcher_provider]]
+id = "save"
+entry = "launcher.luau"
+prefix = "mon"
+glyph = "device-desktop"
+include_in_global_search = false

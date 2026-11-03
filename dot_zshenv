@@ -1,0 +1,6 @@
+export SHELL=/usr/bin/zsh
+export TERMINAL="wezterm"
+export BROWSER="firefox"
+export PATH="$HOME/.local/bin:$PATH"
+export MOZ_ENABLE_WAYLAND=1
+export MOZ_USE_XINPUT2=1

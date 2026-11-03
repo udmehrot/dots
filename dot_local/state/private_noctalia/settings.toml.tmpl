@@ -1,0 +1,332 @@
+config_version = 16
+
+[bar]
+order = [ "default" ]
+
+    [bar.default]
+    background_opacity = 0.0
+    capsule = true
+    capsule_border = "#908caa"
+    capsule_border_width = 1.0
+    capsule_fill = "surface"
+    capsule_opacity = 0.94999999999999996
+    capsule_radius = 4
+    capsule_thickness = 0.69999999999999996
+    center = [ "clock", "weather" ]
+    end = [ "widget", "tray", "clipboard", "group:g1", "volume", "battery", "control-center", "notifications", "session" ]
+    font_family = "Ioskeley Mono"
+    margin_ends = 0
+    radius = 0
+    scale = 1.2500000111758709
+    start = [ "launcher", "wallpaper", "taskbar" ]
+    thickness = 40
+
+        [[bar.default.capsule_group]]
+        accordion = false
+        accordion_direction = "end"
+        border = "#908caa"
+        border_width = 1.0
+        enabled = true
+        fill = "surface"
+        id = "g1"
+        members = [ "network", "bar", "bluetooth" ]
+        opacity = 0.94999998807907104
+        padding = 6.0
+        radius = 4.0
+
+[bluetooth]
+connect_when_enabled = true
+
+[idle]
+behavior_order = [ "lock", "screen-off" ]
+pre_action_fade_seconds = 2.0
+
+    [idle.behavior.lock]
+    action = "lock"
+    command = ""
+    enabled = true
+    locked_timeout = 0.0
+    resume_command = ""
+    timeout = 300.0
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    command = "swaymsg \"output * power off\""
+    enabled = true
+    locked_timeout = 0.0
+    resume_command = "swaymsg \"output * power on\""
+    timeout = 600.0
+
+[location]
+auto_locate = true
+
+[lockscreen]
+allow_empty_password = false
+blur_intensity = 0.5
+edge_smoothness = 0.29999999999999999
+enabled = true
+fingerprint = true
+grace_period_seconds = 4
+lock_before_suspend = true
+
+[lockscreen_widgets]
+enabled = true
+schema_version = 2
+widget_order = [
+    "lockscreen-login-box@DP-2",
+    "lockscreen-login-box@eDP-1",
+    "lockscreen-login-box@DP-4",
+    "lockscreen-login-box@DP-3"
+]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-2"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1536.0
+    cy = 1546.0
+    output = "DP-2"
+    placement_height = 1728.0
+    placement_width = 3072.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-3"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1720.0
+    cy = 1258.0
+    output = "DP-3"
+    placement_height = 1440.0
+    placement_width = 3440.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-3".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-4"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1536.0
+    cy = 1582.4000244140625
+    output = "DP-4"
+    placement_height = 1728.0
+    placement_width = 3072.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-4".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 997.77777099609375
+    output = "eDP-1"
+    placement_height = 1200.0
+    placement_width = 1920.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[nightlight]
+enabled = true
+
+[plugin_settings."andrewdems/vpn-manager"]
+panel_placement = "floating"
+
+[plugins]
+enabled = [
+    "prponkshe/umbriel-displays",
+    "noctalia/wallhaven",
+    "davemhammer/obsidian",
+    "yugaaank/better-clock",
+    "liamwh/emoji-picker",
+    "andrewdems/vpn-manager",
+    "thepunkoff/pomodoro",
+    "0rgl/localsend-plus",
+    "nightwatch75/file-search",
+    "notfinaldev/web-search",
+    "udmehrot/cisco-directory",
+    "udmehrot/duckduckgo-search",
+    "udmehrot/monitor-layout"
+]
+
+[shell]
+clipboard_enabled = true
+external_ip_enabled = true
+font_family = "Ioskeley Mono"
+polkit_agent = true
+
+    [shell.launcher]
+    width = 760
+
+    [shell.panel]
+    border_color = "#908caa"
+    clipboard_placement = "floating"
+    control_center_placement = "floating"
+    launcher_placement = "floating"
+    open_near_click_clipboard = true
+    open_near_click_control_center = true
+    open_near_click_session = true
+    open_near_click_wallpaper = true
+    polkit_placement = "floating"
+    session_placement = "floating"
+    transparency_mode = "solid"
+    wallpaper_placement = "floating"
+
+    [shell.screenshot]
+    annotate = true
+    close_on_copy = true
+    close_on_save = true
+    confirm_region = false
+    copy_to_clipboard = true
+    directory = "{{ .chezmoi.homeDir }}/Pictures/Screenshots"
+    freeze_screen = true
+    save_to_file = true
+
+    [shell.window_switcher]
+    style = "compact"
+
+[theme]
+builtin = "Rosé Pine"
+community_palette = "Rose Pine Moon"
+mode = "dark"
+source = "builtin"
+wallpaper_scheme = "vibrant"
+
+    [theme.templates]
+    community_ids = [
+        "antigravity",
+        "claude-code",
+        "pi-agent",
+        "discord",
+        "telegram",
+        "lazyvim",
+        "neovim",
+        "obsidian",
+        "vscode",
+        "fastfetch",
+        "bat",
+        "fzf",
+        "lazygit",
+        "starship",
+        "tuios"
+    ]
+    enable_community_templates = false
+
+[wallpaper]
+directory = "{{ .chezmoi.homeDir }}/Pictures/Walls"
+
+    [wallpaper.default]
+    path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-yqv2wx.jpg"
+
+    [wallpaper.last]
+    path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-yqv2wx.jpg"
+
+    [wallpaper.monitors.DP-2]
+    path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-og7yyl.jpg"
+
+    [wallpaper.monitors.DP-3]
+    path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-yqv2wx.jpg"
+
+    [wallpaper.monitors.DP-4]
+    path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-yqv2wx.jpg"
+
+    [wallpaper.monitors.eDP-1]
+    path = "{{ .chezmoi.homeDir }}/Pictures/Walls/wallhaven-yqv2wx.jpg"
+
+[weather]
+unit = "imperial"
+
+[widget.bar]
+type = "andrewdems/vpn-manager:bar"
+
+[widget.clock]
+format = "{:%A, %b %d}  {:%H:%M:%S}"
+
+[widget.network]
+show_label = false
+
+[widget.taskbar]
+capsule_radius = "auto"
+font_scale = 1.2
+group_by_workspace = true
+workspace_group_active_border_color = "#908caa"
+workspace_label_placement = "centered"
+
+[widget.tray]
+hidden = [ "nm-applet" ]
+
+[widget.widget]
+type = "0rgl/localsend-plus:widget"
+
+[widget.workspaces]
+style = "minimal"

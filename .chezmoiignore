@@ -1,0 +1,5 @@
+README.md
+OS.md
+**/__pycache__/**
+**/*.pyc
+

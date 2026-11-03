@@ -1,0 +1,16 @@
+id = "udmehrot/duckduckgo-search"
+name = "DuckDuckGo Search"
+version = "1.0.0"
+plugin_api = 43
+author = "udmehrot"
+description = "Search DuckDuckGo in the default browser."
+icon = "world-search"
+tags = ["launcher", "utility"]
+dependencies = ["xdg-open"]
+
+[[launcher_provider]]
+id = "search"
+entry = "launcher.luau"
+prefix = "ddg"
+glyph = "world-search"
+include_in_global_search = false

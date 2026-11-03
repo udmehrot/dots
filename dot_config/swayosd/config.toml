@@ -1,0 +1,15 @@
+[server]
+## on which height to show the OSD (0.5 is screen center, 0.85 is bottom center)
+top_margin = 0.85
+
+## The maximum volume that can be reached in %
+max_volume = 150
+
+## The minimum brightness that can be reached in %
+min_brightness = 5
+
+## show percentage on the right of the OSD
+show_percentage = true
+
+## OSD display duration in milliseconds
+duration = 1200

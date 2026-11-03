@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# lockscreen - Lock the Wayland session via Noctalia Shell (with fallback)
+# ==============================================================================
+
+set -euo pipefail
+
+PICTURES_DIR="${HOME}/Pictures"
+DRY_RUN=false
+CUSTOM_IMG=""
+
+show_help() {
+    cat <<EOF
+Usage: $(basename "$0") [OPTIONS] [IMAGE_PATH]
+
+Lock the screen using Noctalia Shell (with swaylock fallback).
+
+Options:
+  -n, --dry-run   Print the locking command without executing
+  -h, --help      Show this help message
+
+Examples:
+  $(basename "$0")                     # Lock screen with Noctalia session lock
+  $(basename "$0") -n                  # Test / dry-run
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -n|--dry-run)
+            DRY_RUN=true
+            shift
+            ;;
+        -h|--help)
+            show_help
+            exit 0
+            ;;
+        *)
+            if [[ -f "$1" ]]; then
+                CUSTOM_IMG="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [[ "$DRY_RUN" == true ]]; then
+    if pgrep -x noctalia >/dev/null 2>&1; then
+        echo "noctalia msg session lock"
+    else
+        echo "swaylock -f -c 191724"
+    fi
+    exit 0
+fi
+
+# 1. Prefer Noctalia session lock
+if pgrep -x noctalia >/dev/null 2>&1 && command -v noctalia >/dev/null 2>&1; then
+    exec noctalia msg session lock
+fi
+
+# 2. Fallback to swaylock if Noctalia is not running
+if command -v swaylock >/dev/null 2>&1; then
+    # Prevent duplicate instances
+    if pgrep -x swaylock >/dev/null 2>&1; then
+        exit 0
+    fi
+
+    swaylock_args=("-f")
+    if [[ -n "$CUSTOM_IMG" && -f "$CUSTOM_IMG" ]]; then
+        swaylock_args+=("-i" "$CUSTOM_IMG" "-s" "fill")
+    else
+        swaylock_args+=("-c" "191724")
+    fi
+    exec swaylock "${swaylock_args[@]}"
+fi
+
+echo "Error: Neither Noctalia nor swaylock is available to lock the screen." >&2
+exit 1

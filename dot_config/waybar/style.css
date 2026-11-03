@@ -1,0 +1,241 @@
+/* ==============================================================================
+   Waybar Rosé Pine Theme - Mimicking Quickshell
+   ============================================================================== */
+
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
+    font-size: 15px;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: #191724;
+    border-bottom: 1px solid #26233a;
+    color: #e0def4;
+    transition-property: background-color;
+    transition-duration: 0.2s;
+}
+
+/* Remove default button effects */
+button {
+    box-shadow: none;
+    border: none;
+    background: transparent;
+}
+
+button:hover {
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Base Flush Styling for All Modules */
+#workspaces,
+#custom-weather,
+#clock,
+#tray,
+#battery,
+#custom-power,
+#custom-notification,
+#network,
+#cpu,
+#memory,
+#disk {
+    background-color: transparent;
+    color: #e0def4;
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    transition: color 0.12s ease;
+}
+
+/* Module Padding and Sizing */
+#custom-weather,
+#clock {
+    padding: 0 10px;
+    font-size: 18px;
+}
+
+#battery,
+#network,
+#cpu,
+#memory,
+#disk {
+    padding: 0 10px;
+}
+
+#tray {
+    padding: 0 8px;
+}
+
+#custom-power {
+    padding: 0 8px;
+    font-size: 17px;
+    color: #ebbcba;
+}
+
+#custom-notification {
+    padding: 0 8px;
+    margin-right: 14px;
+}
+
+/* Leftmost module margin */
+#workspaces {
+    background-color: transparent;
+    margin-left: 14px;
+    padding: 0;
+}
+
+/* Hover States */
+#custom-weather:hover,
+#clock:hover,
+#tray:hover,
+#battery:hover,
+#custom-notification:hover,
+#network:hover,
+#cpu:hover,
+#memory:hover,
+#disk:hover {
+    background-color: transparent;
+    color: #ebbcba;
+}
+
+/* System Monitor State Warnings */
+#cpu.warning,
+#memory.warning,
+#disk.warning {
+    color: #f6c177;
+}
+
+#cpu.critical,
+#memory.critical,
+#disk.critical,
+#network.disconnected {
+    color: #eb6f92;
+}
+
+#custom-power:hover {
+    background-color: transparent;
+    color: #eb6f92;
+}
+
+/* Workspaces Individual Buttons */
+#workspaces button {
+    background-color: transparent;
+    color: #908caa;
+    border: none;
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
+    min-width: 0;
+    padding: 0 8px;
+    margin: 0 2px;
+    font-size: 15px;
+    transition: color 0.12s ease, border-color 0.12s ease;
+}
+
+#workspaces button:hover {
+    background-color: transparent;
+    color: #e0def4;
+}
+
+#workspaces button.focused,
+#workspaces button.active {
+    background-color: transparent;
+    color: #ebbcba;
+    font-weight: bold;
+    border-bottom: 2px solid #ebbcba;
+}
+
+#workspaces button.urgent {
+    background-color: transparent;
+    color: #eb6f92;
+    font-weight: bold;
+    border-bottom: 2px solid #eb6f92;
+}
+
+/* Tray Item Styling */
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: transparent;
+}
+
+#tray menu {
+    background: #191724;
+    border: 1px solid #26233a;
+    border-radius: 8px;
+    padding: 6px;
+    color: #e0def4;
+}
+
+#tray menu menuitem {
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+#tray menu menuitem:hover {
+    background-color: #26233a;
+    color: #ebbcba;
+}
+
+/* Tooltips */
+tooltip {
+    background: #191724;
+    border: 1px solid #26233a;
+    border-radius: 12px;
+    padding: 14px 18px;
+}
+
+tooltip label {
+    font-family: "Inter", "IoskeleyMono Nerd Font Mono", sans-serif;
+    font-size: 16px;
+    color: #e0def4;
+}
+
+/* Calendar styling in tooltip/popup */
+calendar {
+    background-color: #191724;
+    color: #e0def4;
+    border: 1px solid #26233a;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 16px;
+}
+
+calendar:selected {
+    background-color: #ebbcba;
+    color: #191724;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+calendar:indeterminate {
+    color: #6e6a86;
+}
+
+calendar.header {
+    border-bottom: 1px solid #26233a;
+    font-size: 17px;
+    font-weight: bold;
+    color: #ebbcba;
+}
+
+calendar.button {
+    color: #e0def4;
+    font-size: 16px;
+}
+
+calendar.button:hover {
+    background-color: #26233a;
+    color: #ebbcba;
+    border-radius: 6px;
+}
+
+calendar.highlight {
+    color: #9ccfd8;
+    font-weight: bold;
+}

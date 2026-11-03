@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Background daemon to continuously capture text and image clipboard events into cliphist
+
+if ! pgrep -f "wl-paste --type text --watch" >/dev/null; then
+    nohup wl-paste --type text --watch cliphist store >/dev/null 2>&1 &
+fi
+
+if ! pgrep -f "wl-paste --type image --watch" >/dev/null; then
+    nohup wl-paste --type image --watch cliphist store >/dev/null 2>&1 &
+fi

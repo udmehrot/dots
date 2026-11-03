@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+"""Focus a configured Sway app, or launch it when it has no window."""
+
+import configparser
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+APPS = {
+    "firefox": ("firefox_firefox.desktop", {"firefox_firefox", "firefox"}),
+    "vivaldi": ("vivaldi-stable.desktop", {"vivaldi-stable"}),
+    "webex": ("webex.desktop", {"webex"}),
+    "obsidian": ("md.obsidian.Obsidian.desktop", {"md.obsidian.obsidian", "obsidian"}),
+    "wezterm": ("org.wezfurlong.wezterm.desktop", {"org.wezfurlong.wezterm"}),
+    "cursor": ("cursor.desktop", {"cursor", "co.anysphere.cursor"}),
+}
+
+
+def outlook_pwa():
+    """Find the locally installed Outlook PWA without hard-coding its ID."""
+    data_home = Path(os.environ.get("XDG_DATA_HOME") or Path.home() / ".local/share")
+    data_dirs = os.environ.get("XDG_DATA_DIRS") or "/usr/local/share:/usr/share"
+    roots = [data_home, *(Path(p) for p in data_dirs.split(":") if p)]
+    seen = set()
+    matches = []
+    for root in roots:
+        for path in sorted((root / "applications").glob("FFPWA-*.desktop")):
+            if path.name in seen:
+                continue
+            seen.add(path.name)
+            parser = configparser.ConfigParser(interpolation=None, strict=False)
+            try:
+                with path.open(encoding="utf-8") as file:
+                    parser.read_file(file)
+                entry = parser["Desktop Entry"]
+                if "outlook" not in entry.get("Name", "").casefold():
+                    continue
+                window_class = entry.get("StartupWMClass", path.stem)
+                matches.append((path.name, {path.stem.casefold(), window_class.casefold()}))
+            except (OSError, configparser.Error, KeyError, UnicodeError):
+                continue
+    if len(matches) != 1:
+        raise RuntimeError("Expected one installed Outlook Firefox PWA desktop entry; found " + str(len(matches)))
+    return matches[0]
+
+
+def windows_by_focus(node, workspace=None):
+    if node.get("type") == "workspace":
+        workspace = node.get("name")
+    if node.get("app_id") or node.get("window_properties", {}).get("class"):
+        yield node, workspace
+    children = node.get("nodes", []) + node.get("floating_nodes", [])
+    by_id = {child["id"]: child for child in children}
+    ordered = [by_id[child_id] for child_id in node.get("focus", []) if child_id in by_id]
+    focused_ids = {child["id"] for child in ordered}
+    ordered.extend(child for child in children if child["id"] not in focused_ids)
+    for child in ordered:
+        yield from windows_by_focus(child, workspace)
+
+
+def sway_command(command):
+    result = subprocess.run(["swaymsg", "-r", command], check=True, capture_output=True, text=True)
+    replies = json.loads(result.stdout)
+    if not replies or not all(reply.get("success") for reply in replies):
+        raise RuntimeError("Sway rejected the window command")
+
+
+def main():
+    if len(sys.argv) != 2 or (sys.argv[1] not in APPS and sys.argv[1] != "outlook"):
+        raise ValueError("Usage: sway-focus-or-launch {firefox|vivaldi|outlook|webex|obsidian|wezterm|cursor}")
+    desktop, identifiers = outlook_pwa() if sys.argv[1] == "outlook" else APPS[sys.argv[1]]
+    result = subprocess.run(["swaymsg", "-t", "get_tree", "-r"], check=True, capture_output=True, text=True)
+    for node, workspace in windows_by_focus(json.loads(result.stdout)):
+        app_id = (node.get("app_id") or "").casefold()
+        window_class = (node.get("window_properties", {}).get("class") or "").casefold()
+        if app_id in identifiers or window_class in identifiers:
+            window_id = int(node["id"])
+            if workspace == "__i3_scratch":
+                sway_command(f"[con_id={window_id}] scratchpad show")
+            sway_command(f"[con_id={window_id}] focus")
+            return
+    os.execvp("gtk-launch", ["gtk-launch", desktop])
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError, KeyError, json.JSONDecodeError, subprocess.SubprocessError, RuntimeError) as error:
+        print(f"sway-focus-or-launch: {error}", file=sys.stderr)
+        sys.exit(1)

@@ -1,0 +1,6 @@
+# ThinkPad X1 Carbon Gen 12 special F10/F11 keys.
+# keyd 2.5 does not pass their newer Linux keycodes, so map them to F21/F22.
+evdev:name:ThinkPad Extra Buttons:dmi:*svnLENOVO*:pvrThinkPadX1CarbonGen12:*
+ KEYBOARD_KEY_46=f21
+ KEYBOARD_KEY_1320=f22
+ KEYBOARD_KEY_1402=f22

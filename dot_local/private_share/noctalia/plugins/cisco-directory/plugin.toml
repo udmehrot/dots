@@ -1,0 +1,16 @@
+id = "udmehrot/cisco-directory"
+name = "Cisco Directory"
+version = "1.0.0"
+plugin_api = 43
+author = "udmehrot"
+description = "Search Cisco Directory in the default browser."
+icon = "address-book"
+tags = ["launcher", "utility"]
+dependencies = ["xdg-open"]
+
+[[launcher_provider]]
+id = "search"
+entry = "launcher.luau"
+prefix = "dir"
+glyph = "address-book"
+include_in_global_search = false

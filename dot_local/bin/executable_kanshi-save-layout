@@ -1,0 +1,222 @@
+#!/usr/bin/env python3
+"""Save the current Sway output configuration as a Kanshi profile."""
+
+import argparse
+import collections
+import fcntl
+import json
+import math
+import os
+from pathlib import Path
+import re
+import signal
+import subprocess
+import sys
+import tempfile
+
+NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}\Z")
+SAFE_PATH = re.compile(r"/[A-Za-z0-9_./-]+\Z")
+TRANSFORMS = {"normal", "90", "180", "270", "flipped", "flipped-90", "flipped-180", "flipped-270"}
+MARKER = "# kanshi-save-layout outputs: "
+
+
+def fail(message):
+    raise RuntimeError(message)
+
+
+def identifiers(outputs):
+    descriptions = []
+    for output in outputs:
+        parts = [output.get(key) or "Unknown" for key in ("make", "model", "serial")]
+        description = " ".join(parts)
+        if parts[0] == "Unknown" or parts[1] == "Unknown" or any(c in description for c in '\\"*?[]\n\r'):
+            description = None
+        descriptions.append(description)
+    counts = collections.Counter(descriptions)
+    result = []
+    for output, description in zip(outputs, descriptions):
+        name = output.get("name")
+        if not isinstance(name, str) or not re.fullmatch(r"[A-Za-z0-9_.-]+", name):
+            fail("An output has an unsupported connector name")
+        result.append(description if description and counts[description] == 1 else name)
+    if len(set(result)) != len(result):
+        fail("Outputs cannot be uniquely identified")
+    return result
+
+
+def render_profile(name, outputs):
+    if not outputs or not any(output.get("active") for output in outputs):
+        fail("No active displays found; not saving an empty layout")
+    ids = identifiers(outputs)
+    lines = [MARKER + json.dumps(sorted(ids), ensure_ascii=True), f"profile {name} {{"]
+    for output, ident in zip(outputs, ids):
+        quoted = json.dumps(ident, ensure_ascii=False)
+        if not output.get("active"):
+            lines.append(f"    output {quoted} disable")
+            continue
+        mode = output.get("current_mode") or {}
+        width, height, refresh = mode.get("width"), mode.get("height"), mode.get("refresh")
+        rect, scale = output.get("rect") or {}, output.get("scale")
+        transform = output.get("transform") or "normal"
+        if not isinstance(width, int) or not isinstance(height, int) or width <= 0 or height <= 0:
+            fail(f"No valid current mode for {output['name']}")
+        if not isinstance(refresh, int) or refresh < 0:
+            fail(f"No valid refresh rate for {output['name']}")
+        if not isinstance(scale, (int, float)) or not math.isfinite(scale) or scale <= 0:
+            fail(f"No valid scale for {output['name']}")
+        if transform not in TRANSFORMS or not all(isinstance(rect.get(k), int) for k in ("x", "y")):
+            fail(f"No valid transform or position for {output['name']}")
+        custom = "--custom " if mode not in output.get("modes", []) else ""
+        rate = f"@{refresh / 1000:.3f}Hz" if refresh else ""
+        line = (f"    output {quoted} enable mode {custom}{width}x{height}{rate} "
+                f"position {rect['x']},{rect['y']} scale {scale:g} transform {transform}")
+        adaptive = output.get("adaptive_sync_status")
+        if adaptive in ("enabled", "disabled"):
+            line += " adaptive_sync " + ("on" if adaptive == "enabled" else "off")
+        lines.append(line)
+    lines.append("}")
+    return "\n".join(lines) + "\n", sorted(ids)
+
+
+def validate_with_kanshi(text, directory):
+    # Kanshi 1.9 has no --check: it parses before connecting to Wayland.
+    # An isolated, nonexistent display exercises its real parser without
+    # applying any output configuration to the user's running compositor.
+    with tempfile.TemporaryDirectory(prefix=".kanshi-check-", dir=directory) as tmp:
+        config = Path(tmp) / "config"
+        config.write_text(text, encoding="utf-8")
+        env = dict(os.environ, WAYLAND_DISPLAY=str(Path(tmp) / "no-wayland-socket"))
+        env.pop("WAYLAND_SOCKET", None)
+        result = subprocess.run(["kanshi", "-c", str(config)], env=env, capture_output=True, text=True, timeout=10)
+        if result.returncode != 1 or result.stderr.strip() != "failed to connect to display":
+            fail("Kanshi could not validate the candidate configuration: " + (result.stderr.strip() or "unexpected result"))
+
+
+def session_kanshi(config):
+    display = os.environ.get("WAYLAND_DISPLAY")
+    runtime = os.environ.get("XDG_RUNTIME_DIR")
+    if not display or not runtime:
+        fail("Run this inside the Sway Wayland session")
+    found = []
+    for proc in Path("/proc").iterdir():
+        if not proc.name.isdigit():
+            continue
+        try:
+            if proc.stat().st_uid != os.getuid() or (proc / "comm").read_text().strip() != "kanshi":
+                continue
+            env = dict(item.split("=", 1) for item in (proc / "environ").read_bytes().decode().split("\0") if "=" in item)
+            if env.get("WAYLAND_DISPLAY") != display or env.get("XDG_RUNTIME_DIR") != runtime:
+                continue
+            args = (proc / "cmdline").read_bytes().decode().split("\0")
+            if "-c" in args:
+                used = Path(args[args.index("-c") + 1]).expanduser()
+            elif "--config" in args:
+                used = Path(args[args.index("--config") + 1]).expanduser()
+            elif any(arg.startswith("--config=") for arg in args):
+                used = Path(next(arg.split("=", 1)[1] for arg in args if arg.startswith("--config="))).expanduser()
+            else:
+                used = Path(env.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "kanshi/config"
+            if used.resolve() != config.resolve():
+                fail("Kanshi is already running with a different config; no changes made")
+            found.append(int(proc.name))
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+    if len(found) > 1:
+        fail("Multiple Kanshi instances are running in this session; no changes made")
+    return found[0] if found else None
+
+
+def atomic_write(path, text):
+    fd, temporary = tempfile.mkstemp(prefix=".kanshi-save-", dir=path.parent)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def save(name, replace):
+    if not NAME.fullmatch(name):
+        fail("Name must be 1–64 letters, digits, underscores or hyphens; start with a letter or digit")
+    base = Path(os.environ.get("XDG_CONFIG_HOME") or Path.home() / ".config") / "kanshi"
+    profiles = base / "profiles"
+    config = base / "config"
+    if not SAFE_PATH.fullmatch(str(profiles)):
+        fail("Kanshi profile directory contains unsupported characters")
+    root = "# Managed by kanshi-save-layout. Profiles are stored in profiles/*.conf.\n" + f"include {profiles}/*.conf\n"
+    outputs = json.loads(subprocess.check_output(["swaymsg", "-t", "get_outputs", "-r"], text=True))
+    profile, topology = render_profile(name, outputs)
+    profiles.mkdir(parents=True, exist_ok=True)
+    with (base / ".save.lock").open("a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        pid = session_kanshi(config)
+        if config.exists() and config.read_text(encoding="utf-8") != root:
+            fail(f"{config} is not the expected managed config; no profiles changed")
+        target = profiles / f"{name}.conf"
+        if target.exists() and not replace:
+            fail(f"Layout '{name}' already exists; use --replace {name} to update it")
+        existing = []
+        for path in sorted(profiles.glob("*.conf")):
+            text = path.read_text(encoding="utf-8")
+            first = text.splitlines()[0] if text else ""
+            if not first.startswith(MARKER):
+                fail(f"Unmanaged profile {path}; refusing to change the configuration")
+            prior_topology = json.loads(first[len(MARKER):])
+            if path != target and prior_topology == topology:
+                fail(f"This monitor set already has layout '{path.stem}'; update it with --replace {path.stem}")
+            if path != target:
+                existing.append(text)
+        validate_with_kanshi("\n".join(existing + [profile]), base)
+        latest = json.loads(subprocess.check_output(["swaymsg", "-t", "get_outputs", "-r"], text=True))
+        if render_profile(name, latest)[0] != profile:
+            fail("Display layout changed while saving; please try again")
+        atomic_write(target, profile)
+        if not config.exists():
+            atomic_write(config, root)
+        if pid:
+            try:
+                os.kill(pid, signal.SIGHUP)
+            except ProcessLookupError:
+                fail(f"Layout '{name}' was saved, but Kanshi exited before reload; start Kanshi manually")
+        else:
+            logdir = Path(os.environ.get("XDG_STATE_HOME") or Path.home() / ".local/state") / "kanshi"
+            logdir.mkdir(parents=True, exist_ok=True)
+            with (logdir / "kanshi.log").open("a") as log:
+                process = subprocess.Popen(["kanshi", "-c", str(config)], stdin=subprocess.DEVNULL,
+                                           stdout=log, stderr=log, start_new_session=True)
+            try:
+                status = process.wait(timeout=0.5)
+            except subprocess.TimeoutExpired:
+                status = None
+            if status is not None:
+                fail(f"Layout '{name}' was saved, but Kanshi exited; check {logdir / 'kanshi.log'}")
+    return f"Saved layout '{name}' ({len(outputs)} connected display(s)); Kanshi is running."
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--replace", action="store_true", help="replace an existing profile with the same name")
+    parser.add_argument("--notify", action="store_true", help="show a desktop notification")
+    parser.add_argument("name", help="profile name: letters, digits, underscores and hyphens")
+    args = parser.parse_args()
+    try:
+        message = save(args.name, args.replace)
+        status = 0
+    except (OSError, RuntimeError, ValueError, KeyError, subprocess.SubprocessError) as error:
+        message = str(error)
+        status = 1
+    print(message, file=sys.stderr if status else sys.stdout)
+    if args.notify:
+        try:
+            subprocess.run(["notify-send", "-u", "critical" if status else "normal", "Monitor layout", message], check=False)
+        except OSError:
+            pass
+    return status
+
+
+if __name__ == "__main__":
+    sys.exit(main())

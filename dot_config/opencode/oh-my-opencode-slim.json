@@ -1,0 +1,23 @@
+{
+  "$schema": "https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json",
+  "preset": "copilot",
+  "presets": {
+    "copilot": {
+      "orchestrator": { "model": "github-copilot/gpt-6.1-terra", "variant": "medium", "skills": ["*"] },
+      "oracle": { "model": "github-copilot/gpt-6.1-terra", "variant": "high", "skills": ["simplify"] },
+      "explorer": { "model": "github-copilot/gpt-6-luna", "variant": "low", "skills": [] },
+      "designer": { "model": "github-copilot/gpt-6-luna", "variant": "medium", "skills": [] },
+      "fixer": { "model": "github-copilot/gpt-6.1-terra", "variant": "low", "skills": [] },
+      "council": { "model": "github-copilot/gpt-6.1-terra", "variant": "high", "skills": [] }
+    }
+  },
+  "council": {
+    "default_preset": "copilot",
+    "presets": {
+      "copilot": {
+        "terra": { "model": "github-copilot/gpt-6.1-terra", "variant": "high" },
+        "luna": { "model": "github-copilot/gpt-6-luna", "variant": "high" }
+      }
+    }
+  }
+}

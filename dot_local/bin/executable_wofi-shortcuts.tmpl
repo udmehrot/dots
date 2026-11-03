@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Wofi System Shortcuts Cheat Sheet - Rosé Pine Themed
+
+declare -A actions
+
+add_entry() {
+    local key="$1"
+    local desc="$2"
+    local cmd="$3"
+    # Noctalia dmenu renders tab-separated candidates as a title and a
+    # secondary description, keeping long descriptions readable at its fixed
+    # dmenu width.
+    local line=$(printf "%s\t%s" "$key" "$desc")
+    entries+="$line\n"
+    if [ -n "$cmd" ]; then
+        actions["$line"]="$cmd"
+    fi
+}
+
+entries=""
+
+# --- Launchers & Tools ---
+add_entry "Super + Return" "Launch Terminal (WezTerm)" 'wezterm'
+add_entry "Super + D" "Application Launcher (Noctalia)" 'noctalia msg panel-toggle launcher'
+add_entry "Super + ." "Emoji & Symbol Picker (Noctalia)" 'noctalia msg panel-toggle liamwh/emoji-picker:compact'
+add_entry "Hyper + Space, then F" "Focus or Launch Firefox" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch firefox'
+add_entry "Hyper + Space, then V" "Focus or Launch Vivaldi" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch vivaldi'
+add_entry "Hyper + Space, then O" "Focus or Launch Outlook PWA" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch outlook'
+add_entry "Hyper + Space, then W" "Focus or Launch Webex" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch webex'
+add_entry "Hyper + Space, then N" "Focus or Launch Obsidian" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch obsidian'
+add_entry "Hyper + Space, then T" "Focus or Launch WezTerm" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch wezterm'
+add_entry "Hyper + Space, then C" "Focus or Launch Cursor" '{{ .chezmoi.homeDir }}/.local/bin/sway-focus-or-launch cursor'
+add_entry "Hyper + Space, then Escape" "Cancel App Leader Mode" ''
+add_entry "Super + K" "Keyboard Shortcuts List (this menu)" '{{ .chezmoi.homeDir }}/.local/bin/wofi-shortcuts'
+add_entry "Super + Shift + V" "Clipboard History Manager (Noctalia)" 'noctalia msg panel-toggle clipboard'
+add_entry "Super + Shift + W" "Wi-Fi & Network Settings (Noctalia)" 'noctalia msg panel-toggle control-center network'
+add_entry "Super + Shift + B" "Open Wallpaper Picker (Noctalia)" 'noctalia msg panel-toggle wallpaper'
+add_entry "Super + Ctrl + B" "Random Wallpaper (Noctalia)" 'noctalia msg wallpaper-random'
+add_entry "Super + Shift + E" "Power / Session Menu (Noctalia)" 'noctalia msg panel-toggle session'
+add_entry "Super + Escape" "Lock Screen (Noctalia Session Lock)" 'noctalia msg session lock'
+add_entry "Alt + Tab" "Window Switcher Carousel (Noctalia)" 'noctalia msg window-switcher'
+add_entry "Super + N" "Open Notifications (Noctalia Control Center)" 'noctalia msg panel-toggle control-center notifications'
+add_entry "Super + Shift + N" "Toggle Control Center (Noctalia)" 'noctalia msg panel-toggle control-center'
+add_entry "F9" "Noctalia Desktop Settings" 'noctalia msg settings-toggle'
+add_entry "Super + Shift + I" "Toggle Caffeine / Idle Inhibitor (Noctalia)" 'noctalia msg caffeine-toggle'
+
+# --- Window Management ---
+add_entry "Super + Shift + Q" "Close / Kill Focused Window" 'swaymsg kill'
+add_entry "Super + F" "Toggle Fullscreen" 'swaymsg fullscreen'
+add_entry "Super + Shift + Space" "Toggle Floating / Tiling Mode" 'swaymsg floating toggle'
+add_entry "Super + Space" "Switch Focus: Tiling <-> Floating" 'swaymsg focus mode_toggle'
+add_entry "Super + A" "Focus Parent Container" 'swaymsg focus parent'
+add_entry "Super + R" "Resize Mode (Arrow keys or HJKL, Esc to exit)" 'swaymsg mode resize'
+add_entry "Super + B" "Split Container Horizontally" 'swaymsg splith'
+add_entry "Super + V" "Split Container Vertically" 'swaymsg splitv'
+add_entry "Super + S" "Stacking Layout" 'swaymsg layout stacking'
+add_entry "Super + W" "Tabbed Layout" 'swaymsg layout tabbed'
+add_entry "Super + E" "Toggle Split Layout" 'swaymsg layout toggle split'
+add_entry "Super + Shift + C" "Reload Sway Configuration" 'swaymsg reload'
+
+# --- Navigation ---
+add_entry "Super + Arrow Keys" "Move Window Focus Directionally" ''
+add_entry "Super + H / J / L" "Focus Left / Down / Right (K opens this menu)" ''
+add_entry "Super + Shift + Arrows / HJKL" "Move Focused Window Directionally" ''
+add_entry "Resize: H / J / K / L or Arrows" "Resize the Focused Container by 10px" ''
+add_entry "Resize: Enter / Escape" "Exit Resize Mode" ''
+add_entry "Super + Left Mouse Drag" "Move a Floating Window" ''
+
+# --- Workspaces & Scratchpad ---
+add_entry "Super + [1..9, 0]" "Switch to Workspace 1..10" ''
+add_entry "Super + Shift + [1..9, 0]" "Move Window to Workspace 1..10" ''
+add_entry "Super + Shift + Minus" "Move Window to Scratchpad" 'swaymsg move scratchpad'
+add_entry "Super + Minus" "Show / Cycle Scratchpad Windows" 'swaymsg scratchpad show'
+
+# --- Screenshots ---
+add_entry "Super + Print / Super + Shift + S" "Select Screenshot Region (Noctalia)" 'noctalia msg screenshot-region'
+add_entry "Super + Ctrl + S / Super + Shift + Print" "Select Screenshot Region (Noctalia)" 'noctalia msg screenshot-region'
+add_entry "Print / Ctrl + Print" "Capture Focused Display (Noctalia)" 'noctalia msg screenshot-fullscreen'
+add_entry "Shift + Print" "Capture All Displays (Noctalia)" 'noctalia msg screenshot-fullscreen all'
+
+
+
+# --- Hardware Keys (Noctalia OSD) ---
+add_entry "F1 / XF86AudioMute" "Mute / Unmute Audio (Noctalia)" 'noctalia msg volume-mute'
+add_entry "F2 / F3 (Vol Down/Up)" "Adjust Audio Volume (-/+ 5% Noctalia)" ''
+add_entry "F4 / XF86AudioMicMute" "Mute / Unmute Microphone (Noctalia)" 'noctalia msg mic-mute'
+add_entry "F5 / F6 (Bright Down/Up)" "Adjust Screen Brightness (-/+ 5% Noctalia)" ''
+add_entry "F7 / XF86Display" "Open Noctalia Settings" 'noctalia msg settings-open'
+add_entry "F8 / XF86WLAN" "Toggle Wi-Fi Radio" 'rfkill toggle wifi'
+add_entry "XF86Bluetooth" "Toggle Bluetooth Radio" 'rfkill toggle bluetooth'
+add_entry "F10 (ThinkPad special key)" "Select Screenshot Region (Noctalia)" 'noctalia msg screenshot-region'
+add_entry "F11 (ThinkPad special key)" "Disable Laptop Touchpad" ''
+add_entry "Super + F11 (ThinkPad special key)" "Enable Laptop Touchpad" ''
+add_entry "XF86Search / XF86LaunchA" "Open Noctalia Launcher" 'noctalia msg panel-toggle launcher'
+add_entry "Fn + Space / XF86Keyboard" "Increase Keyboard Backlight (Noctalia)" "noctalia msg keyboard-backlight-up"
+add_entry "XF86KbdBrightnessUp / Down" "Step Keyboard Backlight Up (both bindings)" ''
+add_entry "XF86Favorites / XF86Launch1" "Launch WezTerm" 'wezterm'
+add_entry "Fn + 4 / XF86Sleep" "Suspend System" 'systemctl suspend'
+add_entry "XF86AudioPlay / Pause" "Toggle Media Playback (Noctalia)" 'noctalia msg media toggle'
+add_entry "XF86AudioPrev / Next / Stop" "Previous / Next / Stop Media (Noctalia)" ''
+add_entry "XF86Calculator" "Launch Python in WezTerm" 'wezterm -e python'
+
+# --- Touch Gestures ---
+add_entry "3-Finger Swipe Left / Right" "Switch to Prev / Next Workspace" ''
+add_entry "4-Finger Swipe Left / Right" "Move Window to Prev / Next Workspace" ''
+add_entry "4-Finger Pinch Out / In" "Toggle Fullscreen / Floating" ''
+
+# --- WezTerm custom bindings (only while WezTerm is focused) ---
+# keyd maps CapsLock + supported keys to Ctrl+Alt+Super (Hyper).
+add_entry "CapsLock (hold) + key" "Hyper layer: Ctrl + Alt + Super for mapped keys" ''
+add_entry "Hyper mapped keys" "A–Z, 0–9, Space, backtick - [ ] \\ ; ' , . / (keyd)" ''
+add_entry "WezTerm: Hyper + \\ / -" "Split Pane Horizontally / Vertically" ''
+add_entry "WezTerm: Hyper + H / J / K / L" "Focus Pane Left / Down / Up / Right" ''
+add_entry "WezTerm: Hyper + Shift + H / J / K / L" "Resize Pane Left / Down / Up / Right" ''
+add_entry "WezTerm: Hyper + W / Z" "Close Pane / Toggle Pane Zoom" ''
+add_entry "WezTerm: Hyper + R / Shift + R" "Rotate Panes Clockwise / Counterclockwise" ''
+add_entry "WezTerm: Hyper + T / N" "New Tab / New Window" ''
+add_entry "WezTerm: Hyper + 1..5" "Switch to Tab 1..5" ''
+add_entry "WezTerm: Hyper + ] / [ / 0" "Increase / Decrease / Reset Font Size" ''
+add_entry "WezTerm: Ctrl+Alt+Super + = / _" "Alternative Increase / Decrease Font Size" ''
+add_entry "WezTerm: Hyper + P / F" "Command Palette / Search" ''
+add_entry "WezTerm: Hyper + C / V" "Copy / Paste" ''
+add_entry "WezTerm: Hyper + Y" "Open Yazi in a New Tab" ''
+add_entry "WezTerm: Hyper + X" "Clear Scrollback and Screen" ''
+add_entry "WezTerm: other default bindings" "See: wezterm show-keys (defaults may overlap Sway)" ''
+
+selected=$(echo -e "$entries" | noctalia dmenu -p "⌨  System Shortcuts & Keybinds")
+
+if [ -n "$selected" ]; then
+    cmd="${actions["$selected"]}"
+    if [ -n "$cmd" ]; then
+        eval "$cmd"
+    fi
+fi
